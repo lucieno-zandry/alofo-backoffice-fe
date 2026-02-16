@@ -17,6 +17,7 @@ export default [
         route("", "routes/backoffice/layout.tsx", [
             index("routes/backoffice/dashboard/index.tsx"),
             route("products", "routes/backoffice/products/index.tsx"),
+            route("categories", "routes/backoffice/categories/index.tsx"),
         ]),
 
         // error pages

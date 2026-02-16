@@ -9,7 +9,7 @@ export default function () {
 
 export function Header({ onMenuClick }: { onMenuClick: () => void }) {
     return (
-        <header className="flex items-center justify-between px-6 h-16 border-b border-zinc-800 bg-zinc-950 backdrop-blur-sm sticky top-0 z-30">
+        <header className="flex items-center justify-between px-6 h-16 bg-zinc-950/60 backdrop-blur-md border border-white/5 rounded-2xl mb-2 sticky top-0 z-30">
             <div className="flex items-center gap-4">
                 <button onClick={onMenuClick} className="p-2 lg:hidden text-zinc-400 hover:bg-zinc-900 rounded-lg transition-colors">
                     <Menu size={20} />
