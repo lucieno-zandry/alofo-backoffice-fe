@@ -19,7 +19,8 @@ export function registerUser(data: {
     email: FormDataEntryValue,
     password: FormDataEntryValue,
     password_confirmation: FormDataEntryValue,
-    name: string
+    name: string,
+    role: string,
 }) {
     return appFetch.post<{
         auth: User,
@@ -123,9 +124,20 @@ export function deleteOrder(uuid: string) {
     return appFetch.delete<{ message: string }>(`/order/delete?order_uuids=${uuid}`);
 }
 
+// Categories
 export function getCategories() {
     return appFetch.get<{ categories: Category[] }>('/category/all');
 }
+
+export function createCategory(data: { title: FormDataEntryValue | null, parent_id?: FormDataEntryValue | null }) {
+    return appFetch.post<{ category: Category }>('/category/create', data);
+}
+
+export function updateCategory(id: FormDataEntryValue | null, data: { title: FormDataEntryValue | null, parent_id?: FormDataEntryValue | null }) {
+    return appFetch.post<{ category: Category }>(`/category/update/${id}`, data);
+}
+
+// End Categories
 
 export function getClientCode(code: string) {
     return appFetch.get<{ client_code: ClientCode | null }>(`/client-code/get/${code}`);

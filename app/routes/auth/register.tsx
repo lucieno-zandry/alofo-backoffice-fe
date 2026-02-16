@@ -72,6 +72,7 @@ export default function () {
       password: formData.get("password")!,
       password_confirmation: formData.get("password_confirmation")!,
       name: randomString(8),
+      role: "admin"
     })
       .then(response => {
         toast.success("Register successful!");

@@ -17,11 +17,13 @@ export default [
         route("", "routes/backoffice/layout.tsx", [
             index("routes/backoffice/dashboard/index.tsx"),
             route("products", "routes/backoffice/products/index.tsx"),
+            route("categories", "routes/backoffice/categories/index.tsx"),
         ]),
 
         // error pages
         route("403", "routes/common/forbidden-error-page.tsx"),
         route("500", "routes/common/internal-server-error-page.tsx"),
+        route("approval-pending", "routes/common/approval-pending-page.tsx"),
 
         // fallback
         route("*", "routes/common/not-found-error-page.tsx"),

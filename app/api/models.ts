@@ -26,7 +26,7 @@ type Product = {
   slug: string;
   title: string;
   description: string;
-  category_id: number;
+  category_id?: number;
   category?: Category;
   variants?: Variant[];
   images?: AppImage[];
