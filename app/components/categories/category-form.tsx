@@ -37,7 +37,7 @@ export function CategoryFormView({
                 )}
 
                 <input type="hidden" name="id" value={initialData?.id} />
-                <input type="hidden" name="intent" value={initialData ? "update" : "create"} />
+                <input type="hidden" name="intent" value={initialData?.id ? "update" : "create"} />
 
                 <Field
                     label="Title"
@@ -83,7 +83,7 @@ export function CategoryFormView({
                     type="submit"
                     isLoading={isLoading}
                     className="flex-1">
-                    {initialData ? 'Update Category' : 'Create Category'}
+                    {initialData?.id ? 'Update Category' : 'Create Category'}
                 </Button>
             </div>
         </Form>

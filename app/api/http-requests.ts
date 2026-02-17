@@ -134,7 +134,7 @@ export function createCategory(data: { title: FormDataEntryValue | null, parent_
 }
 
 export function updateCategory(id: FormDataEntryValue | null, data: { title: FormDataEntryValue | null, parent_id?: FormDataEntryValue | null }) {
-    return appFetch.post<{ category: Category }>(`/category/update/${id}`, data);
+    return appFetch.put<{ category: Category }>(`/category/update/${id}`, data);
 }
 
 // End Categories

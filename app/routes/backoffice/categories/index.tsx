@@ -20,9 +20,9 @@ type CategoriesPageViewProps = {
         data?: any;
     }>>;
     openCreate: () => void;
-    openEdit: (category: Category) => void;
-    searchQuery: string;
-    setSearchQuery: Dispatch<SetStateAction<string>>;
+    onEdit: (category: Category) => void;
+    onAddSub: (category: Category) => void;
+    onDelete: (category: Category) => void;
 };
 
 export async function clientAction({ request }: ActionFunctionArgs) {
@@ -47,13 +47,13 @@ export async function clientAction({ request }: ActionFunctionArgs) {
     return null;
 }
 
-export function CategoriesPageView({ openCreate, openEdit, setSheetConfig, sheetConfig, }: CategoriesPageViewProps) {
+export function CategoriesPageView({ openCreate, onEdit, onAddSub, onDelete, setSheetConfig, sheetConfig, }: CategoriesPageViewProps) {
     return (
         <div className="pb-24">
             <CategoryPageHeader />
 
             <div className="bg-card/40 backdrop-blur-xl border border-border rounded-[2rem] p-8 shadow-2xl transition-colors duration-300">
-                <CategoryTree onEdit={openEdit} />
+                <CategoryTree onEdit={onEdit} onAddSub={onAddSub} onDelete={onDelete} />
             </div>
 
             <FloatingAddButton onClick={openCreate} label="Add Category" />
@@ -71,7 +71,7 @@ export default function CategoriesPage() {
     const [sheetConfig, setSheetConfig] = useState<{
         isOpen: boolean;
         mode: "create" | "edit";
-        data?: Category;
+        data?: Partial<Category>;
     }>({
         isOpen: false,
         mode: "create"
@@ -87,6 +87,16 @@ export default function CategoriesPage() {
         mode: "edit",
         data: category
     });
+
+    const openAddSub = (category: Category) => setSheetConfig({
+        isOpen: true,
+        mode: "create",
+        data: { parent_id: category.id }
+    });
+
+    const openDelete = (category: Category) => {
+
+    }
 
     const actionData = useActionData();
     const navigation = useNavigation();
@@ -113,8 +123,8 @@ export default function CategoriesPage() {
         sheetConfig={sheetConfig}
         setSheetConfig={setSheetConfig}
         openCreate={openCreate}
-        openEdit={openEdit}
-        searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
+        onEdit={openEdit}
+        onAddSub={openAddSub}
+        onDelete={openDelete}
     />;
 }

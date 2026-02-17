@@ -5,77 +5,16 @@ import { useCategoryStore, type CategoryWithChildren } from "~/hooks/use-categor
 import {
     CategoryTreeToolbar,
     type TreeToolbarState,
-    type SortField,
-    type SortDirection,
-    type FilterType,
 } from "~/components/categories/category-tree-toolbar";
+import sortNodes from "~/lib/sort-nodes";
+import nodeMatchesSearch from "~/lib/node-matches-search";
+import filterTree from "~/lib/filter-tree";
 
 type CategoryTreeProps = {
     onEdit: (category: Category) => void;
+    onAddSub: (category: Category) => void;
+    onDelete: (category: Category) => void;
 };
-
-// ─── Helpers ────────────────────────────────────────────────────────────────
-
-/** Recursively sort a tree's children by a given field + direction. */
-function sortNodes(
-    nodes: CategoryWithChildren[],
-    field: SortField,
-    direction: SortDirection,
-): CategoryWithChildren[] {
-    const sorted = [...nodes].sort((a, b) => {
-        let aVal = a[field] as string;
-        let bVal = b[field] as string;
-        // title → case-insensitive
-        if (field === "title") {
-            aVal = aVal.toLowerCase();
-            bVal = bVal.toLowerCase();
-        }
-        const cmp = aVal < bVal ? -1 : aVal > bVal ? 1 : 0;
-        return direction === "asc" ? cmp : -cmp;
-    });
-    return sorted.map((n) => ({
-        ...n,
-        children: sortNodes(n.children, field, direction),
-    }));
-}
-
-/**
- * Returns true if the node's title matches the query, OR any descendant does.
- * Also populates `matchingIds` so we can highlight / auto-expand.
- */
-function nodeMatchesSearch(
-    node: CategoryWithChildren,
-    query: string,
-    matchingIds: Set<number>,
-): boolean {
-    const selfMatch = node.title.toLowerCase().includes(query.toLowerCase());
-    const childMatch = node.children.some((c) => nodeMatchesSearch(c, query, matchingIds));
-    if (selfMatch || childMatch) {
-        matchingIds.add(node.id);
-        return true;
-    }
-    return false;
-}
-
-/**
- * Filter a tree to only nodes (and their ancestors) that match the search query.
- * If a parent matches, its children are preserved; if only a child matches, the
- * parent is kept as a "path" node.
- */
-function filterTree(
-    nodes: CategoryWithChildren[],
-    query: string,
-    matchingIds: Set<number>,
-): CategoryWithChildren[] {
-    return nodes.reduce<CategoryWithChildren[]>((acc, node) => {
-        if (!matchingIds.has(node.id)) return acc;
-        const filteredChildren = filterTree(node.children, query, matchingIds);
-        acc.push({ ...node, children: filteredChildren });
-        return acc;
-    }, []);
-}
-
-// ─── Component ───────────────────────────────────────────────────────────────
 
 const DEFAULT_TOOLBAR: TreeToolbarState = {
     search: "",
@@ -84,7 +23,7 @@ const DEFAULT_TOOLBAR: TreeToolbarState = {
     filterType: "all",
 };
 
-export function CategoryTree({ onEdit }: CategoryTreeProps) {
+export function CategoryTree(props: CategoryTreeProps) {
     const categories = useCategoryStore((state) => state.categories);
     const [expandedIds, setExpandedIds] = useState<Record<number, boolean>>({});
     const [toolbar, setToolbar] = useState<TreeToolbarState>(DEFAULT_TOOLBAR);
@@ -184,8 +123,8 @@ export function CategoryTree({ onEdit }: CategoryTreeProps) {
                     onToggle={() =>
                         setExpandedIds((p) => ({ ...p, [node.id]: !p[node.id] }))
                     }
-                    onAction={() => onEdit(node)}
                     searchQuery={toolbar.search}
+                    {...props}
                 />
                 {node.children.length > 0 && effectiveExpanded[node.id] && (
                     <div className="animate-in fade-in slide-in-from-top-1 duration-200">

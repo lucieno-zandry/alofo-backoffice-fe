@@ -26,7 +26,7 @@ export default function AdminLayout() {
 
             <div className="flex-1 flex flex-col min-w-0 h-screen overflow-y-auto">
                 <Header />
-                <main className="pt-2 overflow-y-auto">
+                <main className="pt-2 overflow-y-auto custom-scrollbar">
                     <Outlet />
                 </main>
             </div>

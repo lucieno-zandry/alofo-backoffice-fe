@@ -1,5 +1,7 @@
 // src/routes/backoffice/categories/components/CategoryRow.tsx
-import { ChevronDown, ChevronRight, MoreVertical} from "lucide-react";
+import { ChevronDown, ChevronRight, MoreVertical } from "lucide-react";
+import HighlightedText from "../highlighted-text";
+import { CategoryActions } from "./category-actions";
 
 type CategoryRowProps = {
     category: Category,
@@ -7,36 +9,13 @@ type CategoryRowProps = {
     hasChildren: boolean,
     isExpanded: boolean,
     onToggle: () => void,
-    onAction: (action: 'edit' | 'add-sub' | 'add-product' | 'delete') => void,
     searchQuery?: string,
+    onEdit: (category: Category) => void;
+    onAddSub: (category: Category) => void;
+    onDelete: (category: Category) => void;
 }
 
-function HighlightedText({ text, query }: { text: string; query: string }) {
-    if (!query.trim()) return <>{text}</>;
-
-    const regex = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})`, "gi");
-    const parts = text.split(regex);
-
-    return (
-        <>
-            {parts.map((part, i) =>
-                regex.test(part) ? (
-                    <mark
-                        key={i}
-                        className="bg-primary/20 text-primary rounded-[3px] px-0.5 not-italic font-semibold"
-                        style={{ boxDecorationBreak: "clone" }}
-                    >
-                        {part}
-                    </mark>
-                ) : (
-                    <span key={i}>{part}</span>
-                )
-            )}
-        </>
-    );
-}
-
-export function CategoryRow({ category, level, hasChildren, isExpanded, onToggle, searchQuery = "" }: CategoryRowProps) {
+export function CategoryRow({ category, level, hasChildren, isExpanded, onToggle, searchQuery = "", onEdit, onAddSub, onDelete }: CategoryRowProps) {
     const opacity = Math.max(0.05, 0.2 - level * 0.05);
     const blur = Math.max(4, 12 - level * 2);
 
@@ -92,9 +71,12 @@ export function CategoryRow({ category, level, hasChildren, isExpanded, onToggle
                 </div>
 
                 <div className="flex items-center gap-1">
-                    <button className="p-2 text-muted-foreground hover:text-foreground hover:bg-accent rounded-lg transition-all md:opacity-0 group-hover:opacity-100">
-                        <MoreVertical size={16} />
-                    </button>
+                    <CategoryActions
+                        category={category}
+                        onEdit={onEdit}
+                        onAddSub={onAddSub}
+                        onDelete={onDelete}
+                    />
                 </div>
             </div>
         </div>
