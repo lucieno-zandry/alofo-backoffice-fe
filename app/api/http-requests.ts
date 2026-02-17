@@ -137,6 +137,10 @@ export function updateCategory(id: FormDataEntryValue | null, data: { title: For
     return appFetch.put<{ category: Category }>(`/category/update/${id}`, data);
 }
 
+export function deleteCategory(id: FormDataEntryValue | null) {
+    return appFetch.delete<{ message: string }>(`/category/delete?category_ids=${id}`);
+}
+
 // End Categories
 
 export function getClientCode(code: string) {
