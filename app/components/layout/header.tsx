@@ -9,7 +9,7 @@ export default function () {
 
 export function HeaderView({ onMenuClick }: { onMenuClick: () => void }) {
     return (
-        <header className="flex items-center justify-between px-6 h-16 bg-card backdrop-blur-md border border-border rounded-2xl mb-2 sticky top-0 z-30 transition-colors duration-300">
+        <header className="flex items-center justify-between px-6 py-2 bg-card backdrop-blur-md border border-border rounded-2xl mb-2 sticky top-0 z-30 transition-colors duration-300">
             <div className="flex items-center gap-4">
                 {/* Mobile Menu Toggle */}
                 <button
