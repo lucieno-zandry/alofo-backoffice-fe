@@ -1,7 +1,30 @@
-import { useNavigate } from "react-router";
+import { redirect, useNavigate, type LoaderFunctionArgs } from "react-router";
 import { Clock, ShieldCheck, LogOut, RefreshCcw } from "lucide-react";
 import Button from "~/components/custom-ui/button"; // Using your custom-ui button
 import useRouterStore from "~/hooks/use-router-store";
+import { getAuthUser } from "~/api/http-requests";
+import { useSuccessRedirect } from "~/hooks/use-redirect-action";
+import { HttpException } from "~/api/app-fetch";
+
+const successRedirect = useSuccessRedirect();
+
+export async function clientLoader({ params }: LoaderFunctionArgs) {
+    const { lang } = params;
+
+    try {
+        const authResponse = await getAuthUser();
+
+        if (authResponse.data?.user?.approved_at) {
+            return successRedirect();
+        }
+    } catch (error) {
+        if (error instanceof HttpException) {
+            return redirect(`/${lang}/auth`);
+        }
+    }
+
+    return null;
+}
 
 export default function ApprovalPendingPage() {
     const navigate = useNavigate();

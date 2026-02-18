@@ -5,6 +5,7 @@ import Select from "../custom-ui/select";
 import { useCategoryStore } from "~/hooks/use-category-store";
 import useGetFieldErrors from "~/hooks/use-get-field-errors";
 import Button from "../custom-ui/button";
+import type { SubmitEventHandler } from "react";
 
 type CategoryFormProps = {
     initialData?: {
@@ -17,6 +18,7 @@ type CategoryFormProps = {
     getFieldErrors: (name: string) => string[] | null;
     categories: Category[];
     isLoading: boolean;
+    onSubmit: SubmitEventHandler<HTMLFormElement>;
 };
 
 export function CategoryFormView({
@@ -25,10 +27,11 @@ export function CategoryFormView({
     actionData,
     categories,
     getFieldErrors,
-    isLoading
+    isLoading,
+    onSubmit
 }: CategoryFormProps) {
     return (
-        <Form method="post" className="flex flex-col h-full">
+        <form method="post" className="flex flex-col h-full" onSubmit={onSubmit}>
             <div className="flex-1 space-y-6">
                 {actionData instanceof HttpException && (
                     <div className="p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
@@ -86,19 +89,14 @@ export function CategoryFormView({
                     {initialData?.id ? 'Update Category' : 'Create Category'}
                 </Button>
             </div>
-        </Form>
+        </form>
     );
 }
 
 
-export function CategoryForm({ initialData, onCancel }: Pick<CategoryFormProps, 'initialData' | 'onCancel'>) {
+export function CategoryForm({ initialData, onCancel, isLoading, onSubmit, actionData }: Pick<CategoryFormProps, 'initialData' | 'onCancel' | 'isLoading' | 'onSubmit' | 'actionData'>) {
     const categories = useCategoryStore(state => state.categories);
-    const actionData = useActionData<ValidationException>();
     const getFieldErrors = useGetFieldErrors(actionData);
-
-    // Get the global navigation state
-    const navigation = useNavigation();
-    const isSubmitting = navigation.state === "submitting" || navigation.state === "loading";
 
     return (
         <CategoryFormView
@@ -107,7 +105,8 @@ export function CategoryForm({ initialData, onCancel }: Pick<CategoryFormProps, 
             getFieldErrors={getFieldErrors}
             categories={categories}
             actionData={actionData}
-            isLoading={isSubmitting} // Pass this to the view
+            isLoading={isLoading} // Pass this to the view
+            onSubmit={onSubmit}
         />
     );
 }

@@ -1,7 +1,5 @@
-import { useEffect, useState, type Dispatch, type SetStateAction } from "react";
-import { useActionData, useNavigation, type ActionFunctionArgs } from "react-router";
-import { toast } from "sonner";
-import { HttpException, ValidationException } from "~/api/app-fetch";
+import { useState, type Dispatch, type SetStateAction } from "react";
+import { type ActionFunctionArgs } from "react-router";
 import { createCategory, deleteCategory, updateCategory } from "~/api/http-requests";
 import { CategoryDeleteDialog } from "~/components/categories/category-delete-dialog";
 import { CategoryPageHeader } from "~/components/categories/category-page-header";
@@ -96,27 +94,6 @@ export default function CategoriesPage() {
         data: category
     });
 
-    const actionData = useActionData();
-    const navigation = useNavigation();
-    const isSubmitting = navigation.state === "submitting";
-
-    useEffect(() => {
-        // Only close if we finished submitting AND there's no error in actionData
-        const isFinishedSuccessfully =
-            !isSubmitting &&
-            actionData !== undefined &&
-            !(actionData instanceof ValidationException) &&
-            !(actionData instanceof HttpException);
-
-        if (isFinishedSuccessfully && sheetConfig.isOpen) {
-            sheetConfig.mode === "create" ?
-                toast.success("Category created successfully!") :
-                toast.success("Category updated successfully!");
-
-            setSheetConfig(prev => ({ ...prev, isOpen: false }));
-        }
-    }, [isSubmitting, actionData, sheetConfig.mode]);
-
     return <CategoriesPageView
         sheetConfig={sheetConfig}
         setSheetConfig={setSheetConfig}
@@ -127,30 +104,4 @@ export default function CategoriesPage() {
         deleteConfig={deleteConfig}
         setDeleteConfig={setDeleteConfig}
     />;
-}
-
-export async function clientAction({ request }: ActionFunctionArgs) {
-    const formData = await request.formData();
-    const intent = formData.get("intent");
-    const title = formData.get("title");
-    const parent_id = formData.get("parent_id") || null;
-    const id = formData.get("id");
-
-    try {
-        if (intent === "create") {
-            await createCategory({ title, parent_id });
-        }
-
-        if (intent === "update") {
-            await updateCategory(id, { title, parent_id });
-        }
-
-        if (intent === "delete") {
-            await deleteCategory(id);
-        }
-    } catch (error) {
-        return error;
-    }
-
-    return null;
 }

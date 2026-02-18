@@ -59,7 +59,7 @@ export default function () {
 
     logInWithEmail({
       email: formData.get("email")!,
-      password: formData.get("password")!
+      password: formData.get("password")!,
     })
       .then(response => {
         toast.success("Log in success!");

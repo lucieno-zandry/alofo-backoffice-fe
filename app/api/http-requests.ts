@@ -12,7 +12,7 @@ export function logInWithEmail(data: { email: FormDataEntryValue, password: Form
     return appFetch.post<{
         auth: User,
         token: string,
-    }>('/auth/login', data);
+    }>('/auth/login', { ...data, role: 'admin' });
 }
 
 export function registerUser(data: {
@@ -129,12 +129,12 @@ export function getCategories() {
     return appFetch.get<{ categories: Category[] }>('/category/all');
 }
 
-export function createCategory(data: { title: FormDataEntryValue | null, parent_id?: FormDataEntryValue | null }) {
+export function createCategory(data: FormData | { title: FormDataEntryValue | null, parent_id?: FormDataEntryValue | null }) {
     return appFetch.post<{ category: Category }>('/category/create', data);
 }
 
-export function updateCategory(id: FormDataEntryValue | null, data: { title: FormDataEntryValue | null, parent_id?: FormDataEntryValue | null }) {
-    return appFetch.put<{ category: Category }>(`/category/update/${id}`, data);
+export function updateCategory(id: FormDataEntryValue | null, data: FormData) {
+    return appFetch.post<{ category: Category }>(`/category/update/${id}`, data);
 }
 
 export function deleteCategory(id: FormDataEntryValue | null) {
