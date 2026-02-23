@@ -1,16 +1,11 @@
 import { useMemo, useState } from "react";
+import { useCategoryStore } from "~/hooks/use-category-store";
 
 export function useProductList(products: Product[]) {
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState<number | null>(null);
 
-  const categories = useMemo(() => {
-    const map = new Map<number, string>();
-    products.forEach((p) => {
-      if (p.category) map.set(p.category.id, p.category.title);
-    });
-    return Array.from(map.entries()).map(([id, title]) => ({ id, title }));
-  }, [products]);
+  const { categories } = useCategoryStore();
 
   const filtered = useMemo(() => {
     return products.filter((p) => {

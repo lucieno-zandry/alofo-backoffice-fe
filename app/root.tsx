@@ -11,6 +11,9 @@ import type { Route } from "./+types/root";
 import "./app.css";
 import './i18n/i18n';
 import { Toaster } from "./components/ui/sonner";
+import { RouteProgress } from "./components/route-progress";
+import RouterContextInjector from "./components/route-context-injector";
+import { TooltipProvider } from "./components/ui/tooltip";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -34,7 +37,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Meta />
         <Links />
       </head>
-      <body className="dark">
+      <body className="dark h-screen overflow-hidden">
         {children}
         <ScrollRestoration />
         <Scripts />
@@ -44,10 +47,12 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-  return <>
+  return <TooltipProvider>
+    <RouteProgress />
     <Outlet />
+    <RouterContextInjector />
     <Toaster position="top-center" />
-  </>
+  </TooltipProvider>
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {

@@ -29,7 +29,7 @@ export default function () {
         <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
           <Button
             variant="outline"
-            onClick={() => navigate(-1)}
+            onClick={() => navigate(-2)}
             className="gap-2"
           >
             <MoveLeft className="h-4 w-4" />

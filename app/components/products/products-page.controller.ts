@@ -1,23 +1,18 @@
-import { useNavigate, useParams } from "react-router";
+import { useMemo } from "react";
+import { useNavigate } from "react-router";
 import useRouterStore from "~/hooks/use-router-store";
+import useSelectedProductStore from "~/hooks/use-selected-product-store";
 
 export function useProductsPage(products: Product[]) {
-    const { productId } = useParams<{ productId?: string }>();
     const { lang } = useRouterStore();
+    const { product: selectedProduct } = useSelectedProductStore();
 
+    const selectedId = useMemo(() => selectedProduct?.id || null, [selectedProduct]);
     const navigate = useNavigate();
 
-    const selectedId = productId ? parseInt(productId) : null;
-
-    const selectedProduct = products.find((p) => p.id === selectedId) ?? null;
-
     const handleSelect = (product: Product) => {
-        navigate(`/${lang}/products/${product.id}`);
+        navigate(`/${lang}/products/${product.slug}`);
     };
 
-    const handleClose = () => {
-        navigate(`/${lang}/products`);
-    };
-
-    return { selectedId, selectedProduct, handleSelect, handleClose };
+    return { selectedId, selectedProduct, handleSelect };
 }

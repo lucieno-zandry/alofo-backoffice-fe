@@ -51,7 +51,7 @@ type Variant = {
   special_price: number | null;
   stock: number;
   image_id: string | null;
-  
+
   product?: Product;
   variant_options?: VariantOption[];
   promotions?: Promotion[];
@@ -278,4 +278,49 @@ type ClientCode = {
   is_active: boolean;
   max_uses?: number;   // Optional: how many users can use this code
   created_at: string;
+};
+
+// These are local draft types used ONLY inside the create form.
+// They mirror what ProductFullCreateRequest expects, but with
+// temporary IDs so the UI can cross-reference groups ↔ options ↔ variants.
+
+type DraftOption = {
+  tempId: string; // e.g. "opt_1"
+  value: string;
+};
+
+type DraftVariantGroup = {
+  tempId: string; // e.g. "grp_1"
+  name: string;
+  options: DraftOption[];
+};
+
+type DraftVariantOptionRef = {
+  groupTempId: string;
+  optionTempId: string;
+};
+
+type DraftVariant = {
+  tempId: string;
+  sku: string;
+  price: string; // keep as string while editing
+  special_price: string;
+  stock: string;
+  // Which option (one per group) this variant represents
+  optionRefs: DraftVariantOptionRef[];
+};
+
+type ProductDraft = {
+  // Step 1 – basics
+  title: string;
+  slug: string;
+  description: string;
+  category_id: string;
+  images: File[];
+
+  // Step 2 – variant groups
+  variantGroups: DraftVariantGroup[];
+
+  // Step 3 – variants (auto-generated or manual)
+  variants: DraftVariant[];
 };

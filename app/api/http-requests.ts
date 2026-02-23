@@ -59,6 +59,9 @@ export function resetPassword(payload: FormData | { password: FormDataEntryValue
     return appFetch.post<{ user: User, token: string }>('/auth/password/reset', payload);
 }
 
+// End Auth
+
+// Product
 export function getProducts(params?: ProductQueryParams) {
     return appFetch.get<{ products: Product[] }>('/product/all', {
         params: serializeProductParams({
@@ -67,6 +70,28 @@ export function getProducts(params?: ProductQueryParams) {
         }),
     });
 }
+
+export function getProduct(slug: string) {
+    return appFetch.get<{ product: Product }>(`/product/get/${slug}`);
+}
+
+export function createProduct(data: FormData) {
+    return appFetch.post<{ product: Product }>('/product/create', data);
+}
+
+export function createFullProduct(data: FormData) {
+    return appFetch.post<{ product: Product }>('/product/full-create', data);
+}
+
+export function createVariant(data: FormData) {
+    return appFetch.post<{ variant: Variant }>('/variant/create', data);
+}
+
+export function createVariantOption(data: FormData) {
+    return appFetch.post<{ "variant-option": VariantOption }>('/variant-option/create', data);
+}
+
+// End Product
 
 export function getCouponFromCode(code: string) {
     return appFetch.get<{ coupon: Coupon }>(`/coupon/get/${code}`);

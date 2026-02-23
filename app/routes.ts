@@ -16,7 +16,10 @@ export default [
 
         route("", "routes/backoffice/layout.tsx", [
             index("routes/backoffice/dashboard/index.tsx"),
-            route("products/:productId?", "routes/backoffice/products/index.tsx"),
+            route("products", "routes/backoffice/products/layout.tsx", [
+                route("", "routes/backoffice/products/index.tsx"),
+                route(":slug", "routes/backoffice/products/product-detail.tsx"),
+            ]),
             route("categories", "routes/backoffice/categories/index.tsx"),
         ]),
 

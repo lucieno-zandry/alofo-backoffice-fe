@@ -6,7 +6,7 @@ export default function () {
     const navigate = useNavigate();
 
     const handleRefresh = () => {
-        window.location.reload();
+        navigate(-1);
     };
 
     return (

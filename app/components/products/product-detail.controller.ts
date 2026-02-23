@@ -1,6 +1,17 @@
-import { useMemo } from "react";
+import { useCallback, useEffect, useMemo } from "react";
+import { useNavigate } from "react-router";
+import useRouterStore from "~/hooks/use-router-store";
+import useSelectedProductStore from "~/hooks/use-selected-product-store";
 
 export function useProductDetail(product: Product) {
+    const { lang } = useRouterStore();
+    const { setProduct } = useSelectedProductStore();
+    const navigate = useNavigate();
+
+    const handleClose = useCallback(() => {
+        navigate(`/${lang}/products`);
+    }, [lang]);
+
     const priceRange = useMemo(() => {
         const prices = product.variants?.map((v) => v.special_price ?? v.price) ?? [];
         if (!prices.length) return null;
@@ -31,5 +42,9 @@ export function useProductDetail(product: Product) {
         year: "numeric",
     });
 
-    return { priceRange, totalStock, skusOnSale, createdAt, updatedAt };
+    useEffect(() => {
+        setProduct(product)
+    }, [product]);
+
+    return { priceRange, totalStock, skusOnSale, createdAt, updatedAt, handleClose };
 }

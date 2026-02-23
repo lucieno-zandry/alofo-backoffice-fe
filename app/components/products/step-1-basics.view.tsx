@@ -1,0 +1,152 @@
+import { ImagePlus, X } from "lucide-react";
+import { Input } from "../ui/input";
+import { Label } from "../ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
+import type { CreateProductPageController } from "./create-product-page.controller";
+import { useStep1Basics } from "./step-1-basics.controller";
+import { cn } from "~/lib/utils";
+import { Textarea } from "../ui/textarea";
+
+type Step1BasicsProps = {
+    draft: ProductDraft;
+    ctrl: Pick<
+        CreateProductPageController,
+        "setBasics" | "setImages" | "setTitleAndSlug"
+    >;
+};
+
+export function Step1Basics({ draft, ctrl }: Step1BasicsProps) {
+    const {
+        categories,
+        imagePreviews,
+        handleTitleChange,
+        handleSlugChange,
+        handleImageFiles,
+        removeImage,
+    } = useStep1Basics(
+        draft.title,
+        draft.slug,
+        draft.images,
+        ctrl.setTitleAndSlug,
+        (slug) => ctrl.setBasics({ slug }),
+        ctrl.setImages
+    );
+
+    return (
+        <div className="space-y-6 max-w-xl">
+            {/* Title */}
+            <div className="space-y-1.5">
+                <Label htmlFor="title">
+                    Title <span className="text-destructive">*</span>
+                </Label>
+                <Input
+                    id="title"
+                    placeholder="e.g. Classic Leather Sneaker"
+                    value={draft.title}
+                    onChange={(e) => handleTitleChange(e.target.value)}
+                />
+            </div>
+
+            {/* Slug */}
+            <div className="space-y-1.5">
+                <Label htmlFor="slug" className="flex items-center gap-1.5">
+                    <a className="w-3.5 h-3.5" />
+                    Slug <span className="text-destructive">*</span>
+                </Label>
+                <div className="flex items-center rounded-md border border-input bg-muted/30 px-3 focus-within:ring-2 focus-within:ring-ring">
+                    <span className="text-xs text-muted-foreground shrink-0 select-none pr-1">
+                        /products/
+                    </span>
+                    <input
+                        id="slug"
+                        className="flex-1 bg-transparent py-2 text-sm outline-none font-mono"
+                        placeholder="classic-leather-sneaker"
+                        value={draft.slug}
+                        onChange={(e) => handleSlugChange(e.target.value)}
+                    />
+                </div>
+                <p className="text-xs text-muted-foreground">Auto-generated from title. Edit to override.</p>
+            </div>
+
+            {/* Description */}
+            <div className="space-y-1.5">
+                <Label htmlFor="description">Description</Label>
+                <Textarea
+                    id="description"
+                    placeholder="Product description…"
+                    rows={4}
+                    value={draft.description}
+                    onChange={(e) => ctrl.setBasics({ description: e.target.value })}
+                    className="resize-none"
+                />
+            </div>
+
+            {/* Category */}
+            <div className="space-y-1.5">
+                <Label>Category</Label>
+                <Select
+                    value={draft.category_id || "none"}
+                    onValueChange={(v) => ctrl.setBasics({ category_id: v === "none" ? "" : v })}
+                >
+                    <SelectTrigger>
+                        <SelectValue placeholder="Select a category" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="none">No category</SelectItem>
+                        {categories.map((cat) => (
+                            <SelectItem key={cat.id} value={cat.id.toString()}>
+                                {cat.title}
+                            </SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
+            </div>
+
+            {/* Images */}
+            <div className="space-y-2">
+                <Label>Images <span className="text-muted-foreground text-xs">(max 4)</span></Label>
+                <div className="flex flex-wrap gap-3">
+                    {imagePreviews.map((url, i) => (
+                        <div
+                            key={i}
+                            className="relative w-20 h-20 rounded-lg overflow-hidden border border-border group"
+                        >
+                            <img src={url} alt="" className="w-full h-full object-cover" />
+                            <button
+                                type="button"
+                                onClick={() => removeImage(i)}
+                                className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"
+                            >
+                                <X className="w-4 h-4 text-white" />
+                            </button>
+                            {i === 0 && (
+                                <span className="absolute bottom-0 left-0 right-0 bg-black/60 text-white text-[10px] text-center py-0.5">
+                                    Cover
+                                </span>
+                            )}
+                        </div>
+                    ))}
+
+                    {draft.images.length < 4 && (
+                        <label
+                            className={cn(
+                                "w-20 h-20 rounded-lg border-2 border-dashed border-border flex flex-col items-center justify-center cursor-pointer",
+                                "hover:border-primary hover:bg-muted/40 transition-colors text-muted-foreground"
+                            )}
+                        >
+                            <ImagePlus className="w-5 h-5" />
+                            <span className="text-[10px] mt-1">Add</span>
+                            <input
+                                type="file"
+                                accept="image/*"
+                                multiple
+                                className="sr-only"
+                                onChange={(e) => handleImageFiles(e.target.files)}
+                            />
+                        </label>
+                    )}
+                </div>
+            </div>
+        </div>
+    );
+}
