@@ -23,13 +23,18 @@ export function Step1Basics({ draft, ctrl }: Step1BasicsProps) {
         handleSlugChange,
         handleImageFiles,
         removeImage,
+        handleDragEnter,
+        handleDragLeave,
+        handleDragOver,
+        handleDrop,
+        isDragging
     } = useStep1Basics(
         draft.title,
         draft.slug,
         draft.images,
         ctrl.setTitleAndSlug,
         (slug) => ctrl.setBasics({ slug }),
-        ctrl.setImages
+        ctrl.setImages,
     );
 
     return (
@@ -104,14 +109,27 @@ export function Step1Basics({ draft, ctrl }: Step1BasicsProps) {
 
             {/* Images */}
             <div className="space-y-2">
-                <Label>Images <span className="text-muted-foreground text-xs">(max 4)</span></Label>
-                <div className="flex flex-wrap gap-3">
+                <Label>
+                    Images <span className="text-muted-foreground text-xs">(max 4)</span>
+                </Label>
+
+                <div
+                    onDrop={handleDrop}
+                    onDragOver={handleDragOver}
+                    onDragEnter={handleDragEnter}
+                    onDragLeave={handleDragLeave}
+                    className={cn(
+                        "flex flex-wrap gap-3 p-2 rounded-lg transition-colors",
+                        isDragging && "bg-primary/10 border border-primary"
+                    )}
+                >
                     {imagePreviews.map((url, i) => (
                         <div
                             key={i}
                             className="relative w-20 h-20 rounded-lg overflow-hidden border border-border group"
                         >
                             <img src={url} alt="" className="w-full h-full object-cover" />
+
                             <button
                                 type="button"
                                 onClick={() => removeImage(i)}
@@ -119,6 +137,7 @@ export function Step1Basics({ draft, ctrl }: Step1BasicsProps) {
                             >
                                 <X className="w-4 h-4 text-white" />
                             </button>
+
                             {i === 0 && (
                                 <span className="absolute bottom-0 left-0 right-0 bg-black/60 text-white text-[10px] text-center py-0.5">
                                     Cover
@@ -127,15 +146,21 @@ export function Step1Basics({ draft, ctrl }: Step1BasicsProps) {
                         </div>
                     ))}
 
+
                     {draft.images.length < 4 && (
                         <label
                             className={cn(
-                                "w-20 h-20 rounded-lg border-2 border-dashed border-border flex flex-col items-center justify-center cursor-pointer",
-                                "hover:border-primary hover:bg-muted/40 transition-colors text-muted-foreground"
+                                "w-20 h-20 rounded-lg border-2 border-dashed flex flex-col items-center justify-center cursor-pointer transition-colors",
+                                isDragging
+                                    ? "border-primary bg-primary/10 text-primary"
+                                    : "border-border hover:border-primary hover:bg-muted/40 text-muted-foreground"
                             )}
                         >
                             <ImagePlus className="w-5 h-5" />
-                            <span className="text-[10px] mt-1">Add</span>
+                            <span className="text-[10px] mt-1">
+                                {isDragging ? "Drop here" : "Add"}
+                            </span>
+
                             <input
                                 type="file"
                                 accept="image/*"

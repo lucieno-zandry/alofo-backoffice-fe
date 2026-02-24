@@ -28,12 +28,6 @@ export default function ProductDetail() {
   const { priceRange, totalStock, skusOnSale, createdAt, updatedAt, handleClose } =
     useProductDetail(product);
 
-  const { setProduct } = useSelectedProductStore();
-
-  useEffect(() => {
-    setProduct(product);
-  }, [product]);
-
   return (
     <div className="flex-1 flex flex-col min-w-0 relative">
       {/* Mobile back button */}

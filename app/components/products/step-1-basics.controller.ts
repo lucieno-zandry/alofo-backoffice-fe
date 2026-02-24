@@ -62,6 +62,36 @@ export function useStep1Basics(
         return () => urls.forEach(URL.revokeObjectURL);
     }, [images]);
 
+    const [isDragging, setIsDragging] = useState(false);
+
+    const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setIsDragging(false);
+
+        if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+            handleImageFiles(e.dataTransfer.files);
+            e.dataTransfer.clearData();
+        }
+    };
+
+    const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault();
+        e.stopPropagation();
+    };
+
+    const handleDragEnter = (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setIsDragging(true);
+    };
+
+    const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setIsDragging(false);
+    };
+
     return {
         categories,
         imagePreviews,
@@ -70,5 +100,10 @@ export function useStep1Basics(
         handleImageFiles,
         removeImage,
         slugEdited,
+        isDragging,
+        handleDrop,
+        handleDragOver,
+        handleDragEnter,
+        handleDragLeave
     };
 }
