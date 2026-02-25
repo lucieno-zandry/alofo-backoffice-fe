@@ -1,17 +1,23 @@
-import { ImagePlus, X } from "lucide-react";
-import { Input } from "../ui/input";
-import { Label } from "../ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
-import type { CreateProductPageController } from "./create-product-page.controller";
-import { useStep1Basics } from "./step-1-basics.controller";
+import { ImagePlus, X, Link } from "lucide-react";
+import { Input } from "~/components/ui/input";
+import { Label } from "~/components/ui/label";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "~/components/ui/select";
+import { Textarea } from "~/components/ui/textarea";
 import { cn } from "~/lib/utils";
-import { Textarea } from "../ui/textarea";
+import type { ProductEditorController } from "./product-editor.controller";
+import { useStep1Basics } from "./step-1-basics.controller";
 
 type Step1BasicsProps = {
     draft: ProductDraft;
     ctrl: Pick<
-        CreateProductPageController,
-        "setBasics" | "setImages" | "setTitleAndSlug"
+        ProductEditorController,
+        "setBasics" | "setTitleAndSlug" | "addImages" | "removeImage"
     >;
 };
 
@@ -21,20 +27,19 @@ export function Step1Basics({ draft, ctrl }: Step1BasicsProps) {
         imagePreviews,
         handleTitleChange,
         handleSlugChange,
-        handleImageFiles,
-        removeImage,
         handleDragEnter,
         handleDragLeave,
         handleDragOver,
         handleDrop,
-        isDragging
+        isDragging,
     } = useStep1Basics(
         draft.title,
         draft.slug,
         draft.images,
         ctrl.setTitleAndSlug,
         (slug) => ctrl.setBasics({ slug }),
-        ctrl.setImages,
+        ctrl.addImages,
+        ctrl.removeImage,
     );
 
     return (
@@ -55,7 +60,7 @@ export function Step1Basics({ draft, ctrl }: Step1BasicsProps) {
             {/* Slug */}
             <div className="space-y-1.5">
                 <Label htmlFor="slug" className="flex items-center gap-1.5">
-                    <a className="w-3.5 h-3.5" />
+                    <Link className="w-3.5 h-3.5" />
                     Slug <span className="text-destructive">*</span>
                 </Label>
                 <div className="flex items-center rounded-md border border-input bg-muted/30 px-3 focus-within:ring-2 focus-within:ring-ring">
@@ -70,7 +75,9 @@ export function Step1Basics({ draft, ctrl }: Step1BasicsProps) {
                         onChange={(e) => handleSlugChange(e.target.value)}
                     />
                 </div>
-                <p className="text-xs text-muted-foreground">Auto-generated from title. Edit to override.</p>
+                <p className="text-xs text-muted-foreground">
+                    Auto-generated from title. Edit to override.
+                </p>
             </div>
 
             {/* Description */}
@@ -91,7 +98,9 @@ export function Step1Basics({ draft, ctrl }: Step1BasicsProps) {
                 <Label>Category</Label>
                 <Select
                     value={draft.category_id || "none"}
-                    onValueChange={(v) => ctrl.setBasics({ category_id: v === "none" ? "" : v })}
+                    onValueChange={(v) =>
+                        ctrl.setBasics({ category_id: v === "none" ? "" : v })
+                    }
                 >
                     <SelectTrigger>
                         <SelectValue placeholder="Select a category" />
@@ -110,7 +119,8 @@ export function Step1Basics({ draft, ctrl }: Step1BasicsProps) {
             {/* Images */}
             <div className="space-y-2">
                 <Label>
-                    Images <span className="text-muted-foreground text-xs">(max 4)</span>
+                    Images{" "}
+                    <span className="text-muted-foreground text-xs">(max 4)</span>
                 </Label>
 
                 <div
@@ -123,16 +133,26 @@ export function Step1Basics({ draft, ctrl }: Step1BasicsProps) {
                         isDragging && "bg-primary/10 border border-primary"
                     )}
                 >
-                    {imagePreviews.map((url, i) => (
+                    {/* imagePreviews is ImagePreview[] — render preview.url, not the object */}
+                    {imagePreviews.map((preview, i) => (
                         <div
                             key={i}
                             className="relative w-20 h-20 rounded-lg overflow-hidden border border-border group"
                         >
-                            <img src={url} alt="" className="w-full h-full object-cover" />
+                            <img src={preview.url} alt="" className="w-full h-full object-cover" />
 
+                            {/* Small badge on already-uploaded images */}
+                            {preview.isExisting && (
+                                <span className="absolute top-0 right-0 bg-black/50 text-white text-[9px] px-1 py-0.5 rounded-bl">
+                                    saved
+                                </span>
+                            )}
+
+                            {/* ctrl.removeImage is in scope via the Pick — no need to thread
+                  it through the hook */}
                             <button
                                 type="button"
-                                onClick={() => removeImage(i)}
+                                onClick={() => ctrl.removeImage(i)}
                                 className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"
                             >
                                 <X className="w-4 h-4 text-white" />
@@ -145,7 +165,6 @@ export function Step1Basics({ draft, ctrl }: Step1BasicsProps) {
                             )}
                         </div>
                     ))}
-
 
                     {draft.images.length < 4 && (
                         <label
@@ -161,12 +180,14 @@ export function Step1Basics({ draft, ctrl }: Step1BasicsProps) {
                                 {isDragging ? "Drop here" : "Add"}
                             </span>
 
+                            {/* File picker calls ctrl.addImages directly — same method
+                  the drag-drop handler uses, single source of truth */}
                             <input
                                 type="file"
                                 accept="image/*"
                                 multiple
                                 className="sr-only"
-                                onChange={(e) => handleImageFiles(e.target.files)}
+                                onChange={(e) => ctrl.addImages(e.target.files)}
                             />
                         </label>
                     )}

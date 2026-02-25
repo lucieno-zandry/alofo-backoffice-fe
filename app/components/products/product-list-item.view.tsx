@@ -2,6 +2,7 @@ import { Badge } from "~/components/ui/badge";
 import { cn } from "~/lib/utils";
 import { Package } from "lucide-react";
 import { useProductListItem, type ProductListItemProps } from "./product-list-item.controller";
+import formatPrice from "~/lib/format-price";
 
 const stockBadgeVariant = {
   in_stock: "default",
@@ -53,11 +54,7 @@ export function ProductListItem({ product, isSelected, onClick }: ProductListIte
       <div className="shrink-0 flex flex-col items-end gap-1">
         {lowestPrice !== null && (
           <span className={cn("text-sm font-semibold", hasDiscount && "text-emerald-600")}>
-            {(lowestPrice / 100).toLocaleString("fr-MG", {
-              style: "currency",
-              currency: "MGA",
-              maximumFractionDigits: 0,
-            })}
+            {formatPrice(lowestPrice)}
           </span>
         )}
         <Badge variant={stockBadgeVariant[stockStatus]} className="text-xs py-0">

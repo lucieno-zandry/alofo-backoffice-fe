@@ -1,7 +1,9 @@
+import getCurrency from "./get-currency";
+
 const formatPrice = (cents: number) =>
-    (cents / 100).toLocaleString("fr-MG", {
+    cents.toLocaleString("fr-FR", {
         style: "currency",
-        currency: "MGA",
+        currency: getCurrency(),
         maximumFractionDigits: 0,
     });
 

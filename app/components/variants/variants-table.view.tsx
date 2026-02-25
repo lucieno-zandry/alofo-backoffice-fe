@@ -9,19 +9,12 @@ import {
 import { cn } from "~/lib/utils";
 import { Badge } from "../ui/badge";
 import { useVariantsTable } from "./variants-table.controller";
+import formatPrice from "~/lib/format-price";
 
 type VariantsTableProps = {
   variants: Variant[];
   variantGroups: VariantGroup[];
 };
-
-function formatPrice(cents: number) {
-  return (cents / 100).toLocaleString("fr-MG", {
-    style: "currency",
-    currency: "MGA",
-    maximumFractionDigits: 0,
-  });
-}
 
 function StockBadge({ stock }: { stock: number }) {
   if (stock === 0)

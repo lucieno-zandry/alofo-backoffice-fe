@@ -8,12 +8,12 @@ import {
 } from "~/components/ui/tooltip";
 import { Plus, Trash2, X, Info, Layers } from "lucide-react";
 import { cn } from "~/lib/utils";
-import type { CreateProductPageController } from "./create-product-page.controller";
+import type { ProductEditorController } from "./product-editor.controller";
 
 type Step2GroupsProps = {
     draft: ProductDraft;
     ctrl: Pick<
-        CreateProductPageController,
+        ProductEditorController,
         | "addGroup"
         | "updateGroupName"
         | "removeGroup"

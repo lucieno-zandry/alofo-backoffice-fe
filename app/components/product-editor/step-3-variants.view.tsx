@@ -12,13 +12,14 @@ import {
 } from "~/components/ui/table";
 import { Wand2, Trash2, AlertCircle } from "lucide-react";
 import { cn } from "~/lib/utils";
-import type { CreateProductPageController } from "./create-product-page.controller";
+import type { ProductEditorController } from "./product-editor.controller";
 import { useStep3Variants } from "./step-3-variants.controller";
+import getCurrency from "~/lib/get-currency";
 
 type Step3VariantsProps = {
     draft: ProductDraft;
     ctrl: Pick<
-        CreateProductPageController,
+        ProductEditorController,
         "applyGeneratedVariants" | "updateVariant" | "removeVariant" | "bulkSetVariants"
     >;
 };
@@ -64,7 +65,7 @@ export function Step3Variants({ draft, ctrl }: Step3VariantsProps) {
                 <div className="flex flex-wrap items-end gap-3 p-3 rounded-lg border border-border bg-card">
                     <p className="w-full text-xs font-semibold text-muted-foreground">BULK FILL ALL VARIANTS</p>
                     <div className="space-y-1">
-                        <Label className="text-xs">Price (MGA)</Label>
+                        <Label className="text-xs">Price ({getCurrency()})</Label>
                         <Input
                             type="number"
                             placeholder="e.g. 12900"
@@ -126,7 +127,7 @@ export function Step3Variants({ draft, ctrl }: Step3VariantsProps) {
                                         </TableHead>
                                     ))}
                                     <TableHead className="text-xs py-2 font-semibold">SKU</TableHead>
-                                    <TableHead className="text-xs py-2 font-semibold">Price (MGA)</TableHead>
+                                    <TableHead className="text-xs py-2 font-semibold">Price ({getCurrency()})</TableHead>
                                     <TableHead className="text-xs py-2 font-semibold">Special price</TableHead>
                                     <TableHead className="text-xs py-2 font-semibold">Stock</TableHead>
                                     <TableHead className="w-8" />

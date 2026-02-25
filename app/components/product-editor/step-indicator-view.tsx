@@ -1,6 +1,6 @@
 import { cn } from "~/lib/utils";
 import { Check } from "lucide-react";
-import type { Step } from "./create-product-page.controller";
+import type { Step } from "./product-editor.controller";
 
 type StepIndicatorProps = {
   current: Step;

@@ -91,6 +91,10 @@ export function createVariantOption(data: FormData) {
     return appFetch.post<{ "variant-option": VariantOption }>('/variant-option/create', data);
 }
 
+export function updateFullProduct(id: number, data: FormData) {
+    return appFetch.post<{ product: Product }>(`/product/full-update/${id}`, data);
+}
+
 // End Product
 
 export function getCouponFromCode(code: string) {

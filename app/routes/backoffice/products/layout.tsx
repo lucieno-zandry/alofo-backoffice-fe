@@ -1,10 +1,8 @@
-import { MousePointerClick, X } from "lucide-react";
-import { Button } from "~/components/ui/button";
 import { useProductsPage } from "~/components/products/products-page.controller";
 import { ProductList } from "~/components/products/product-list.view";
 import { Outlet, useLoaderData } from "react-router";
 import { getProducts } from "~/api/http-requests";
-import CreateProductSheet from "~/components/products/create-product";
+import ProductEditor from "~/components/product-editor/product-editor";
 
 export async function clientLoader() {
   const response = await getProducts({ with: ['category', 'images', 'variants'] });
@@ -35,7 +33,7 @@ export default function ProductsPage() {
         <Outlet />
       </div>
 
-      <CreateProductSheet />
+      <ProductEditor />
     </>
   );
 }
