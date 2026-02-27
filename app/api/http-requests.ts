@@ -1,6 +1,6 @@
 
 import { serializeProductParams, type ProductQueryParams } from "~/lib/serialize-product-params";
-import appFetch from "./app-fetch";
+import appFetch, { type PaginatedResponse } from "./app-fetch";
 
 // auth
 
@@ -63,7 +63,7 @@ export function resetPassword(payload: FormData | { password: FormDataEntryValue
 
 // Product
 export function getProducts(params?: ProductQueryParams) {
-    return appFetch.get<{ products: Product[] }>('/product/all', {
+    return appFetch.get<PaginatedResponse<Product>>('/product/all', {
         params: serializeProductParams({
             with: ['variants', 'images', 'category'],
             ...params,

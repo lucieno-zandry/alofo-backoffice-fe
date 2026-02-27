@@ -3,7 +3,7 @@ import { useNavigate } from "react-router";
 import useRouterStore from "~/hooks/use-router-store";
 import useSelectedProductStore from "~/hooks/use-selected-product-store";
 
-export function useProductsPage(products: Product[]) {
+export function useProductsPage() {
     const { lang } = useRouterStore();
     const { product: selectedProduct } = useSelectedProductStore();
 

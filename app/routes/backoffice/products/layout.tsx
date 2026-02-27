@@ -1,17 +1,10 @@
 import { useProductsPage } from "~/components/products/products-page.controller";
 import { ProductList } from "~/components/products/product-list.view";
-import { Outlet, useLoaderData } from "react-router";
-import { getProducts } from "~/api/http-requests";
+import { Outlet } from "react-router";
 import ProductEditor from "~/components/product-editor/product-editor";
 
-export async function clientLoader() {
-  const response = await getProducts({ with: ['category', 'images', 'variants'] });
-  return { products: response.data?.products || [] };
-}
-
 export default function ProductsPage() {
-  const { products } = useLoaderData<typeof clientLoader>()!;
-  const { selectedId, selectedProduct, handleSelect } = useProductsPage(products);
+  const { selectedId, selectedProduct, handleSelect } = useProductsPage();
 
   return (
     <>
@@ -24,7 +17,6 @@ export default function ProductsPage() {
           `}
         >
           <ProductList
-            products={products}
             selectedId={selectedId}
             onSelect={handleSelect}
           />

@@ -18,7 +18,7 @@ export type ProductQueryParams = {
 
     // 📄 Pagination
     limit?: number;
-    offset?: number;
+    page?: number;
 
     // 🔗 Relations
     with?: (
