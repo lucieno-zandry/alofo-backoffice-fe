@@ -10,17 +10,18 @@ import {
     TableHeader,
     TableRow,
 } from "~/components/ui/table";
-import { Wand2, Trash2, AlertCircle } from "lucide-react";
+import { Wand2, Trash2, AlertCircle, ImagePlus, X } from "lucide-react";
 import { cn } from "~/lib/utils";
 import type { ProductEditorController } from "./product-editor.controller";
 import { useStep3Variants } from "./step-3-variants.controller";
 import getCurrency from "~/lib/get-currency";
+import { isDraftImageExisting } from "~/lib/draft-images-helpers";
 
 type Step3VariantsProps = {
     draft: ProductDraft;
     ctrl: Pick<
         ProductEditorController,
-        "applyGeneratedVariants" | "updateVariant" | "removeVariant" | "bulkSetVariants"
+        "applyGeneratedVariants" | "updateVariant" | "removeVariant" | "bulkSetVariants" | 'setVariantImage' | 'removeVariantImage'
     >;
 };
 
@@ -212,6 +213,50 @@ export function Step3Variants({ draft, ctrl }: Step3VariantsProps) {
                                                     )}
                                                     placeholder="0"
                                                 />
+                                            </TableCell>
+
+                                            {/* Image */}
+                                            <TableCell className="py-1.5">
+                                                <div className="flex items-center gap-1">
+                                                    {variant.image ? (
+                                                        <div className="relative w-8 h-8 rounded border border-border overflow-hidden group">
+                                                            <img
+                                                                src={isDraftImageExisting(variant.image) ? variant.image.url : URL.createObjectURL(variant.image)}
+                                                                alt=""
+                                                                className="w-full h-full object-cover"
+                                                                onLoad={(e) => {
+                                                                    // If it's a File, we created an object URL; we don't revoke it here because we need it.
+                                                                    // We'll revoke on cleanup.
+                                                                }}
+                                                            />
+                                                            <button
+                                                                type="button"
+                                                                onClick={() => ctrl.removeVariantImage(variant.tempId)}
+                                                                className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"
+                                                            >
+                                                                <X className="w-3 h-3 text-white" />
+                                                            </button>
+                                                        </div>
+                                                    ) : (
+                                                        <Button
+                                                            variant="outline"
+                                                            size="icon"
+                                                            className="h-8 w-8"
+                                                            onClick={() => {
+                                                                const input = document.createElement('input');
+                                                                input.type = 'file';
+                                                                input.accept = 'image/*';
+                                                                input.onchange = (e) => {
+                                                                    const file = (e.target as HTMLInputElement).files?.[0];
+                                                                    if (file) ctrl.setVariantImage(variant.tempId, file);
+                                                                };
+                                                                input.click();
+                                                            }}
+                                                        >
+                                                            <ImagePlus className="w-3.5 h-3.5" />
+                                                        </Button>
+                                                    )}
+                                                </div>
                                             </TableCell>
 
                                             {/* Delete */}

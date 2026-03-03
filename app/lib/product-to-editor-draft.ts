@@ -39,6 +39,12 @@ export function productToEditorDraft(product: Product): ProductDraft {
             stock: String(variant.stock),
             optionRefs,
             isNew: false,
+            image: variant.image ? {
+                id: variant.image.id,
+                url: variant.image.url,
+                width: variant.image.width,
+                height: variant.image.height
+            } : null,
         };
     });
 

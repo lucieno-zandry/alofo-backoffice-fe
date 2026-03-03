@@ -29,6 +29,10 @@ export function buildFullCreateFormData(draft: ProductDraft): FormData {
       fd.append(`variants[${vi}][special_price]`, variant.special_price);
     fd.append(`variants[${vi}][stock]`, variant.stock);
 
+    if (variant.image && isDraftImageNew(variant.image)) {
+      fd.append(`variants[${vi}][image]`, variant.image);
+    }
+
     variant.optionRefs.forEach((ref, ri) => {
       const group = draft.variantGroups.find((g) => g.tempId === ref.groupTempId);
       const option = group?.options.find((o) => o.tempId === ref.optionTempId);
@@ -96,6 +100,17 @@ export function buildFullUpdateFormData(draft: ProductDraft): FormData {
     if (variant.special_price)
       fd.append(`variants[${vi}][special_price]`, variant.special_price);
     fd.append(`variants[${vi}][stock]`, variant.stock);
+
+    // Image handling
+    if (variant.image) {
+      if (isDraftImageNew(variant.image)) {
+        fd.append(`variants[${vi}][image]`, variant.image);  // new file
+      }
+      // if existing (AppImage) – do nothing (keep)
+    } else {
+      // Explicit removal: send empty string (will become null after backend transformation)
+      fd.append(`variants[${vi}][image]`, '');
+    }
 
     variant.optionRefs.forEach((ref, ri) => {
       const group = draft.variantGroups.find((g) => g.tempId === ref.groupTempId);

@@ -296,8 +296,27 @@ export function useProductEditor() {
         stock: "",
         optionRefs: refs,
         isNew: true,
+        image: null,
       } satisfies DraftVariant;
     });
+  }, []);
+
+  const setVariantImage = useCallback((variantTempId: string, file: File | null) => {
+    setDraft((d) => ({
+      ...d,
+      variants: d.variants.map((v) =>
+        v.tempId === variantTempId ? { ...v, image: file } : v
+      ),
+    }));
+  }, []);
+
+  const removeVariantImage = useCallback((variantTempId: string) => {
+    setDraft((d) => ({
+      ...d,
+      variants: d.variants.map((v) =>
+        v.tempId === variantTempId ? { ...v, image: null } : v
+      ),
+    }));
   }, []);
 
   const applyGeneratedVariants = useCallback(() => {
@@ -367,7 +386,7 @@ export function useProductEditor() {
         const result = await createFullProduct(fd);
         toast.success('Product created successfuly!')
         navigate(`/${lang}/products/${result.data?.product.slug}`);
-      } else {
+      } else {        
         const fd = buildFullUpdateFormData(draft);
         const result = await updateFullProduct(product!.id, fd);
         toast.success('Product updated successfuly!')
@@ -415,6 +434,8 @@ export function useProductEditor() {
     isSubmitting,
     submitError,
     submit,
+    setVariantImage,
+    removeVariantImage
   };
 }
 

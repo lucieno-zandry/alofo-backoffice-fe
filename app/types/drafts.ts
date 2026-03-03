@@ -28,6 +28,7 @@ type DraftVariant = {
     stock: string;
     optionRefs: DraftVariantOptionRef[];
     isNew?: boolean;
+    image?: DraftImage | null;
 };
 
 // ── The full product draft ───────────────────────────────────────────────────

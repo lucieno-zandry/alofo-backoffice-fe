@@ -28,7 +28,7 @@ export default function ProductDetail() {
     useProductDetail(product);
 
   return (
-    <div className="flex-1 flex flex-col min-w-0 relative">
+    <div className="flex-1 flex flex-col min-w-0 relative bg-background/80 backdrop-blur-md">
       <MobileBackButton onClose={handleClose} />
 
       <div className="flex flex-col h-full">

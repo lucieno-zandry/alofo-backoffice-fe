@@ -45,6 +45,8 @@ export function StepContent({ step, draft, ctrl }: {
                     updateVariant: ctrl.updateVariant,
                     removeVariant: ctrl.removeVariant,
                     bulkSetVariants: ctrl.bulkSetVariants,
+                    removeVariantImage: ctrl.removeVariantImage,
+                    setVariantImage: ctrl.setVariantImage
                 }}
             />
         );

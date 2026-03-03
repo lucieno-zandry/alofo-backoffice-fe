@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export function useStep3Variants(
     variants: DraftVariant[],
@@ -29,6 +29,17 @@ export function useStep3Variants(
         const group = variantGroups.find((g) => g.tempId === groupTempId);
         return group?.options.find((o) => o.tempId === ref.optionTempId)?.value ?? "—";
     };
+
+    const [objectUrls, setObjectUrls] = useState<Set<string>>(new Set());
+
+    useEffect(() => {
+        return () => {
+            objectUrls.forEach(URL.revokeObjectURL);
+        };
+    }, [objectUrls]);
+
+    // When rendering an image, if it's a File, create URL and add to set.
+    // We'll need to be careful to avoid duplicate creation.
 
     return { getVariantLabel, getOptionValue, groupNames, bulkPrice, setBulkPrice, bulkStock, setBulkStock };
 }
