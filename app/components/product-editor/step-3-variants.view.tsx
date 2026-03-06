@@ -188,10 +188,10 @@ export function Step3Variants({ draft, ctrl }: Step3VariantsProps) {
                                             <TableCell className="py-1.5">
                                                 <Input
                                                     type="number"
-                                                    value={variant.special_price}
+                                                    value={variant.effective_price}
                                                     onChange={(e) =>
                                                         ctrl.updateVariant(variant.tempId, {
-                                                            special_price: e.target.value,
+                                                            effective_price: e.target.value,
                                                         })
                                                     }
                                                     className="h-7 text-xs w-28"

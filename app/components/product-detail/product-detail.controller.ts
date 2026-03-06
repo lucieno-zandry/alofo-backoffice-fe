@@ -13,7 +13,7 @@ export function useProductDetail(product: Product) {
     }, [lang]);
 
     const priceRange = useMemo(() => {
-        const prices = product.variants?.map((v) => v.special_price ?? v.price) ?? [];
+        const prices = product.variants?.map((v) => v.effective_price ?? v.price) ?? [];
         if (!prices.length) return null;
         const min = Math.min(...prices);
         const max = Math.max(...prices);
@@ -26,7 +26,7 @@ export function useProductDetail(product: Product) {
     );
 
     const skusOnSale = useMemo(
-        () => product.variants?.filter((v) => v.special_price !== null).length ?? 0,
+        () => product.variants?.filter((v) => v.effective_price! < v.price).length ?? 0,
         [product.variants]
     );
 

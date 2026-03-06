@@ -35,7 +35,7 @@ function StockBadge({ stock }: { stock: number }) {
 export function VariantsTable({ variants, variantGroups }: VariantsTableProps) {
   const { rows, groupNames, totalStock } = useVariantsTable(variants, variantGroups);
 
-  if (!rows.length) {
+  if (!rows.length || !groupNames.length) {
     return (
       <p className="text-sm text-muted-foreground italic">No variants configured.</p>
     );
@@ -75,10 +75,10 @@ export function VariantsTable({ variants, variantGroups }: VariantsTableProps) {
                   </TableCell>
                 ))}
                 <TableCell className="text-xs py-2 text-right">
-                  {variant.special_price !== null ? (
+                  {variant.effective_price! < variant.price ? (
                     <span className="flex flex-col items-end">
                       <span className="font-semibold text-emerald-600">
-                        {formatPrice(variant.special_price)}
+                        {formatPrice(variant.effective_price)}
                       </span>
                       <span className="line-through text-muted-foreground">
                         {formatPrice(variant.price)}

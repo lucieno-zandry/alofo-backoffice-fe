@@ -244,7 +244,7 @@ export function useProductEditor() {
           tempId: uid("var"),
           sku: "",
           price: "",
-          special_price: "",
+          effective_price: "",
           stock: "",
           optionRefs: [],
           isNew: true,
@@ -292,7 +292,7 @@ export function useProductEditor() {
         tempId: uid("var"),
         sku: [skuBase, ...optLabels].filter(Boolean).join("-"),
         price: "",
-        special_price: "",
+        effective_price: "",
         stock: "",
         optionRefs: refs,
         isNew: true,
@@ -326,7 +326,7 @@ export function useProductEditor() {
   const updateVariant = useCallback(
     (
       variantTempId: string,
-      fields: Partial<Pick<DraftVariant, "sku" | "price" | "special_price" | "stock">>
+      fields: Partial<Pick<DraftVariant, "sku" | "price" | "effective_price" | "stock">>
     ) => {
       setDraft((d) => ({
         ...d,
@@ -346,7 +346,7 @@ export function useProductEditor() {
   }, []);
 
   const bulkSetVariants = useCallback(
-    (fields: Partial<Pick<DraftVariant, "price" | "special_price" | "stock">>) => {
+    (fields: Partial<Pick<DraftVariant, "price" | "effective_price" | "stock">>) => {
       setDraft((d) => ({
         ...d,
         variants: d.variants.map((v) => ({ ...v, ...fields })),

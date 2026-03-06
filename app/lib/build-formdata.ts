@@ -25,8 +25,8 @@ export function buildFullCreateFormData(draft: ProductDraft): FormData {
   draft.variants.forEach((variant, vi) => {
     fd.append(`variants[${vi}][sku]`, variant.sku.trim());
     fd.append(`variants[${vi}][price]`, variant.price);
-    if (variant.special_price)
-      fd.append(`variants[${vi}][special_price]`, variant.special_price);
+    if (variant.effective_price)
+      fd.append(`variants[${vi}][effective_price]`, variant.effective_price);
     fd.append(`variants[${vi}][stock]`, variant.stock);
 
     if (variant.image && isDraftImageNew(variant.image)) {
@@ -97,8 +97,8 @@ export function buildFullUpdateFormData(draft: ProductDraft): FormData {
     if (!variant.isNew) fd.append(`variants[${vi}][id]`, variant.tempId);
     fd.append(`variants[${vi}][sku]`, variant.sku.trim());
     fd.append(`variants[${vi}][price]`, variant.price);
-    if (variant.special_price)
-      fd.append(`variants[${vi}][special_price]`, variant.special_price);
+    if (variant.effective_price)
+      fd.append(`variants[${vi}][effective_price]`, variant.effective_price);
     fd.append(`variants[${vi}][stock]`, variant.stock);
 
     // Image handling

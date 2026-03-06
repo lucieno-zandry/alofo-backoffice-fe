@@ -24,7 +24,7 @@ type DraftVariant = {
     tempId: string;
     sku: string;
     price: string;
-    special_price: string;
+    effective_price: string;
     stock: string;
     optionRefs: DraftVariantOptionRef[];
     isNew?: boolean;

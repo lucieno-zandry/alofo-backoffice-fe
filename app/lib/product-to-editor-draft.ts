@@ -35,7 +35,7 @@ export function productToEditorDraft(product: Product): ProductDraft {
             tempId: String(variant.id),
             sku: variant.sku,
             price: String(variant.price),
-            special_price: variant.special_price !== null ? String(variant.special_price) : "",
+            effective_price: variant.effective_price !== null ? String(variant.effective_price) : "",
             stock: String(variant.stock),
             optionRefs,
             isNew: false,

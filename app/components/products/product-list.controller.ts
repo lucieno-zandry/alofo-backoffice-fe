@@ -5,7 +5,7 @@ import useProductsStore from "~/hooks/use-products-store";
 import useDebounce from "~/hooks/use-debounce";
 import type { ProductQueryParams } from "~/lib/serialize-product-params";
 
-const PAGE_SIZE = 20;
+const PAGE_SIZE = 10;
 
 export type SortOption = {
   order_by: "created_at" | "title";

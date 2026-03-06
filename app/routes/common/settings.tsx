@@ -1,7 +1,7 @@
 import React from 'react';
 import { Badge } from '~/components/ui/badge';
 import { Tabs, TabsList, TabsTrigger } from '~/components/ui/tabs';
-import { useUserStore } from '~/hooks/use-user';
+import { useAuthStore } from '~/hooks/use-auth-store';
 import LoadingScreen from '~/components/loading-screen';
 import ProfileTab from '~/components/settings-tabs/profile-tab';
 import SecurityTab from '~/components/settings-tabs/security-tab';
@@ -17,7 +17,7 @@ export type SettingsTabProps = {
 }
 
 export default function AccountSettings() {
-  const { user, authStatus } = useUserStore();
+  const { user, authStatus } = useAuthStore();
   const { t } = useTranslation("settings");
 
   if (!user) {

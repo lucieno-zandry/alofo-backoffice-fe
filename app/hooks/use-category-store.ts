@@ -31,7 +31,7 @@ export const selectCategoryTree = (state: CategoryState): CategoryWithChildren[]
     });
 
     categories.forEach((cat) => {
-        if (cat.parent_id !== null && categoryMap[cat.parent_id]) {
+        if (cat.parent_id && categoryMap[cat.parent_id]) {
             categoryMap[cat.parent_id].children.push(categoryMap[cat.id]);
         } else if (cat.parent_id === null) {
             tree.push(categoryMap[cat.id]);
