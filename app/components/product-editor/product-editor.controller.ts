@@ -3,6 +3,7 @@ import { useNavigate } from "react-router";
 import { toast } from "sonner";
 import { createFullProduct, updateFullProduct } from "~/api/http-requests";
 import useProductEditorSheet from "~/hooks/use-product-editor-sheet";
+import { useRefetchProducts } from "~/hooks/use-product-list-store";
 import useRouterStore from "~/hooks/use-router-store";
 import { buildFullCreateFormData, buildFullUpdateFormData } from "~/lib/build-formdata";
 import { productToEditorDraft } from "~/lib/product-to-editor-draft";
@@ -45,6 +46,7 @@ export function useProductEditor() {
   const { setOpen, open, product } = useProductEditorSheet();
   const navigate = useNavigate();
   const defaultDraft = emptyDraft();
+  const refetchProducts = useRefetchProducts();
 
   const mode: EditorMode = product ? "edit" : "create";
 
@@ -384,11 +386,13 @@ export function useProductEditor() {
       if (mode === "create") {
         const fd = buildFullCreateFormData(draft);
         const result = await createFullProduct(fd);
+        await refetchProducts();
         toast.success('Product created successfuly!')
         navigate(`/${lang}/products/${result.data?.product.slug}`);
-      } else {        
+      } else {
         const fd = buildFullUpdateFormData(draft);
         const result = await updateFullProduct(product!.id, fd);
+        await refetchProducts();
         toast.success('Product updated successfuly!')
         navigate(`/${lang}/products/${result.data?.product.slug}`);
       }

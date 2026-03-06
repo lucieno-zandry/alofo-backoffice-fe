@@ -95,6 +95,10 @@ export function updateFullProduct(id: number, data: FormData) {
     return appFetch.post<{ product: Product }>(`/product/full-update/${id}`, data);
 }
 
+export function deleteProducts(ids: number[]) {
+    return appFetch.delete(`/product/delete?product_ids=${ids.join(',')}`);
+}
+
 // End Product
 
 export function getCouponFromCode(code: string) {

@@ -1,100 +1,87 @@
-import { useState, useEffect, useCallback } from "react";
-import { useCategoryStore } from "~/hooks/use-category-store";
-import { getProducts } from "~/api/http-requests";
-import useProductsStore from "~/hooks/use-products-store";
-import useDebounce from "~/hooks/use-debounce";
-import type { ProductQueryParams } from "~/lib/serialize-product-params";
+import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useCategoryStore } from '~/hooks/use-category-store';
+import { getProducts } from '~/api/http-requests';
+import useDebounce from '~/hooks/use-debounce';
+import { useProductListStore } from '~/hooks/use-product-list-store';
 
 const PAGE_SIZE = 10;
 
 export type SortOption = {
-  order_by: "created_at" | "title";
-  direction: "ASC" | "DESC";
+  order_by: 'created_at' | 'title';
+  direction: 'ASC' | 'DESC';
   label: string;
 };
 
 export const SORT_OPTIONS: SortOption[] = [
-  { order_by: "created_at", direction: "DESC", label: "Newest first" },
-  { order_by: "created_at", direction: "ASC", label: "Oldest first" },
-  { order_by: "title", direction: "ASC", label: "Name A → Z" },
-  { order_by: "title", direction: "DESC", label: "Name Z → A" },
+  { order_by: 'created_at', direction: 'DESC', label: 'Newest first' },
+  { order_by: 'created_at', direction: 'ASC', label: 'Oldest first' },
+  { order_by: 'title', direction: 'ASC', label: 'Name A → Z' },
+  { order_by: 'title', direction: 'DESC', label: 'Name Z → A' },
 ];
 
-export type ProductFilters = {
+type LocalFilters = {
   categoryId: number | null;
-  minPrice: string;  // string for controlled inputs, parsed on fetch
+  minPrice: string;
   maxPrice: string;
-  sortKey: string;   // `${order_by}:${direction}`
+  sortKey: string; // e.g., "created_at:DESC"
 };
 
-const DEFAULT_FILTERS: ProductFilters = {
+const DEFAULT_LOCAL_FILTERS: LocalFilters = {
   categoryId: null,
-  minPrice: "",
-  maxPrice: "",
-  sortKey: "created_at:DESC",
+  minPrice: '',
+  maxPrice: '',
+  sortKey: 'created_at:DESC',
 };
 
 export function useProductList() {
-  const { products, setProducts } = useProductsStore();
   const { categories } = useCategoryStore();
 
-  const [isLoading, setIsLoading] = useState(false);
-  const [total, setTotal] = useState(0);
-  const [page, setPage] = useState(1);
+  // Store state
+  const storeProducts = useProductListStore((state) => state.products);
+  const storeTotal = useProductListStore((state) => state.total);
+  const storeLoading = useProductListStore((state) => state.loading);
+  const storeError = useProductListStore((state) => state.error);
+  const storeFilters = useProductListStore((state) => state.filters);
+  const setStoreFilters = useProductListStore((state) => state.setFilters);
+  const fetchProducts = useProductListStore((state) => state.fetchProducts);
+  const resetStore = useProductListStore((state) => state.reset);
 
-  const [filters, setFiltersState] = useState<ProductFilters>(DEFAULT_FILTERS);
-  const debouncedMinPrice = useDebounce(filters.minPrice, 400);
-  const debouncedMaxPrice = useDebounce(filters.maxPrice, 400);
+  // Local filter inputs (strings for controlled inputs)
+  const [localFilters, setLocalFilters] = useState<LocalFilters>(DEFAULT_LOCAL_FILTERS);
+  const debouncedMinPrice = useDebounce(localFilters.minPrice, 400);
+  const debouncedMaxPrice = useDebounce(localFilters.maxPrice, 400);
 
-  // Command overlay
+  // Command overlay state
   const [commandOpen, setCommandOpen] = useState(false);
-  const [commandSearch, setCommandSearch] = useState("");
+  const [commandSearch, setCommandSearch] = useState('');
   const [commandResults, setCommandResults] = useState<Product[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const debouncedCommandSearch = useDebounce(commandSearch, 300);
 
-  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
-
-  const parsedSort = (sortKey: string): Pick<ProductQueryParams, "order_by" | "direction"> => {
-    const [order_by, direction] = sortKey.split(":") as ["created_at" | "title", "ASC" | "DESC"];
+  const parseSortKey = (sortKey: string) => {
+    const [order_by, direction] = sortKey.split(':') as ['created_at' | 'title', 'ASC' | 'DESC'];
     return { order_by, direction };
   };
 
-  // Changing any filter resets to page 1
-  const setFilters = useCallback((patch: Partial<ProductFilters>) => {
-    setFiltersState((prev) => ({ ...prev, ...patch }));
-    setPage(1);
-  }, []);
+  // Sync local filters (after debounce) to the store – this resets page to 1
+  useEffect(() => {
+    const { order_by, direction } = parseSortKey(localFilters.sortKey);
+    setStoreFilters({
+      category_id: localFilters.categoryId ?? undefined,
+      min_price: debouncedMinPrice ? Number(debouncedMinPrice) : undefined,
+      max_price: debouncedMaxPrice ? Number(debouncedMaxPrice) : undefined,
+      order_by,
+      direction,
+      page: 1, // any filter change resets to first page
+    });
+  }, [localFilters.categoryId, localFilters.sortKey, debouncedMinPrice, debouncedMaxPrice]);
 
-  const resetFilters = useCallback(() => {
-    setFiltersState(DEFAULT_FILTERS);
-    setPage(1);
-  }, []);
-
-  const fetchProducts = useCallback(async () => {
-    setIsLoading(true);
-    try {
-      const res = await getProducts({
-        category_id: filters.categoryId ?? undefined,
-        min_price: debouncedMinPrice ? Number(debouncedMinPrice) : undefined,
-        max_price: debouncedMaxPrice ? Number(debouncedMaxPrice) : undefined,
-        ...parsedSort(filters.sortKey),
-        limit: PAGE_SIZE,
-        page,
-        with: ["category", "images", "variants"],
-      });
-      setProducts(res.data?.data || []);
-      setTotal(res.data?.total ?? 0);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [filters.categoryId, filters.sortKey, debouncedMinPrice, debouncedMaxPrice, page]);
-
+  // Fetch products whenever store filters change
   useEffect(() => {
     fetchProducts();
-  }, [fetchProducts]);
+  }, [storeFilters, fetchProducts]);
 
-  // Command search: quick lookup, no pagination
+  // Command search (quick lookup, not affecting main list)
   useEffect(() => {
     if (!commandOpen) return;
     if (!debouncedCommandSearch.trim()) {
@@ -109,33 +96,56 @@ export function useProductList() {
 
   const closeCommand = useCallback(() => {
     setCommandOpen(false);
-    setCommandSearch("");
+    setCommandSearch('');
     setCommandResults([]);
   }, []);
 
-  const hasActiveFilters =
-    filters.categoryId !== null ||
-    filters.minPrice !== "" ||
-    filters.maxPrice !== "" ||
-    filters.sortKey !== DEFAULT_FILTERS.sortKey;
+  // Update local filters (called by filter controls)
+  const setFilters = useCallback((patch: Partial<LocalFilters>) => {
+    setLocalFilters((prev) => ({ ...prev, ...patch }));
+  }, []);
+
+  const resetFilters = useCallback(() => {
+    setLocalFilters(DEFAULT_LOCAL_FILTERS);
+    resetStore(); // also resets store filters to defaults
+  }, [resetStore]);
+
+  const setPage = useCallback((page: number) => {
+    setStoreFilters({ page });
+  }, [setStoreFilters]);
+
+  const totalPages = Math.max(1, Math.ceil(storeTotal / PAGE_SIZE));
+
+  const hasActiveFilters = useMemo(
+    () =>
+      localFilters.categoryId !== null ||
+      localFilters.minPrice !== '' ||
+      localFilters.maxPrice !== '' ||
+      localFilters.sortKey !== DEFAULT_LOCAL_FILTERS.sortKey,
+    [localFilters]
+  );
 
   return {
-    // list
-    products,
-    isLoading,
-    total,
-    // pagination
-    page,
+    // Data
+    products: storeProducts,
+    isLoading: storeLoading,
+    error: storeError,
+    total: storeTotal,
+
+    // Pagination
+    page: storeFilters.page,
     setPage,
     totalPages,
     pageSize: PAGE_SIZE,
-    // filters
-    filters,
+
+    // Filters
+    filters: localFilters,
     setFilters,
     resetFilters,
     hasActiveFilters,
     categories,
-    // command
+
+    // Command overlay
     commandOpen,
     setCommandOpen,
     closeCommand,

@@ -12,6 +12,7 @@ import { PriceRange } from "~/components/product-detail/price-range";
 import { CategoryBadge } from "~/components/product-detail/category-badge";
 import { ProductDescription } from "~/components/product-detail/product-description";
 import { ProductMetadata } from "~/components/product-detail/product-metadata";
+import ProductDeleteDialog from "~/components/product-detail/product-delete-dialog";
 
 export async function clientLoader({ params }: LoaderFunctionArgs) {
   const response = await getProduct(params.slug!);
@@ -55,6 +56,7 @@ export default function ProductDetail() {
           </div>
         </ScrollArea>
       </div>
+      <ProductDeleteDialog />
     </div>
   );
 }
