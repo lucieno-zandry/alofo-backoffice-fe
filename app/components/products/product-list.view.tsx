@@ -186,7 +186,7 @@ export function ProductList({ selectedId, onSelect }: ProductListProps) {
             size="icon"
             className="h-7 w-7"
             disabled={page === 1}
-            onClick={() => setPage((p) => p - 1)}
+            onClick={() => setPage(page - 1)}
           >
             <ChevronLeft className="w-4 h-4" />
           </Button>
@@ -198,7 +198,7 @@ export function ProductList({ selectedId, onSelect }: ProductListProps) {
             size="icon"
             className="h-7 w-7"
             disabled={page === totalPages}
-            onClick={() => setPage((p) => p + 1)}
+            onClick={() => setPage(page + 1)}
           >
             <ChevronRight className="w-4 h-4" />
           </Button>

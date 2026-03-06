@@ -63,18 +63,42 @@ export function useProductList() {
     return { order_by, direction };
   };
 
-  // Sync local filters (after debounce) to the store – this resets page to 1
+  // Sync local filters (after debounce) to the store, but only if they actually changed.
+  // This effect does NOT run on mount if local filters already match store defaults.
   useEffect(() => {
     const { order_by, direction } = parseSortKey(localFilters.sortKey);
-    setStoreFilters({
+    const newFilterValues = {
       category_id: localFilters.categoryId ?? undefined,
       min_price: debouncedMinPrice ? Number(debouncedMinPrice) : undefined,
       max_price: debouncedMaxPrice ? Number(debouncedMaxPrice) : undefined,
       order_by,
       direction,
-      page: 1, // any filter change resets to first page
-    });
-  }, [localFilters.categoryId, localFilters.sortKey, debouncedMinPrice, debouncedMaxPrice]);
+    };
+
+    // Compare only the fields we control (skip page, limit, etc.)
+    const hasFilterChanged = (
+      newFilterValues.category_id !== storeFilters.category_id ||
+      newFilterValues.min_price !== storeFilters.min_price ||
+      newFilterValues.max_price !== storeFilters.max_price ||
+      newFilterValues.order_by !== storeFilters.order_by ||
+      newFilterValues.direction !== storeFilters.direction
+    );
+
+    if (hasFilterChanged) {
+      // When filters change, reset to page 1
+      setStoreFilters({
+        ...newFilterValues,
+        page: 1,
+      });
+    }
+  }, [
+    localFilters.categoryId,
+    localFilters.sortKey,
+    debouncedMinPrice,
+    debouncedMaxPrice,
+    storeFilters, // included to compare with current values
+    setStoreFilters,
+  ]);
 
   // Fetch products whenever store filters change
   useEffect(() => {
@@ -106,8 +130,10 @@ export function useProductList() {
   }, []);
 
   const resetFilters = useCallback(() => {
+    // Reset store first, then local. This ensures the sync effect sees store already at defaults
+    // and doesn't trigger an extra filter update.
+    resetStore();
     setLocalFilters(DEFAULT_LOCAL_FILTERS);
-    resetStore(); // also resets store filters to defaults
   }, [resetStore]);
 
   const setPage = useCallback((page: number) => {
