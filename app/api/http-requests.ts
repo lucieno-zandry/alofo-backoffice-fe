@@ -106,12 +106,8 @@ export function getCouponFromCode(code: string) {
     return appFetch.get<{ coupon: Coupon }>(`/coupon/get/${code}`);
 }
 
-export function getOrders() {
-    return appFetch.get<{ orders: Order[] }>('/order/all?with=cart_items,transactions&order_by=updated_at&direction=DESC');
-}
-
 export function getOrder(uuid: string) {
-    return appFetch.get<{ order: Order }>(`/order/get/${uuid}?with=cart_items,transactions,shipments`);
+    return appFetch.get<{ order: Order }>(`/order/get/${uuid}?with=transactions,shipments,user.avatar_image,cart_items`);
 }
 
 export function getNotifications() {

@@ -21,6 +21,7 @@ import { format } from "date-fns";
 import { useOrdersStore } from "~/hooks/use-orders-store";
 import formatPrice from "~/lib/format-price";
 import { Checkbox } from "../ui/checkbox";
+import useRouterStore from "~/hooks/use-router-store";
 
 // Helper functions (could be moved to a utils file)
 const getPaymentStatus = (order: Order) => {
@@ -235,9 +236,10 @@ export default function OrdersTable({
 }: OrdersTableProps) {
     const { orders, loading, pagination } = useOrdersStore();
     const navigate = useNavigate();
+    const { lang } = useRouterStore();
 
     const handleViewDetails = (order: Order) => {
-        console.log('View details', order.uuid);
+        navigate(`/${lang}/orders/${order.uuid}`);
     };
 
     const handleCancelOrder = (order: Order) => {
