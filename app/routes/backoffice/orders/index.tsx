@@ -9,6 +9,7 @@ import { useOrdersStore } from "~/hooks/use-orders-store";
 import OrdersFilterDialog, { DEFAULT_MAX_TOTAL } from "~/components/orders/orders-filter-dialog";
 import OrdersBulkActions from "~/components/orders/orders-bulk-actions";
 import toOrderQueryParams from "~/lib/to-order-query-params";
+import UpdateShipmentDialog from "~/components/orders/update-shipment-dialog";
 
 export default function () {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -17,6 +18,7 @@ export default function () {
     const { fetchOrders, error } = useOrdersStore();
 
     const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+    const [updatingOrder, setUpdatingOrder] = useState<Order | null>(null);
 
     const toggleSelect = (uuid: string) => {
         setSelectedIds(prev => {
@@ -112,6 +114,7 @@ export default function () {
                 onToggleSelect={toggleSelect}
                 onToggleSelectAll={toggleSelectAll}
                 allIdsOnPage={allIdsOnPage}
+                onUpdateShipmentClick={setUpdatingOrder}
             />
             <OrdersPagination onPageChange={handlePageChange} />
             <OrdersFilterDialog
@@ -119,6 +122,11 @@ export default function () {
                 onOpenChange={setFilterDialogOpen}
                 searchParams={searchParams}
                 updateParams={updateParams}
+            />
+            <UpdateShipmentDialog
+                open={!!updatingOrder}
+                onOpenChange={(open) => !open && setUpdatingOrder(null)}
+                order={updatingOrder}
             />
         </div>
     );

@@ -89,10 +89,18 @@ export default function OrdersBulkActions({ selectedIds, onClearSelection }: Ord
     const handleUpdateStatus = async (status: string) => {
         setIsUpdating(true);
         try {
-            await bulkUpdateShipmentStatus(Array.from(selectedIds), status.toUpperCase());
+            const response = await bulkUpdateShipmentStatus(Array.from(selectedIds), status.toUpperCase());
+
+            if (response.data && response.data.updated > 0)
+                toast.success(`${response.data.updated} Shipment(s) updated successfully`);
+
+            response.data?.errors.forEach((error) => {
+                toast.error(error);
+            })
+
             toast.success(`Shipment status updated to ${status}`);
-            await fetchOrders(toOrderQueryParams(searchParams))
             onClearSelection(); // optionally clear after success
+            await fetchOrders(toOrderQueryParams(searchParams))
         } catch (error) {
             toast.error("Failed to update shipment status");
         } finally {

@@ -197,6 +197,10 @@ export async function fetchOrders(params: OrdersQueryParams = {}) {
     return appFetch.get<OrdersResponse>(`/order/all?${searchParams.toString()}`);
 }
 
-export async function bulkUpdateShipmentStatus(orderUuids: string[], status: string) {
-    return appFetch.post('/shipment/bulk-update-shipment', { order_uuids: orderUuids, status });
+export async function bulkUpdateShipmentStatus(orderUuids: string[], status: string, data?: Record<string, any>) {
+    return appFetch.post<{
+        message: string,
+        updated: number,
+        errors: string[]
+    }>('/shipment/bulk-update-shipment', { order_uuids: orderUuids, status, data });
 }

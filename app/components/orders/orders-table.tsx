@@ -221,6 +221,7 @@ export type OrdersTableProps = {
     onToggleSelect: (uuid: string) => void;
     onToggleSelectAll: () => void;
     allIdsOnPage: string[];
+    onUpdateShipmentClick: (order: Order) => void;  // new
 };
 
 export default function OrdersTable({
@@ -230,16 +231,13 @@ export default function OrdersTable({
     onToggleSelect,
     onToggleSelectAll,
     allIdsOnPage,
+    onUpdateShipmentClick
 }: OrdersTableProps) {
     const { orders, loading, pagination } = useOrdersStore();
     const navigate = useNavigate();
 
     const handleViewDetails = (order: Order) => {
         console.log('View details', order.uuid);
-    };
-
-    const handleUpdateShipment = (order: Order) => {
-        console.log('Update shipment', order.uuid);
     };
 
     const handleCancelOrder = (order: Order) => {
@@ -254,7 +252,7 @@ export default function OrdersTable({
             currentSort={currentSort}
             onSort={onSort}
             onViewDetails={handleViewDetails}
-            onUpdateShipment={handleUpdateShipment}
+            onUpdateShipment={onUpdateShipmentClick}
             onCancelOrder={handleCancelOrder}
             selectedIds={selectedIds}
             onToggleSelect={onToggleSelect}
