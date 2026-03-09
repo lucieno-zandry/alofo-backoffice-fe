@@ -193,6 +193,7 @@ type Order = {
   cart_items?: CartItem[];
   shipments?: Shipment[];
   transactions?: Transaction[];
+  user?: User;
 };
 
 type Coupon = {

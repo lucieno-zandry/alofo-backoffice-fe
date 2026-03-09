@@ -1,6 +1,7 @@
 
 import { serializeProductParams, type ProductQueryParams } from "~/lib/serialize-product-params";
 import appFetch, { type PaginatedResponse } from "./app-fetch";
+import type { OrdersQueryParams, OrdersResponse } from "~/types/orders";
 
 // auth
 
@@ -178,4 +179,24 @@ export function deleteCategory(id: FormDataEntryValue | null) {
 
 export function getClientCode(code: string) {
     return appFetch.get<{ client_code: ClientCode | null }>(`/client-code/get/${code}`);
+}
+
+// Order
+
+export async function fetchOrders(params: OrdersQueryParams = {}) {
+    const searchParams = new URLSearchParams();
+
+    searchParams.append('with', 'user,transactions,shipments');
+
+    Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined && value !== null && value !== '') {
+            searchParams.append(key, String(value));
+        }
+    });
+
+    return appFetch.get<OrdersResponse>(`/order/all?${searchParams.toString()}`);
+}
+
+export async function bulkUpdateShipmentStatus(orderUuids: string[], status: string) {
+    return appFetch.post('/shipment/bulk-update-shipment', { order_uuids: orderUuids, status });
 }
