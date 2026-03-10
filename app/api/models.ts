@@ -243,7 +243,56 @@ type Transaction = {
   user?: User;
   order?: Order;
   amount: number;
+
+  type: TransactionType;
+  parent_transaction_uuid?: string | null;
+  payment_reference?: string | null;
+  reviewed_at?: string | null;
+  reviewed_by?: number | null;
+  notes?: string | null;
+  dispute_status?: DisputeStatus | null;
+  dispute_opened_at?: string | null;
+  dispute_resolved_at?: string | null;
+
+  // Relations
+  parent_transaction?: Transaction | null;
+  child_transactions?: Transaction[];
+  audit_logs?: TransactionAuditLog[];
+  webhook_logs?: PaymentWebhookLog[];
 };
+
+type TransactionAuditLog = {
+  id: number;
+  transaction_uuid: string;
+  performed_by?: number | null;
+  action: string;
+  old_value?: string | null;
+  new_value?: string | null;
+  reason?: string | null;
+  metadata?: Record<string, any> | null;
+  created_at: string;
+  performed_by_user?: User | null;
+};
+
+type WebhookLogStatus = "RECEIVED" | "PROCESSED" | "FAILED" | "IGNORED";
+
+type PaymentWebhookLog = {
+  id: number;
+  transaction_uuid?: string | null;
+  order_uuid?: string | null;
+  gateway: string;
+  event_type?: string | null;
+  payload: Record<string, any>;
+  response?: Record<string, any> | null;
+  status: WebhookLogStatus;
+  error_message?: string | null;
+  source_ip?: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+type TransactionType = "PAYMENT" | "REFUND" | "MANUAL";
+type DisputeStatus = "OPEN" | "RESOLVED" | "LOST";
 
 type TransactionNotificationData = {
   notification_type: "transaction";
