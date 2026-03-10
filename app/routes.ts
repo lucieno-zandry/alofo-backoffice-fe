@@ -23,6 +23,9 @@ export default [
             route("categories", "routes/backoffice/categories/index.tsx"),
             route("orders", "routes/backoffice/orders/index.tsx"),
             route("orders/:uuid", "routes/backoffice/orders/order-detail.tsx"),
+
+            route("transactions", "routes/backoffice/transactions/index.tsx"),
+            route("transactions/:transactionUuid", "routes/backoffice/transactions/transaction-detail.tsx"),
         ]),
 
         // error pages

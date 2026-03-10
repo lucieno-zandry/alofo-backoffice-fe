@@ -2,6 +2,13 @@
 import { serializeProductParams, type ProductQueryParams } from "~/lib/serialize-product-params";
 import appFetch, { type PaginatedResponse } from "./app-fetch";
 import type { OrdersQueryParams, OrdersResponse } from "~/types/orders";
+import type {
+    TransactionsQueryParams,
+    TransactionsResponse,
+    TransactionDetailResponse,
+    AuditLogsResponse,
+    WebhookLogsResponse,
+} from "~/types/transactions";
 
 // auth
 
@@ -199,4 +206,117 @@ export async function bulkUpdateShipmentStatus(orderUuids: string[], status: str
         updated: number,
         errors: string[]
     }>('/shipment/bulk-update-shipment', { order_uuids: orderUuids, status, data });
+}
+
+
+// ── List & Detail ─────────────────────────────────────────────────────────────
+
+export function getTransactions(params: TransactionsQueryParams = {}) {
+    const searchParams = new URLSearchParams();
+    searchParams.append("with", "user,order");
+
+    Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined && value !== null && value !== "") {
+            searchParams.append(key, String(value));
+        }
+    });
+
+    return appFetch.get<TransactionsResponse>(
+        `/transactions?${searchParams.toString()}`
+    );
+}
+
+export function getTransaction(uuid: string) {
+    return appFetch.get<TransactionDetailResponse>(
+        `/transactions/${uuid}?with=user,order.cart_items,audit_logs.performed_by,parent_transaction,child_transactions`
+    );
+}
+
+// ── Actions ───────────────────────────────────────────────────────────────────
+
+export function overrideTransactionStatus(
+    uuid: string,
+    data: { status: string; reason: string }
+) {
+    return appFetch.patch<{ transaction: Transaction }>(
+        `/transactions/${uuid}/override-status`,
+        data
+    );
+}
+
+export function refundTransaction(
+    uuid: string,
+    data: { amount?: number; reason: string }
+) {
+    return appFetch.post<{ refund_transaction: Transaction }>(
+        `/transactions/${uuid}/refund`,
+        data
+    );
+}
+
+export function resendTransactionNotification(uuid: string) {
+    return appFetch.post<{ message: string }>(
+        `/transactions/${uuid}/resend-notification`,
+        {}
+    );
+}
+
+export function bulkReviewTransactions(transaction_uuids: string[]) {
+    return appFetch.post<{ message: string }>(
+        `/transactions/bulk-review`,
+        { transaction_uuids }
+    );
+}
+
+export function exportTransactions(params: TransactionsQueryParams = {}) {
+    const searchParams = new URLSearchParams();
+    Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined && value !== null && value !== "") {
+            searchParams.append(key, String(value));
+        }
+    });
+    // Returns a blob — handle with URL.createObjectURL in the component
+    return appFetch.get<Blob>(`/transactions/export?${searchParams.toString()}`);
+}
+
+export function deleteTransactions(ids: number[], reason?: string) {
+    return appFetch.delete<{ deleted: number }>(`/transactions`, {
+        body: JSON.stringify({ transaction_ids: ids, reason }),
+    });
+}
+
+// ── Dispute ───────────────────────────────────────────────────────────────────
+
+export function openTransactionDispute(
+    uuid: string,
+    data: { reason: string }
+) {
+    return appFetch.post<{ transaction: Transaction }>(
+        `/transactions/${uuid}/dispute`,
+        data
+    );
+}
+
+export function resolveTransactionDispute(
+    uuid: string,
+    data: { outcome: "RESOLVED" | "LOST"; reason: string }
+) {
+    return appFetch.patch<{ transaction: Transaction }>(
+        `/transactions/${uuid}/dispute`,
+        data
+    );
+}
+
+// ── Logs ──────────────────────────────────────────────────────────────────────
+
+export function getTransactionAuditLogs(uuid: string, page = 1) {
+    return appFetch.get<AuditLogsResponse>(
+        `/transactions/${uuid}/audit-logs?page=${page}`
+    );
+}
+
+export function getTransactionWebhookLogs(uuid: string, page = 1) {
+    return appFetch.get<WebhookLogsResponse>(
+        `/transactions/${uuid}/webhook-logs?page=${page}`
+    );
 }

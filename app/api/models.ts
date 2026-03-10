@@ -230,7 +230,7 @@ type ShipmentData = {
 };
 
 type Transaction = {
-  id: number;
+  uuid: string;
   created_at: string;
   updated_at: string;
   status: "FAILED" | "PENDING" | "SUCCESS";
