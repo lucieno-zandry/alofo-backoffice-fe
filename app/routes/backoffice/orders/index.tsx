@@ -9,7 +9,7 @@ import { useOrdersStore } from "~/hooks/use-orders-store";
 import OrdersFilterDialog, { DEFAULT_MAX_TOTAL } from "~/components/orders/orders-filter-dialog";
 import OrdersBulkActions from "~/components/orders/orders-bulk-actions";
 import toOrderQueryParams from "~/lib/to-order-query-params";
-import UpdateShipmentDialog from "~/components/orders/update-shipment-dialog";
+import UpdateShipmentDialog from "~/components/orders/update-shipment-sheet";
 
 export default function () {
     const [searchParams, setSearchParams] = useSearchParams();

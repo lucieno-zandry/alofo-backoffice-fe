@@ -1,16 +1,11 @@
 import { useState, useEffect } from "react";
 import { Input } from "~/components/ui/input";
 import { Filter, Search } from "lucide-react";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "~/components/ui/select";
 import type { OrdersQueryParams } from "~/types/orders";
 import useDebounce from "~/hooks/use-debounce";
 import Button from "../custom-ui/button";
+import { Tabs, TabsList, TabsTrigger } from "~/components/ui/tabs";
+import { Badge } from "~/components/ui/badge";
 
 export type OrdersFiltersViewProps = {
     search: string;
@@ -24,73 +19,54 @@ export type OrdersFiltersViewProps = {
     onPaymentStatusChange: (value: string) => void;
     onShipmentStatusChange: (value: string) => void;
     onFilterClick: () => void;
+    activeFilterCount: number;
 };
 
 export function OrdersFiltersView({
     search,
-    dateFrom,
-    dateTo,
-    paymentStatus,
     shipmentStatus,
     onSearchChange,
-    onDateFromChange,
-    onDateToChange,
-    onPaymentStatusChange,
     onShipmentStatusChange,
-    onFilterClick
+    onFilterClick,
+    activeFilterCount // New prop: total active filters from URL
 }: OrdersFiltersViewProps) {
     return (
-        <div className="flex flex-wrap gap-4 items-center">
-            <div className="flex-1 min-w-[200px]">
-                <div className="relative">
-                    <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-                    <Input
-                        placeholder="Search by UUID or customer email..."
-                        className="pl-8"
-                        value={search}
-                        onChange={(e) => onSearchChange(e.target.value)}
-                    />
+        <div className="space-y-4">
+            <div className="flex items-center justify-between">
+                <Tabs
+                    value={shipmentStatus || "all"}
+                    onValueChange={onShipmentStatusChange}
+                    className="w-auto"
+                >
+                    <TabsList className="bg-muted/50 p-1 rounded-full">
+                        <TabsTrigger value="all" className="rounded-full px-6">All</TabsTrigger>
+                        <TabsTrigger value="pending" className="rounded-full px-6 text-yellow-600">Pending</TabsTrigger>
+                        <TabsTrigger value="processing" className="rounded-full px-6 text-blue-600">Processing</TabsTrigger>
+                        <TabsTrigger value="shipped" className="rounded-full px-6 text-green-600">Shipped</TabsTrigger>
+                    </TabsList>
+                </Tabs>
+
+                <div className="flex items-center gap-2">
+                    <div className="relative w-64">
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        <Input
+                            value={search}
+                            onChange={(e) => onSearchChange(e.target.value)}
+                            placeholder="Search orders..."
+                            className="pl-9 rounded-full bg-muted/30 border-none focus-visible:ring-1"
+                        />
+                    </div>
+                    <Button variant="outline" className="rounded-full gap-2 relative" onClick={onFilterClick}>
+                        <Filter className="h-4 w-4" />
+                        Filters
+                        {activeFilterCount > 0 && (
+                            <Badge className="absolute -top-2 -right-2 h-5 w-5 p-0 flex items-center justify-center rounded-full">
+                                {activeFilterCount}
+                            </Badge>
+                        )}
+                    </Button>
                 </div>
             </div>
-            <Input
-                type="date"
-                placeholder="From"
-                className="w-auto"
-                value={dateFrom}
-                onChange={(e) => onDateFromChange(e.target.value)}
-            />
-            <Input
-                type="date"
-                placeholder="To"
-                className="w-auto"
-                value={dateTo}
-                onChange={(e) => onDateToChange(e.target.value)}
-            />
-            <Select value={paymentStatus} onValueChange={onPaymentStatusChange}>
-                <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder="All Payments" />
-                </SelectTrigger>
-                <SelectContent>
-                    <SelectItem value="all">All Payments</SelectItem>
-                    <SelectItem value="success">Paid</SelectItem>
-                    <SelectItem value="pending">Pending</SelectItem>
-                    <SelectItem value="failed">Failed</SelectItem>
-                </SelectContent>
-            </Select>
-            <Select value={shipmentStatus} onValueChange={onShipmentStatusChange}>
-                <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder="All Shipments" />
-                </SelectTrigger>
-                <SelectContent>
-                    <SelectItem value="all">All Shipments</SelectItem>
-                    <SelectItem value="processing">Processing</SelectItem>
-                    <SelectItem value="shipped">Shipped</SelectItem>
-                    <SelectItem value="delivered">Delivered</SelectItem>
-                </SelectContent>
-            </Select>
-            <Button variant="outline" size="icon" onClick={onFilterClick}>
-                <Filter className="h-4 w-4" />
-            </Button>
         </div>
     );
 }
@@ -138,6 +114,8 @@ export default function OrdersFilters({ updateParams, searchParams, onFilterClic
         updateParams({ shipment_status: value === "all" ? "" : value });
     };
 
+
+
     return (
         <OrdersFiltersView
             search={searchInput}
@@ -151,6 +129,7 @@ export default function OrdersFilters({ updateParams, searchParams, onFilterClic
             onPaymentStatusChange={handlePaymentStatusChange}
             onShipmentStatusChange={handleShipmentStatusChange}
             onFilterClick={onFilterClick}
+            activeFilterCount={searchParams.size - 1}
         />
     );
 }

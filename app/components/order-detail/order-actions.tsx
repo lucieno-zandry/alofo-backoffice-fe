@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useOrderDetailStore } from "~/hooks/use-order-detail-store";
-import UpdateShipmentDialog from "~/components/orders/update-shipment-dialog";
+import UpdateShipmentDialog from "~/components/orders/update-shipment-sheet";
 import { Button } from "~/components/ui/button";
 import { toast } from "sonner";
 

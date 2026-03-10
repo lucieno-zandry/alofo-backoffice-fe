@@ -16,7 +16,7 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
-import { MoreHorizontal } from "lucide-react";
+import { Copy, MoreHorizontal } from "lucide-react";
 import { format } from "date-fns";
 import { useOrdersStore } from "~/hooks/use-orders-store";
 import formatPrice from "~/lib/format-price";
@@ -158,16 +158,28 @@ export function OrdersTableView({
                         const paymentStatus = getPaymentStatus(order);
                         const shipmentStatus = getShipmentStatus(order);
                         return (
-                            <TableRow key={order.uuid}>
-                                <TableCell className="w-8">
+                            <TableRow
+                                key={order.uuid}
+                                className="group transition-colors" // Added group for hover effects
+                            >
+                                <TableCell>
                                     <Checkbox
                                         checked={selectedIds.has(order.uuid)}
                                         onCheckedChange={() => onToggleSelect(order.uuid)}
-                                        aria-label="Select row"
                                     />
                                 </TableCell>
-                                <TableCell className="font-mono text-xs">
-                                    {order.uuid.slice(0, 8)}...
+                                <TableCell className="font-mono text-xs text-muted-foreground">
+                                    <div className="flex items-center gap-2">
+                                        #{order.uuid.slice(0, 8)}
+                                        <Button
+                                            variant="ghost"
+                                            size="icon"
+                                            className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity"
+                                            onClick={() => navigator.clipboard.writeText(order.uuid)}
+                                        >
+                                            <Copy className="h-3 w-3" />
+                                        </Button>
+                                    </div>
                                 </TableCell>
                                 <TableCell>{format(new Date(order.created_at), "dd/MM/yyyy")}</TableCell>
                                 <TableCell>

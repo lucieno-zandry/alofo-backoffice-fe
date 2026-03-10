@@ -1,28 +1,16 @@
 import { useState, useEffect } from "react";
-import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-    DialogFooter,
-} from "~/components/ui/dialog";
 import { Button } from "~/components/ui/button";
-import { Label } from "~/components/ui/label";
-import { Input } from "~/components/ui/input";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "~/components/ui/select";
 import { toast } from "sonner";
 import { bulkUpdateShipmentStatus } from "~/api/http-requests";
 import { useOrdersStore } from "~/hooks/use-orders-store";
 import { useSearchParams } from "react-router";
 import toOrderQueryParams from "~/lib/to-order-query-params";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetFooter } from "~/components/ui/sheet";
+import { Label } from "../ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
+import { Input } from "../ui/input";
 
-type UpdateShipmentDialogViewProps = {
+type UpdateShipmentSheetViewProps = {
     open: boolean;
     onOpenChange: (open: boolean) => void;
     order: Order | null;
@@ -40,36 +28,37 @@ type UpdateShipmentDialogViewProps = {
     isSubmitting: boolean;
 };
 
-export function UpdateShipmentDialogView({
+export function UpdateShipmentSheetView({
     open,
     onOpenChange,
     order,
-    status,
-    onStatusChange,
     carrier,
-    onCarrierChange,
-    trackingNumber,
-    onTrackingNumberChange,
     estimatedDelivery,
-    onEstimatedDeliveryChange,
-    shippedDate,
-    onShippedDateChange,
-    onSubmit,
+    onCarrierChange,
     isSubmitting,
-}: UpdateShipmentDialogViewProps) {
+    onEstimatedDeliveryChange,
+    onShippedDateChange,
+    onStatusChange,
+    onSubmit,
+    onTrackingNumberChange,
+    shippedDate,
+    status,
+    trackingNumber }: UpdateShipmentSheetViewProps) {
     if (!order) return null;
 
     const latestShipment = order.shipments?.sort(
         (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
     )[0];
-
+    
     return (
-        <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="sm:max-w-[425px]">
-                <DialogHeader>
-                    <DialogTitle>Update Shipment – Order {order.uuid.slice(0, 8)}</DialogTitle>
-                </DialogHeader>
-                <div className="grid gap-4 py-4">
+        <Sheet open={open} onOpenChange={onOpenChange}>
+            <SheetContent className="sm:max-w-md border-l shadow-2xl">
+                <SheetHeader className="mb-8">
+                    <SheetTitle className="text-xl">Update Shipment</SheetTitle>
+                    <p className="text-sm text-muted-foreground">Order ID: {order?.uuid.slice(0, 12)}...</p>
+                </SheetHeader>
+
+                <div className="space-y-6 py-4">
                     <div className="grid gap-2">
                         <Label htmlFor="status">Status</Label>
                         <Select value={status} onValueChange={onStatusChange}>
@@ -128,32 +117,30 @@ export function UpdateShipmentDialogView({
                         </div>
                     )}
                 </div>
-                <DialogFooter>
-                    <Button variant="outline" onClick={() => onOpenChange(false)} disabled={isSubmitting}>
-                        Cancel
+
+                <SheetFooter className="absolute bottom-0 left-0 right-0 p-6 bg-background border-t">
+                    <Button className="w-full h-11 rounded-xl" onClick={onSubmit}>
+                        {isSubmitting ? "Saving..." : "Save Changes"}
                     </Button>
-                    <Button onClick={onSubmit} disabled={isSubmitting}>
-                        {isSubmitting ? "Updating..." : "Update"}
-                    </Button>
-                </DialogFooter>
-            </DialogContent>
-        </Dialog>
+                </SheetFooter>
+            </SheetContent>
+        </Sheet>
     );
 }
 
-export type UpdateShipmentDialogProps = {
+export type UpdateShipmentSheetProps = {
     open: boolean;
     onOpenChange: (open: boolean) => void;
     order: Order | null;
     onSuccess?: () => void;
 };
 
-export default function UpdateShipmentDialog({
+export default function ({
     open,
     onOpenChange,
     order,
     onSuccess,
-}: UpdateShipmentDialogProps) {
+}: UpdateShipmentSheetProps) {
     const [status, setStatus] = useState("PROCESSING");
     const [carrier, setCarrier] = useState("");
     const [trackingNumber, setTrackingNumber] = useState("");
@@ -218,7 +205,7 @@ export default function UpdateShipmentDialog({
     };
 
     return (
-        <UpdateShipmentDialogView
+        <UpdateShipmentSheetView
             open={open}
             onOpenChange={onOpenChange}
             order={order}

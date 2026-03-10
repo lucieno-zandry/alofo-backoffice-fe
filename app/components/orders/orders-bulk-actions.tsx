@@ -12,6 +12,8 @@ import { bulkUpdateShipmentStatus } from "~/api/http-requests";
 import { useOrdersStore } from "~/hooks/use-orders-store";
 import { useSearchParams } from "react-router";
 import toOrderQueryParams from "~/lib/to-order-query-params";
+import { motion, AnimatePresence } from "framer-motion";
+import { Download, X } from "lucide-react";
 
 export type OrdersBulkActionsViewProps = {
     selectedCount: number;
@@ -36,43 +38,53 @@ export function OrdersBulkActionsView({
         setStatus("");
     };
 
-    if (selectedCount === 0) return null;
-
     return (
-        <div className="flex items-center justify-between bg-muted/50 px-4 py-2 rounded-lg border">
-            <div className="text-sm">
-                <span className="font-medium">{selectedCount}</span> selected
-                <Button
-                    variant="link"
-                    className="px-2 text-xs"
-                    onClick={onClearSelection}
+        <AnimatePresence>
+            {selectedCount > 0 && (
+                <motion.div
+                    initial={{ y: 100, x: "-50%", opacity: 0 }}
+                    animate={{ y: 0, x: "-50%", opacity: 1 }}
+                    exit={{ y: 100, x: "-50%", opacity: 0 }}
+                    className="fixed bottom-8 left-1/2 z-50 flex items-center gap-4 bg-background border shadow-2xl rounded-full px-6 py-3 min-w-[500px]"
                 >
-                    Clear
-                </Button>
-            </div>
-            <div className="flex items-center gap-2">
-                <Select value={status} onValueChange={setStatus} disabled={isUpdating}>
-                    <SelectTrigger className="w-[180px]">
-                        <SelectValue placeholder="Update shipment status" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectItem value="processing">Processing</SelectItem>
-                        <SelectItem value="shipped">Shipped</SelectItem>
-                        <SelectItem value="delivered">Delivered</SelectItem>
-                    </SelectContent>
-                </Select>
-                <Button
-                    size="sm"
-                    onClick={handleApply}
-                    disabled={!status || isUpdating}
-                >
-                    {isUpdating ? "Updating..." : "Apply"}
-                </Button>
-                <Button size="sm" variant="outline" onClick={onExport}>
-                    Export
-                </Button>
-            </div>
-        </div>
+                    <div className="flex items-center gap-3 border-r pr-4">
+                        <div className="bg-primary text-primary-foreground rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">
+                            {selectedCount}
+                        </div>
+                        <span className="text-sm font-medium">Selected</span>
+                        <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full" onClick={onClearSelection}>
+                            <X className="h-4 w-4" />
+                        </Button>
+                    </div>
+
+                    <div className="flex items-center gap-2 flex-1">
+                        <Select value={status} onValueChange={setStatus}>
+                            <SelectTrigger className="h-9 w-[180px] rounded-full border-none bg-muted/50">
+                                <SelectValue placeholder="Update Status" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="processing">Processing</SelectItem>
+                                <SelectItem value="shipped">Shipped</SelectItem>
+                                <SelectItem value="delivered">Delivered</SelectItem>
+                            </SelectContent>
+                        </Select>
+                        <Button
+                            size="sm"
+                            className="rounded-full h-9 px-4"
+                            disabled={!status || isUpdating}
+                            onClick={handleApply}
+                        >
+                            {isUpdating ? "Updating..." : "Apply"}
+                        </Button>
+                    </div>
+
+                    <Button variant="outline" size="sm" className="rounded-full h-9 gap-2" onClick={onExport}>
+                        <Download className="h-4 w-4" />
+                        Export
+                    </Button>
+                </motion.div>
+            )}
+        </AnimatePresence>
     );
 }
 
