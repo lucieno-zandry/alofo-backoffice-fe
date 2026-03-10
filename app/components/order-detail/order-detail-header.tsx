@@ -3,6 +3,7 @@ import { Badge } from "~/components/ui/badge";
 import { format } from "date-fns";
 import formatPrice from "~/lib/format-price";
 import { StatusBadge } from "../custom-ui/status-badge";
+import BackButton from "../back-button";
 
 
 export default function OrderDetailHeader() {
@@ -45,22 +46,25 @@ export function OrderDetailHeaderView({
     shipmentStatus,
 }: OrderDetailHeaderViewProps) {
     return (
-        <div className="flex flex-wrap items-center justify-between gap-4">
-            <div>
-                <h1 className="text-2xl font-bold font-mono">Order {uuid}</h1>
-                <p className="text-sm text-muted-foreground">
-                    Placed on {format(new Date(createdAt), "PPP")}
-                </p>
+        <>
+            <BackButton />
+            <div className="flex flex-wrap items-center justify-between gap-4">
+                <div>
+                    <h1 className="text-2xl font-bold font-mono">Order {uuid}</h1>
+                    <p className="text-sm text-muted-foreground">
+                        Placed on {format(new Date(createdAt), "PPP")}
+                    </p>
+                </div>
+                <div className="flex items-center gap-2">
+                    <StatusBadge status={paymentStatus}>
+                        {paymentStatus === "success" ? "Paid" : paymentStatus}
+                    </StatusBadge>
+                    <StatusBadge status={shipmentStatus}>
+                        {shipmentStatus}
+                    </StatusBadge>
+                    <div className="text-xl font-semibold ml-4">{formatPrice(total)}</div>
+                </div>
             </div>
-            <div className="flex items-center gap-2">
-                <StatusBadge status={paymentStatus}>
-                    {paymentStatus === "success" ? "Paid" : paymentStatus}
-                </StatusBadge>
-                <StatusBadge status={shipmentStatus}>
-                    {shipmentStatus}
-                </StatusBadge>
-                <div className="text-xl font-semibold ml-4">{formatPrice(total)}</div>
-            </div>
-        </div>
+        </>
     );
 }
