@@ -216,7 +216,7 @@ export function getTransactions(params: TransactionsQueryParams = {}) {
     searchParams.append("with", "user,order");
 
     Object.entries(params).forEach(([key, value]) => {
-        if (value !== undefined && value !== null && value !== "") {
+        if (value !== undefined && value !== null && value !== "" && value !== "*") {
             searchParams.append(key, String(value));
         }
     });

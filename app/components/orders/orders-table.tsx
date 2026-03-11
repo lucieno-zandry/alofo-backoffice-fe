@@ -22,23 +22,9 @@ import { useOrdersStore } from "~/hooks/use-orders-store";
 import formatPrice from "~/lib/format-price";
 import { Checkbox } from "../ui/checkbox";
 import useRouterStore from "~/hooks/use-router-store";
+import { getLatestPayment, getPaymentStatus } from "~/lib/get-order-payment-informations";
+import { getShipmentStatus } from "~/lib/get-order-shipment-informations";
 
-// Helper functions (could be moved to a utils file)
-const getPaymentStatus = (order: Order) => {
-    if (!order.transactions || order.transactions.length === 0) return "pending";
-    const latest = order.transactions.sort((a, b) =>
-        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-    )[0];
-    return latest.status.toLowerCase();
-};
-
-const getShipmentStatus = (order: Order) => {
-    if (!order.shipments || order.shipments.length === 0) return "processing";
-    const latest = order.shipments.sort((a, b) =>
-        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-    )[0];
-    return latest.status.toLowerCase();
-};
 
 const statusBadge = (status: string) => {
     const variants: Record<string, string> = {
@@ -71,6 +57,7 @@ export type OrdersTableViewProps = {
     onToggleSelect: (uuid: string) => void;
     onToggleSelectAll: () => void;
     allIdsOnPage: string[];
+    onViewTransaction: (transaction: Transaction) => void;
 };
 
 export function OrdersTableView({
@@ -86,6 +73,7 @@ export function OrdersTableView({
     onToggleSelect,
     onToggleSelectAll,
     selectedIds,
+    onViewTransaction,
 }: OrdersTableViewProps) {
     if (loading) {
         return (
@@ -157,6 +145,8 @@ export function OrdersTableView({
                     {orders.map((order) => {
                         const paymentStatus = getPaymentStatus(order);
                         const shipmentStatus = getShipmentStatus(order);
+                        const latestPayment = getLatestPayment(order);
+
                         return (
                             <TableRow
                                 key={order.uuid}
@@ -209,6 +199,10 @@ export function OrdersTableView({
                                             <DropdownMenuItem onClick={() => onUpdateShipment(order)}>
                                                 Update shipment
                                             </DropdownMenuItem>
+                                            {latestPayment &&
+                                                <DropdownMenuItem onClick={() => onViewTransaction(latestPayment)}>
+                                                    View transaction
+                                                </DropdownMenuItem>}
                                             <DropdownMenuItem
                                                 className="text-red-600"
                                                 onClick={() => onCancelOrder(order)}
@@ -258,6 +252,10 @@ export default function OrdersTable({
         console.log('Cancel order', order.uuid);
     };
 
+    const onViewTransaction = (transaction: Transaction) => {
+        navigate(`/${lang}/transactions/${transaction.uuid}`)
+    }
+
     return (
         <OrdersTableView
             orders={orders}
@@ -272,6 +270,7 @@ export default function OrdersTable({
             onToggleSelect={onToggleSelect}
             onToggleSelectAll={onToggleSelectAll}
             allIdsOnPage={allIdsOnPage}
+            onViewTransaction={onViewTransaction}
         />
     );
 }

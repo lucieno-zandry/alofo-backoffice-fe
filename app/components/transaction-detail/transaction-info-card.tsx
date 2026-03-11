@@ -1,10 +1,10 @@
 import { Copy, ExternalLink } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
-import TransactionStatusBadge from "./transaction-status-badge";
-import TransactionTypeBadge from "./transaction-type-badge";
-import { DisputeStatusBadge } from "./dispute-status-badge";
+import TransactionStatusBadge from "../transactions/transaction-status-badge";
+import TransactionTypeBadge from "../transactions/transaction-type-badge";
+import { DisputeStatusBadge } from "../transactions/dispute-status-badge";
 import formatPrice from "~/lib/format-price";
-import TransactionMethodBadge from "./transaction-method-badge";
+import TransactionMethodBadge from "../transactions/transaction-method-badge";
 import { formatDate } from "~/lib/format-date";
 import { useTransactionDetailStore } from "~/hooks/use-transaction-detail-store";
 import { toast } from "sonner";

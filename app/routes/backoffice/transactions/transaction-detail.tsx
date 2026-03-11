@@ -8,18 +8,19 @@ import {
 } from "~/api/http-requests";
 
 
-import TransactionActionsPanel from "~/components/transactions/transaction-actions-panel";
+import TransactionActionsPanel from "~/components/transaction-detail/transaction-actions-panel";
 import { useTransactionDetailStore } from "~/hooks/use-transaction-detail-store";
-import { OverrideStatusDialog } from "~/components/transactions/override-status-dialog";
-import { RefundDialog } from "~/components/transactions/refund-dialog";
-import { OpenDisputeDialog } from "~/components/transactions/open-dispute-dialog";
-import { ResolveDisputeDialog } from "~/components/transactions/resolve-dispute-dialog";
-import TransactionInfoCard from "~/components/transactions/transaction-info-card";
-import TransactionInformationsPanel from "~/components/transactions/transaction-informations-panel";
-import AuditLogList from "~/components/transactions/audit-log-list";
-import { WebhookLogList } from "~/components/transactions/webhook-log-list";
-import { TransactionOrderCard } from "~/components/transactions/transaction-order-card";
-import { TransactionUserCard } from "~/components/transactions/transaction-user-card";
+import { OverrideStatusDialog } from "~/components/transaction-detail/override-status-dialog";
+import { RefundDialog } from "~/components/transaction-detail/refund-dialog";
+import { OpenDisputeDialog } from "~/components/transaction-detail/open-dispute-dialog";
+import { ResolveDisputeDialog } from "~/components/transaction-detail/resolve-dispute-dialog";
+import TransactionInfoCard from "~/components/transaction-detail/transaction-info-card";
+import TransactionInformationsPanel from "~/components/transaction-detail/transaction-informations-panel";
+import AuditLogList from "~/components/transaction-detail/audit-log-list";
+import { WebhookLogList } from "~/components/transaction-detail/webhook-log-list";
+import { TransactionOrderCard } from "~/components/transaction-detail/transaction-order-card";
+import { TransactionUserCard } from "~/components/transaction-detail/transaction-user-card";
+import BackButton from "~/components/back-button";
 
 export default function TransactionDetailPage() {
     const { transactionUuid } = useParams<{ transactionUuid: string }>();
@@ -118,12 +119,7 @@ export default function TransactionDetailPage() {
         return (
             <div className="flex flex-col items-center justify-center py-24 gap-3">
                 <p className="text-zinc-500 text-sm">{error ?? "Transaction not found."}</p>
-                <Link
-                    to="/admin/transactions"
-                    className="text-xs text-violet-400 hover:text-violet-300"
-                >
-                    ← Back to transactions
-                </Link>
+                <BackButton />
             </div>
         );
     }
@@ -138,14 +134,7 @@ export default function TransactionDetailPage() {
 
             <div className="p-6 space-y-6 bg-background/80 backdrop-blur-md rounded-2xl">
                 {/* Back nav */}
-                <Link
-                    to="/admin/transactions"
-                    className="inline-flex items-center gap-1.5 text-sm text-zinc-500 hover:text-zinc-300 transition-colors"
-                >
-                    <ArrowLeft className="h-4 w-4" />
-                    Transactions
-                </Link>
-
+                <BackButton />
                 <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_280px]">
                     {/* ── Left column: main content ─────────────────────────────────── */}
                     <div className="space-y-4">

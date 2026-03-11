@@ -9,6 +9,8 @@ import {
     SelectValue,
 } from "~/components/ui/select";
 import { useTransactionsListStore } from "~/hooks/use-transactions-list-store";
+import useDebounce from "~/hooks/use-debounce";
+import { useEffect, useState } from "react";
 
 // ─── View ─────────────────────────────────────────────────────────────────────
 
@@ -52,7 +54,7 @@ export function TransactionsFiltersView({
                         <SelectValue placeholder="All statuses" />
                     </SelectTrigger>
                     <SelectContent>
-                        <SelectItem value="ALL">All</SelectItem>
+                        <SelectItem value="*">All</SelectItem>
                         <SelectItem value="SUCCESS">Success</SelectItem>
                         <SelectItem value="PENDING">Pending</SelectItem>
                         <SelectItem value="FAILED">Failed</SelectItem>
@@ -68,7 +70,7 @@ export function TransactionsFiltersView({
                         <SelectValue placeholder="All methods" />
                     </SelectTrigger>
                     <SelectContent>
-                        <SelectItem value="ALL">All</SelectItem>
+                        <SelectItem value="*">All</SelectItem>
                         {["VISA", "MASTERCARD", "PAYPAL", "ORANGEMONEY", "AIRTELMONEY", "MVOLA"].map((m) => (
                             <SelectItem key={m} value={m}>{m}</SelectItem>
                         ))}
@@ -84,7 +86,7 @@ export function TransactionsFiltersView({
                         <SelectValue placeholder="All types" />
                     </SelectTrigger>
                     <SelectContent>
-                        <SelectItem value="ALL">All</SelectItem>
+                        <SelectItem value="*">All</SelectItem>
                         <SelectItem value="PAYMENT">Payment</SelectItem>
                         <SelectItem value="REFUND">Refund</SelectItem>
                         <SelectItem value="MANUAL">Manual</SelectItem>
@@ -100,7 +102,7 @@ export function TransactionsFiltersView({
                         <SelectValue placeholder="Any" />
                     </SelectTrigger>
                     <SelectContent>
-                        <SelectItem value="ALL">Any</SelectItem>
+                        <SelectItem value="*">Any</SelectItem>
                         <SelectItem value="OPEN">Open</SelectItem>
                         <SelectItem value="RESOLVED">Resolved</SelectItem>
                         <SelectItem value="LOST">Lost</SelectItem>
@@ -183,6 +185,29 @@ export function TransactionsFiltersView({
 export default function TransactionsFilters() {
     const { filters, setFilter, resetFilters } = useTransactionsListStore();
 
+    // Local UI state
+    const [orderUuid, setOrderUuid] = useState(filters.order_uuid ?? "");
+    const [amountMin, setAmountMin] = useState(String(filters.amount_min ?? ""));
+    const [amountMax, setAmountMax] = useState(String(filters.amount_max ?? ""));
+
+    // Debounced values
+    const debouncedOrderUuid = useDebounce(orderUuid, 400);
+    const debouncedAmountMin = useDebounce(amountMin, 400);
+    const debouncedAmountMax = useDebounce(amountMax, 400);
+
+    // Sync debounced values to store
+    useEffect(() => {
+        setFilter("order_uuid", debouncedOrderUuid || undefined);
+    }, [debouncedOrderUuid]);
+
+    useEffect(() => {
+        setFilter("amount_min", debouncedAmountMin || undefined);
+    }, [debouncedAmountMin]);
+
+    useEffect(() => {
+        setFilter("amount_max", debouncedAmountMax || undefined);
+    }, [debouncedAmountMax]);
+
     return (
         <TransactionsFiltersView
             status={filters.status ?? ""}
@@ -190,20 +215,31 @@ export default function TransactionsFilters() {
             type={filters.type ?? ""}
             dateFrom={filters.date_from ?? ""}
             dateTo={filters.date_to ?? ""}
-            amountMin={String(filters.amount_min ?? "")}
-            amountMax={String(filters.amount_max ?? "")}
-            orderUuid={filters.order_uuid ?? ""}
+            amountMin={amountMin}
+            amountMax={amountMax}
+            orderUuid={orderUuid}
             disputeStatus={filters.dispute_status ?? ""}
+
             onStatusChange={(v) => setFilter("status", v || undefined)}
             onMethodChange={(v) => setFilter("method", v || undefined)}
             onTypeChange={(v) => setFilter("type", v || undefined)}
             onDateFromChange={(v) => setFilter("date_from", v || undefined)}
             onDateToChange={(v) => setFilter("date_to", v || undefined)}
-            onAmountMinChange={(v) => setFilter("amount_min", v || undefined)}
-            onAmountMaxChange={(v) => setFilter("amount_max", v || undefined)}
-            onOrderUuidChange={(v) => setFilter("order_uuid", v || undefined)}
-            onDisputeStatusChange={(v) => setFilter("dispute_status", v || undefined)}
-            onReset={resetFilters}
+
+            onAmountMinChange={setAmountMin}
+            onAmountMaxChange={setAmountMax}
+            onOrderUuidChange={setOrderUuid}
+
+            onDisputeStatusChange={(v) =>
+                setFilter("dispute_status", v || undefined)
+            }
+
+            onReset={() => {
+                resetFilters();
+                setOrderUuid("");
+                setAmountMin("");
+                setAmountMax("");
+            }}
         />
     );
 }
