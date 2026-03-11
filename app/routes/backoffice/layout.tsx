@@ -8,6 +8,11 @@ import { useEffect } from "react";
 import { useAuthStore } from "~/hooks/use-auth-store";
 import { HttpException } from "~/api/app-fetch";
 import redirectPathnames from "~/lib/redirect-pathnames";
+import BackofficeSkeleton from "~/components/layout/backoffice-skeleton";
+
+export function HydrateFallback() {
+    return <BackofficeSkeleton />
+}
 
 export async function clientLoader({ params }: LoaderFunctionArgs) {
     const lang = params.lang || 'en';
