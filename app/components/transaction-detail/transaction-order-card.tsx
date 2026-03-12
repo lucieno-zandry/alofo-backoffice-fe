@@ -3,17 +3,20 @@ import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { LinkIcon } from "lucide-react";
 import formatPrice from "~/lib/format-price";
 import { useTransactionDetailStore } from "~/hooks/use-transaction-detail-store";
+import useRouterStore from "~/hooks/use-router-store";
 
 export type TransactionOrderCardViewProps = {
     orderUuid: string;
     orderTotal?: number;
     itemCount?: number;
+    lang: string;
 };
 
 export function TransactionOrderCardView({
     orderUuid,
     orderTotal,
     itemCount,
+    lang
 }: TransactionOrderCardViewProps) {
     return (
         <Card className="bg-zinc-900 border-zinc-800">
@@ -26,7 +29,7 @@ export function TransactionOrderCardView({
                         {orderUuid}
                     </span>
                     <Link
-                        to={`/admin/orders/${orderUuid}`}
+                        to={`/${lang}/orders/${orderUuid}`}
                         className="flex items-center gap-1 text-xs text-violet-400 hover:text-violet-300 ml-2 flex-shrink-0"
                     >
                         <LinkIcon className="h-3 w-3" />
@@ -54,6 +57,7 @@ export function TransactionOrderCardView({
 
 export function TransactionOrderCard() {
     const transaction = useTransactionDetailStore((s) => s.transaction);
+    const { lang } = useRouterStore();
     if (!transaction) return null;
 
     return (
@@ -61,6 +65,7 @@ export function TransactionOrderCard() {
             orderUuid={transaction.order_uuid}
             orderTotal={transaction.order?.total}
             itemCount={transaction.order?.cart_items?.length}
+            lang={lang}
         />
     );
 }

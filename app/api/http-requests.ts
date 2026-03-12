@@ -114,7 +114,7 @@ export function getCouponFromCode(code: string) {
 }
 
 export function getOrder(uuid: string) {
-    return appFetch.get<{ order: Order }>(`/order/get/${uuid}?with=transactions,shipments,user.avatar_image,cart_items`);
+    return appFetch.get<{ order: Order }>(`/order/get/${uuid}?with=transactions,shipments,user.avatar_image,cart_items,refund_requests`);
 }
 
 export function getNotifications() {
@@ -228,7 +228,7 @@ export function getTransactions(params: TransactionsQueryParams = {}) {
 
 export function getTransaction(uuid: string) {
     return appFetch.get<TransactionDetailResponse>(
-        `/transactions/${uuid}?with=user,order.cart_items,audit_logs.performed_by,parent_transaction,child_transactions`
+        `/transactions/${uuid}?with=user,order.cart_items,audit_logs.performed_by_user,parent_transaction,child_transactions`
     );
 }
 
@@ -318,5 +318,37 @@ export function getTransactionAuditLogs(uuid: string, page = 1) {
 export function getTransactionWebhookLogs(uuid: string, page = 1) {
     return appFetch.get<WebhookLogsResponse>(
         `/transactions/${uuid}/webhook-logs?page=${page}`
+    );
+}
+
+
+/**
+ * Fetch refund requests, optionally filtered by order UUID.
+ * The backend index likely accepts ?order_uuid=...
+ */
+export function getRefundRequests(orderUuid?: string) {
+    const params = new URLSearchParams();
+    if (orderUuid) {
+        params.append('order_uuid', orderUuid);
+    }
+    // optionally include user and order relations
+    params.append('with', 'user,order');
+
+    return appFetch.get<{ refund_requests: RefundRequest[] }>(
+        `/refund-requests?${params.toString()}`
+    );
+}
+
+export function approveRefundRequest(id: number) {
+    return appFetch.post<{ refund_request: RefundRequest }>(
+        `/refund-requests/${id}/approve`,
+        {}
+    );
+}
+
+export function rejectRefundRequest(id: number) {
+    return appFetch.post<{ refund_request: RefundRequest }>(
+        `/refund-requests/${id}/reject`,
+        {}
     );
 }

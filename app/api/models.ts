@@ -194,6 +194,7 @@ type Order = {
   shipments?: Shipment[];
   transactions?: Transaction[];
   user?: User;
+  refund_requests?: RefundRequest[],
 };
 
 type Coupon = {
@@ -243,21 +244,21 @@ type Transaction = {
   informations: Record<string, any>;
   user_id: number;
   order_uuid: string;
-  deleted_at: string | null;
+  deleted_at?: string;
   method: "VISA" | "MASTERCARD" | "ORANGEMONEY" | "AIRTELMONEY" | "MVOLA" | "PAYPAL";
-  payment_url: string | null;
+  payment_url?: string;
   amount: number;
 
   type: TransactionType;
-  parent_transaction_uuid?: string | null;
-  payment_reference?: string | null;
-  reviewed_at?: string | null;
-  reviewed_by?: number | null;
-  notes?: string | null;
-  dispute_status?: DisputeStatus | null;
-  dispute_opened_at?: string | null;
-  dispute_resolved_at?: string | null;
-  dispute_reason?: string | null;      // 👈 new field
+  parent_transaction_uuid?: string;
+  payment_reference?: string;
+  reviewed_at?: string;
+  reviewed_by?: number;
+  notes?: string;
+  dispute_status?: DisputeStatus;
+  dispute_opened_at?: string;
+  dispute_resolved_at?: string;
+  dispute_reason?: string;      // 👈 new field
 
   // Relations
   user?: User;
@@ -266,7 +267,8 @@ type Transaction = {
   child_transactions?: Transaction[];
   audit_logs?: TransactionAuditLog[];
   webhook_logs?: PaymentWebhookLog[];
-  refund_requests?: RefundRequest[];   // 👈 new relation
+  refund_requests?: RefundRequest[];
+  reviewer?: User   // 👈 new relation
 };
 
 type TransactionAuditLog = {
@@ -303,9 +305,11 @@ type PaymentWebhookLog = {
 // New RefundRequest model
 // ----------------------------------------------------------------------------
 type RefundRequest = {
+  id: number;
   uuid: string;                         // primary key (UUID)
   user_id: number;
   transaction_uuid: string;
+  order_uuid: string;
   amount: number;
   reason: string;
   status: "pending" | "approved" | "rejected";
@@ -319,6 +323,7 @@ type RefundRequest = {
   user?: User;
   transaction?: Transaction;
   reviewer?: User;
+  order?: Order;
 };
 
 // ----------------------------------------------------------------------------

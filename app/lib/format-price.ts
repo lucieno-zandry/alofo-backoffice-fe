@@ -1,11 +1,13 @@
 import getCurrency from "./get-currency";
 
 const formatPrice = (price?: number | null) => {
-    if (typeof price !== 'number' || isNaN(price)) {
-        return '—'; // or '$0.00', 'N/A' – choose what fits your UI
+    const parsedPrice = typeof price === "string" ? parseFloat(price) : price;
+
+    if (typeof parsedPrice != "number" || isNaN(parsedPrice)) {
+        return '—';
     }
 
-    return price.toLocaleString("fr-FR", {
+    return parsedPrice.toLocaleString("fr-FR", {
         style: "currency",
         currency: getCurrency(),
         maximumFractionDigits: 0,

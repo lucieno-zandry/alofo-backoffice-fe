@@ -1,5 +1,3 @@
-import { DEFAULT_MAX_TOTAL } from "~/components/orders/orders-filter-dialog";
-
 export default function (params: URLSearchParams) {
     const page = Number(params.get("page")) || 1;
     const per_page = Number(params.get("per_page")) || 10;
@@ -9,11 +7,10 @@ export default function (params: URLSearchParams) {
     const date_to = params.get("date_to") || "";
     const payment_status = params.get("payment_status") || "";
     const shipment_status = params.get("shipment_status") || "";
-    const total_min = params.get('total_min') || "0";
-    const total_max = params.get('total_max') || DEFAULT_MAX_TOTAL.toString();
+    const total_min = params.get("total_min") || "0";
+    const total_max = params.get("total_max") || "";
 
-
-    return {
+    const result = {
         page,
         per_page,
         sort,
@@ -23,6 +20,11 @@ export default function (params: URLSearchParams) {
         payment_status,
         shipment_status,
         total_min: parseFloat(total_min),
-        total_max: parseFloat(total_max),
+        total_max: total_max ? parseFloat(total_max) : undefined,
     };
+
+    // Remove keys with empty string values
+    return Object.fromEntries(
+        Object.entries(result).filter(([_, value]) => value !== "")
+    );
 }
