@@ -339,16 +339,16 @@ export function getRefundRequests(orderUuid?: string) {
     );
 }
 
-export function approveRefundRequest(id: number) {
+export function approveRefundRequest(uuid: string) {
     return appFetch.post<{ refund_request: RefundRequest }>(
-        `/refund-requests/${id}/approve`,
+        `/refund-requests/${uuid}/approve`,
         {}
     );
 }
 
-export function rejectRefundRequest(id: number) {
+export function rejectRefundRequest(uuid: string) {
     return appFetch.post<{ refund_request: RefundRequest }>(
-        `/refund-requests/${id}/reject`,
+        `/refund-requests/${uuid}/reject`,
         {}
     );
 }

@@ -34,6 +34,7 @@ export function OrderPaymentsView({ transactions, onViewPayment }: OrderPayments
                         <TableHead>Method</TableHead>
                         <TableHead>Amount</TableHead>
                         <TableHead>Status</TableHead>
+                        <TableHead>Dispute</TableHead>           {/* new column */}
                         <TableHead>Reference</TableHead>
                         <TableHead>Actions</TableHead>
                     </TableRow>
@@ -63,9 +64,17 @@ export function OrderPaymentsView({ transactions, onViewPayment }: OrderPayments
                                 <TableCell>
                                     <StatusBadge status={tx.status}>{tx.status}</StatusBadge>
                                 </TableCell>
+                                <TableCell>
+                                    {tx.dispute_status ? (
+                                        <StatusBadge status={tx.dispute_status.toLowerCase()}>
+                                            {tx.dispute_status}
+                                        </StatusBadge>
+                                    ) : (
+                                        '—'
+                                    )}
+                                </TableCell>
                                 <TableCell className="font-mono text-xs">{tx.informations?.transaction_id || "—"}</TableCell>
                                 <TableCell
-                                    // prevent the row click when interacting with the dropdown
                                     onClick={(e) => e.stopPropagation()}
                                     onKeyDown={(e) => e.stopPropagation()}
                                 >
@@ -77,8 +86,6 @@ export function OrderPaymentsView({ transactions, onViewPayment }: OrderPayments
                                                 aria-label={`Open actions for payment ${tx.informations?.transaction_id || tx.uuid}`}
                                                 onClick={(e) => e.stopPropagation()}
                                             >
-                                                {/* simple three-dot trigger; replace with an icon if you have one */}
-                                                <span className="sr-only">Open actions</span>
                                                 <Ellipsis />
                                             </button>
                                         </DropdownMenuTrigger>
@@ -102,7 +109,6 @@ export function OrderPaymentsView({ transactions, onViewPayment }: OrderPayments
         </div>
     );
 }
-
 
 
 // ===== CONTAINER =====

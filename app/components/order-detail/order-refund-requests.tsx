@@ -8,12 +8,14 @@ import formatPrice from '~/lib/format-price';
 import { toast } from 'sonner';
 import { StatusBadge } from '~/components/custom-ui/status-badge';
 import { useRevalidator } from 'react-router';
+import ApproveRefundDialog from '../refunds/refund-action-dialog';
+import RejectRefundDialog from '../refunds/reject-refund-dialog';
 
 // ===== VIEW =====
 export type OrderRefundRequestsViewProps = {
     requests: RefundRequest[];
-    onApprove: (id: number) => void;
-    onReject: (id: number) => void;
+    onApprove: (uuid: string) => void;
+    onReject: (uuid: string) => void;
     isProcessing: boolean;
 };
 
@@ -31,7 +33,6 @@ export function OrderRefundRequestsView({
         );
     }
 
-
     return (
         <div className="border rounded-lg">
             <Table>
@@ -47,9 +48,7 @@ export function OrderRefundRequestsView({
                 <TableBody>
                     {requests.map((req) => (
                         <TableRow key={req.id}>
-                            <TableCell>
-                                {format(new Date(req.created_at), 'dd/MM/yyyy HH:mm')}
-                            </TableCell>
+                            <TableCell>{format(new Date(req.created_at), 'dd/MM/yyyy HH:mm')}</TableCell>
                             <TableCell className="max-w-xs truncate">{req.reason}</TableCell>
                             <TableCell>{formatPrice(req.amount)}</TableCell>
                             <TableCell>
@@ -61,7 +60,7 @@ export function OrderRefundRequestsView({
                                         <Button
                                             size="sm"
                                             variant="outline"
-                                            onClick={() => onApprove(req.id)}
+                                            onClick={() => onApprove(req.uuid)}
                                             disabled={isProcessing}
                                         >
                                             Approve
@@ -69,7 +68,7 @@ export function OrderRefundRequestsView({
                                         <Button
                                             size="sm"
                                             variant="destructive"
-                                            onClick={() => onReject(req.id)}
+                                            onClick={() => onReject(req.uuid)}
                                             disabled={isProcessing}
                                         >
                                             Reject
@@ -88,18 +87,36 @@ export function OrderRefundRequestsView({
 // ===== CONTAINER =====
 export default function OrderRefundRequests() {
     const { order } = useOrderDetailStore();
-
-
     const [processing, setProcessing] = useState(false);
     const revalidator = useRevalidator();
 
-    const handleApprove = async (id: number) => {
-        if (!confirm('Approve this refund request?')) return;
+    // Dialog state
+    const [dialogState, setDialogState] = useState<{
+        open: boolean;
+        requestUuid: string | null;
+        action: 'approve' | 'reject' | null;
+    }>({
+        open: false,
+        requestUuid: null,
+        action: null,
+    });
+
+    const handleApproveClick = (uuid: string) => {
+        setDialogState({ open: true, requestUuid: uuid, action: 'approve' });
+    };
+
+    const handleRejectClick = (uuid: string) => {
+        setDialogState({ open: true, requestUuid: uuid, action: 'reject' });
+    };
+
+    const handleApproveConfirm = async () => {
+        if (!dialogState.requestUuid) return;
         setProcessing(true);
         try {
-            await approveRefundRequest(id);
+            await approveRefundRequest(dialogState.requestUuid);
             toast.success('Refund request approved');
             revalidator.revalidate();
+            setDialogState({ open: false, requestUuid: null, action: null });
         } catch (error) {
             toast.error('Failed to approve request');
         } finally {
@@ -107,13 +124,14 @@ export default function OrderRefundRequests() {
         }
     };
 
-    const handleReject = async (id: number) => {
-        if (!confirm('Reject this refund request?')) return;
+    const handleRejectConfirm = async () => {
+        if (!dialogState.requestUuid) return;
         setProcessing(true);
         try {
-            await rejectRefundRequest(id);
+            await rejectRefundRequest(dialogState.requestUuid);
             toast.success('Refund request rejected');
             revalidator.revalidate();
+            setDialogState({ open: false, requestUuid: null, action: null });
         } catch (error) {
             toast.error('Failed to reject request');
         } finally {
@@ -125,11 +143,31 @@ export default function OrderRefundRequests() {
     const { refund_requests: requests = [] } = order;
 
     return (
-        <OrderRefundRequestsView
-            requests={requests}
-            onApprove={handleApprove}
-            onReject={handleReject}
-            isProcessing={processing}
-        />
+        <>
+            <OrderRefundRequestsView
+                requests={requests}
+                onApprove={handleApproveClick}
+                onReject={handleRejectClick}
+                isProcessing={processing}
+            />
+
+            {dialogState.action === 'approve' && (
+                <ApproveRefundDialog
+                    open={dialogState.open}
+                    onOpenChange={(open) => setDialogState((prev) => ({ ...prev, open }))}
+                    onConfirm={handleApproveConfirm}
+                    isProcessing={processing}
+                />
+            )}
+
+            {dialogState.action === 'reject' && (
+                <RejectRefundDialog
+                    open={dialogState.open}
+                    onOpenChange={(open) => setDialogState((prev) => ({ ...prev, open }))}
+                    onConfirm={handleRejectConfirm}
+                    isProcessing={processing}
+                />
+            )}
+        </>
     );
 }
