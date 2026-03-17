@@ -35,9 +35,8 @@ type CategoriesPageViewProps = {
 export function CategoriesPageView({ openCreate, onEdit, onAddSub, onDelete, setSheetConfig, sheetConfig, deleteConfig, setDeleteConfig }: CategoriesPageViewProps) {
     return (
         <div>
-            <CategoryPageHeader />
-
             <div className="bg-card/40 backdrop-blur-xl border border-border rounded-[2rem] p-8 shadow-2xl transition-colors duration-300">
+                <CategoryPageHeader />
                 <CategoryTree onEdit={onEdit} onAddSub={onAddSub} onDelete={onDelete} />
             </div>
 
