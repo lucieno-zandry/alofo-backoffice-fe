@@ -219,6 +219,7 @@ type Shipment = {
   status: "PROCESSING" | "SHIPPED" | "DELIVERED";
   data?: ShipmentData;
   order_uuid: string;
+  is_active: boolean;
 
   order?: Order;
 };

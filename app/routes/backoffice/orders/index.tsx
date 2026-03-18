@@ -94,6 +94,10 @@ export default function () {
 
     const currentSort = searchParams.get("sort") || "-created_at";
 
+    const handleShipmentsUpdateSuccess = async () => {
+        await fetchOrders(toOrderQueryParams(searchParams));
+    }
+
     return (
         <div className="p-6 space-y-6 bg-background/80 backdrop-blur-md rounded-2xl">
             <OrdersHeader />
@@ -127,6 +131,7 @@ export default function () {
                 open={!!updatingOrder}
                 onOpenChange={(open) => !open && setUpdatingOrder(null)}
                 order={updatingOrder}
+                onSuccess={handleShipmentsUpdateSuccess}
             />
         </div>
     );

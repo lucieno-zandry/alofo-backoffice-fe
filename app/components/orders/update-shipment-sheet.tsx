@@ -2,22 +2,17 @@ import { useState, useEffect, useMemo } from "react";
 import { Button } from "~/components/ui/button";
 import { toast } from "sonner";
 import { bulkUpdateShipmentStatus } from "~/api/http-requests";
-import { useOrdersStore } from "~/hooks/use-orders-store";
-import { useSearchParams } from "react-router";
-import toOrderQueryParams from "~/lib/to-order-query-params";
 import {
     Sheet,
     SheetContent,
     SheetHeader,
     SheetTitle,
     SheetFooter,
-    SheetClose,
 } from "~/components/ui/sheet";
 import { Label } from "../ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { Input } from "../ui/input";
 import { StatusBadge } from "../custom-ui/status-badge";
-import { X, MoreHorizontal } from "lucide-react";
 import { getLatestShipment } from "~/lib/get-order-shipment-informations";
 
 type UpdateShipmentSheetViewProps = {
@@ -128,7 +123,7 @@ export function UpdateShipmentSheetView({
                             <div className="flex items-center justify-between">
                                 <div>
                                     <p className="text-sm font-medium">Shipped details</p>
-                                    <p className="text-xs text-muted-foreground">Provide carrier and tracking info.</p>
+                                    <p className="text-xs text-muted-foreground">Provide carrier, tracking, and estimated delivery info.</p>
                                 </div>
                                 {latestShipment?.created_at && (
                                     <p className="text-xs text-muted-foreground">
@@ -200,18 +195,9 @@ export function UpdateShipmentSheetView({
                                     </p>
                                 )}
                             </div>
-                        </div>
-                    )}
-
-                    {status === "DELIVERED" && (
-                        <div className="rounded-md border p-4 bg-muted/5 space-y-2">
-                            <div className="flex items-center justify-between">
-                                <p className="text-sm font-medium">Delivery</p>
-                                <p className="text-xs text-muted-foreground">Record estimated delivery date</p>
-                            </div>
 
                             <div className="grid gap-2">
-                                <Label htmlFor="estimated-delivery">Estimated Delivery</Label>
+                                <Label htmlFor="estimated-delivery">Estimated Delivery Date</Label>
                                 <Input
                                     id="estimated-delivery"
                                     type="date"
@@ -229,7 +215,16 @@ export function UpdateShipmentSheetView({
                                         {errors.estimatedDelivery}
                                     </p>
                                 )}
+                                <p className="text-xs text-muted-foreground">Optional, but helpful for customers.</p>
                             </div>
+                        </div>
+                    )}
+
+                    {status === "DELIVERED" && (
+                        <div className="rounded-md border p-4 bg-muted/5 space-y-2">
+                            <p className="text-sm font-medium">Delivery</p>
+                            <p className="text-xs text-muted-foreground">Optionally confirm delivery details.</p>
+                            {/* No estimated delivery field here – it's already handled under SHIPPED */}
                         </div>
                     )}
 
@@ -263,29 +258,54 @@ export function UpdateShipmentSheetView({
 export type UpdateShipmentSheetProps = {
     open: boolean;
     onOpenChange: (open: boolean) => void;
-    order: Order | null;
+    order?: Order | null;
+    shipment?: Shipment | null;
     onSuccess?: () => void;
 };
 
-export default function UpdateShipmentSheet({ open, onOpenChange, order, onSuccess }: UpdateShipmentSheetProps) {
+export default function UpdateShipmentSheet({
+    open,
+    onOpenChange,
+    order,
+    shipment,
+    onSuccess,
+}: UpdateShipmentSheetProps) {
     const [status, setStatus] = useState("PROCESSING");
     const [carrier, setCarrier] = useState("");
     const [trackingNumber, setTrackingNumber] = useState("");
     const [estimatedDelivery, setEstimatedDelivery] = useState("");
     const [shippedDate, setShippedDate] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
-
-    const { fetchOrders } = useOrdersStore();
-    const [searchParams] = useSearchParams();
-
-    // field-level errors
     const [errors, setErrors] = useState<Record<string, string | undefined>>({});
 
+    // Derive the order from either prop
+    const effectiveOrder = useMemo(() => {
+        if (order) return order;
+        if (shipment?.order) return shipment.order;
+        return null;
+    }, [order, shipment]);
+
     useEffect(() => {
-        if (order && open) {
-            const latest = order.shipments
+        if (!open) return;
+
+        // If a specific shipment is provided, use its data directly
+        if (shipment) {
+            setStatus(shipment.status);
+            setCarrier(shipment.data?.carrier || "");
+            setTrackingNumber(shipment.data?.tracking_number || "");
+            setEstimatedDelivery(shipment.data?.estimated_delivery || "");
+            setShippedDate(shipment.data?.shipped_date || "");
+            setErrors({});
+            return;
+        }
+
+        // Otherwise, use the effectiveOrder and get the latest shipment
+        if (effectiveOrder) {
+            const activeShipment = effectiveOrder.shipments?.find(s => s.is_active);
+            const latest = activeShipment || effectiveOrder?.shipments
                 ?.slice()
                 .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())[0];
+
             if (latest) {
                 setStatus(latest.status);
                 setCarrier(latest.data?.carrier || "");
@@ -301,7 +321,7 @@ export default function UpdateShipmentSheet({ open, onOpenChange, order, onSucce
             }
             setErrors({});
         }
-    }, [order, open]);
+    }, [shipment, effectiveOrder, open]);
 
     const validateField = (field: string) => {
         const nextErrors = { ...errors };
@@ -339,9 +359,8 @@ export default function UpdateShipmentSheet({ open, onOpenChange, order, onSucce
         }
 
         if (field === "estimatedDelivery") {
-            if (status === "DELIVERED" && !estimatedDelivery) {
-                nextErrors.estimatedDelivery = "Estimated delivery date is required for delivered status.";
-            } else if (estimatedDelivery && isNaN(new Date(estimatedDelivery).getTime())) {
+            // Only validate if a date is provided; otherwise it's optional.
+            if (estimatedDelivery && isNaN(new Date(estimatedDelivery).getTime())) {
                 nextErrors.estimatedDelivery = "Invalid date.";
             } else {
                 delete nextErrors.estimatedDelivery;
@@ -354,8 +373,8 @@ export default function UpdateShipmentSheet({ open, onOpenChange, order, onSucce
 
     // Determine dirty state by comparing current values to the latest shipment (or defaults)
     const isDirty = useMemo(() => {
-        if (!order) return false;
-        const latest = order.shipments
+        if (!effectiveOrder) return false;
+        const latest = effectiveOrder.shipments
             ?.slice()
             .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())[0];
 
@@ -374,7 +393,7 @@ export default function UpdateShipmentSheet({ open, onOpenChange, order, onSucce
             estimatedDelivery !== base.estimatedDelivery ||
             shippedDate !== base.shippedDate
         );
-    }, [order, status, carrier, trackingNumber, estimatedDelivery, shippedDate]);
+    }, [effectiveOrder, status, carrier, trackingNumber, estimatedDelivery, shippedDate]);
 
     const validateAll = () => {
         const fields = ["status", "carrier", "trackingNumber", "shippedDate", "estimatedDelivery"];
@@ -417,7 +436,6 @@ export default function UpdateShipmentSheet({ open, onOpenChange, order, onSucce
 
             onOpenChange(false);
             onSuccess?.();
-            await fetchOrders(toOrderQueryParams(searchParams));
         } catch (error) {
             toast.error("Failed to update shipment");
         } finally {
@@ -426,11 +444,11 @@ export default function UpdateShipmentSheet({ open, onOpenChange, order, onSucce
     };
 
     const handleCancel = () => {
-        if (!order) {
+        if (!effectiveOrder) {
             onOpenChange(false);
             return;
         }
-        const latest = order.shipments
+        const latest = effectiveOrder.shipments
             ?.slice()
             .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())[0];
         if (latest) {
@@ -454,7 +472,7 @@ export default function UpdateShipmentSheet({ open, onOpenChange, order, onSucce
         <UpdateShipmentSheetView
             open={open}
             onOpenChange={onOpenChange}
-            order={order}
+            order={effectiveOrder} // pass the computed order to the view
             status={status}
             onStatusChange={setStatus}
             carrier={carrier}

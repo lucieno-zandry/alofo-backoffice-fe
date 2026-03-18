@@ -3,10 +3,12 @@ import { useOrderDetailStore } from "~/hooks/use-order-detail-store";
 import UpdateShipmentDialog from "~/components/orders/update-shipment-sheet";
 import { Button } from "~/components/ui/button";
 import { toast } from "sonner";
+import { useRevalidator } from "react-router";
 
 export default function OrderActions() {
     const { order } = useOrderDetailStore();
     const [updating, setUpdating] = useState(false);
+    const revalidator = useRevalidator();
 
     if (!order) return null;
 
@@ -19,6 +21,7 @@ export default function OrderActions() {
                 open={updating}
                 onOpenChange={setUpdating}
                 order={order}
+                onSuccess={revalidator.revalidate}
             />
         </>
     );

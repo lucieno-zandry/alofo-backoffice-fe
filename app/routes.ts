@@ -26,6 +26,8 @@ export default [
 
             route("transactions", "routes/backoffice/transactions/index.tsx"),
             route("transactions/:transactionUuid", "routes/backoffice/transactions/transaction-detail.tsx"),
+
+            route("shipments", "routes/backoffice/shipments/index.tsx"),
         ]),
 
         // error pages

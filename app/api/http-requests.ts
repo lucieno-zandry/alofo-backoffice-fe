@@ -9,6 +9,7 @@ import type {
     AuditLogsResponse,
     WebhookLogsResponse,
 } from "~/types/transactions";
+import type { FetchShipmentsParams } from "~/types/shipments";
 
 // auth
 
@@ -351,4 +352,50 @@ export function rejectRefundRequest(uuid: string) {
         `/refund-requests/${uuid}/reject`,
         {}
     );
+}
+
+// Shipments
+
+export function fetchShipments(params: FetchShipmentsParams = {}) {
+    const searchParams = new URLSearchParams();
+
+    // Pagination
+    if (params.page) searchParams.set('page', String(params.page));
+    if (params.perPage) searchParams.set('per_page', String(params.perPage));
+
+    // Sorting
+    if (params.sortBy) searchParams.set('sort_by', params.sortBy);
+    if (params.sortOrder) searchParams.set('sort_order', params.sortOrder);
+
+    // Filters
+    if (params.filters?.status && params.filters.status !== 'all') {
+        searchParams.set('status', params.filters.status);
+    }
+    if (params.filters?.search) {
+        searchParams.set('search', params.filters.search);
+    }
+    if (params.filters?.fromDate) {
+        searchParams.set('from_date', params.filters.fromDate);
+    }
+    if (params.filters?.toDate) {
+        searchParams.set('to_date', params.filters.toDate);
+    }
+
+    // Include relations – backend should support ?with=order,user etc.
+    if (params.with?.length) {
+        searchParams.set('with', params.with.join(','));
+    } else {
+        // default: include order and its user
+        searchParams.set('with', 'order,order.user');
+    }
+
+    return appFetch.get<PaginatedResponse<Shipment>>(`/shipment/all?${searchParams.toString()}`);
+}
+
+export function deleteShipment(id: number) {
+    const params = new URLSearchParams();
+
+    params.append('shipment_ids', id.toString());
+
+    return appFetch.delete(`/shipment/delete?${params.toString()}`);
 }
