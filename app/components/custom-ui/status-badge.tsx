@@ -12,7 +12,7 @@ export function StatusBadge({ status, children }: { status: string; children: Re
         delivered: "bg-green-100 text-green-800 border-green-200",
     };
     return (
-        <Badge variant="default" className={cn(variantMap[status], "border")}>
+        <Badge variant="default" className={cn(variantMap[status.toLowerCase()], "border")}>
             {children}
         </Badge>
     );

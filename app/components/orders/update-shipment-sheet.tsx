@@ -406,7 +406,7 @@ export default function UpdateShipmentSheet({
     };
 
     const handleSubmit = async () => {
-        if (!order) return;
+        if (!effectiveOrder) return;
 
         // run validation
         const nextErrors = validateAll();
@@ -424,7 +424,7 @@ export default function UpdateShipmentSheet({
             if (estimatedDelivery) data.estimated_delivery = estimatedDelivery;
             if (shippedDate) data.shipped_date = shippedDate;
 
-            const response = await bulkUpdateShipmentStatus([order.uuid], status.toUpperCase(), data);
+            const response = await bulkUpdateShipmentStatus([effectiveOrder.uuid], status.toUpperCase(), data);
 
             if (response.data && response.data.updated > 0) {
                 toast.success(`${response.data.updated} Shipment(s) updated successfully`);
