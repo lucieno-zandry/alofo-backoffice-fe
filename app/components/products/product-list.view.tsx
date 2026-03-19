@@ -62,7 +62,7 @@ export function ProductList({ selectedId, onSelect }: ProductListProps) {
   }
 
   return (
-    <div className="flex flex-col h-full border-r border-border">
+    <div className="flex flex-col h-full border-r border-border overflow-y-auto">
       {/* Header */}
       <div className="px-4 py-4 border-b border-border space-y-3">
         <div className="flex items-center justify-between">

@@ -14,13 +14,23 @@ type User = {
   created_at: string;
   updated_at: string;
   client_code_id?: number;
-  client_code?: ClientCode;
 
   permissions?: {
     can_use_effective_prices: boolean;
   };
 
+
+  // relations
   avatar_image?: AppImage;
+  client_code?: ClientCode;
+  cart_items?: CartItem[],
+  addresses: Address[],
+  orders: Order[],
+  transactions: Transaction[],
+  refund_requests: RefundRequest[],
+  reviewed_refund_requests: RefundRequest[],
+  performed_transaction_audit_logs: TransactionAuditLog[],
+  reviewed_transactions: Transaction[]
 };
 
 type Product = {
@@ -175,6 +185,8 @@ type Address = {
   created_at: string;
   updated_at: string;
   is_default: boolean;
+
+  user?: User,
 };
 
 type Order = {

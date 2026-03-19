@@ -8,11 +8,11 @@ export default function ProductsPage() {
 
   return (
     <>
-      <div className="flex overflow-y-auto rounded-2xl">
+      <div className="flex h-full gap-2">
         {/* Left: Product list — always visible, shrinks on md when detail opens */}
         <div
           className={`
-          flex-col bg-background/80 backdrop-blur-md transition-all duration-300
+          flex-col bg-background/80 backdrop-blur-md rounded-2xl transition-all duration-300 h-full overflow-y-auto
           ${selectedProduct ? "hidden md:flex md:w-72 lg:w-80 xl:w-96" : "flex w-full md:w-96 lg:w-[420px]"}
           `}
         >

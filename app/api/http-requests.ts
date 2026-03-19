@@ -10,6 +10,7 @@ import type {
     WebhookLogsResponse,
 } from "~/types/transactions";
 import type { FetchShipmentsParams } from "~/types/shipments";
+import type { FetchUsersParams } from "~/types/users";
 
 // auth
 
@@ -398,4 +399,40 @@ export function deleteShipment(id: number) {
     params.append('shipment_ids', id.toString());
 
     return appFetch.delete(`/shipment/delete?${params.toString()}`);
+}
+
+// Users
+export function fetchUsers(params: FetchUsersParams = {}) {
+    const searchParams = new URLSearchParams();
+
+    // default: include avatar relation
+    if (params.with?.length) {
+        searchParams.set("with", params.with.join(","));
+    } else {
+        searchParams.set("with", "avatar_image,client_code");
+    }
+
+    // pagination
+    if (params.page) searchParams.set("page", String(params.page));
+    if (params.per_page) searchParams.set("per_page", String(params.per_page));
+
+    // filtering
+    if (params.search) searchParams.set("search", params.search);
+    if (params.role && params.role !== "all") searchParams.set("role", params.role);
+
+    // sorting
+    if (params.sort_by) searchParams.set("sort_by", params.sort_by);
+    if (params.sort_order) searchParams.set("sort_order", params.sort_order);
+
+    return appFetch.get<PaginatedResponse<User>>(
+        `/user/all?${searchParams.toString()}`
+    );
+}
+
+export function showUser(userId: number) {
+    const params = new URLSearchParams();
+
+    params.append('with', 'avatar_image,client_code,cart_items,addresses,orders,transactions,refund_requests,reviewed_refund_requests,performed_transaction_audit_logs,reviewed_transactions')
+
+    return appFetch.get<{ user: User }>(`/user/get/${userId}?${params.toString()}`)
 }

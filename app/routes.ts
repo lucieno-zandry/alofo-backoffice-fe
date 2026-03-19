@@ -28,6 +28,11 @@ export default [
             route("transactions/:transactionUuid", "routes/backoffice/transactions/transaction-detail.tsx"),
 
             route("shipments", "routes/backoffice/shipments/index.tsx"),
+
+            route("users", "routes/backoffice/users/layout.tsx", [
+                index("routes/backoffice/users/index.tsx"),          // right column empty
+                route(":userId", "routes/backoffice/users/user-detail.tsx"), // detail on the right
+            ]),
         ]),
 
         // error pages
