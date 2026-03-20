@@ -9,11 +9,12 @@ type User = {
   email_verified_at: string;
   approved_at: string;
   role: "admin" | "manager" | "client";
-  avatar_image_id: number | null;
+  avatar_image_id?: number;
   address_id?: number;
   created_at: string;
   updated_at: string;
   client_code_id?: number;
+  blocked_by_id?: number;
 
   permissions?: {
     can_use_effective_prices: boolean;
@@ -24,13 +25,25 @@ type User = {
   avatar_image?: AppImage;
   client_code?: ClientCode;
   cart_items?: CartItem[],
-  addresses: Address[],
-  orders: Order[],
-  transactions: Transaction[],
-  refund_requests: RefundRequest[],
-  reviewed_refund_requests: RefundRequest[],
-  performed_transaction_audit_logs: TransactionAuditLog[],
-  reviewed_transactions: Transaction[]
+  addresses?: Address[],
+  orders?: Order[],
+  transactions?: Transaction[],
+  refund_requests?: RefundRequest[],
+  reviewed_refund_requests?: RefundRequest[],
+  performed_transaction_audit_logs?: TransactionAuditLog[],
+  reviewed_transactions?: Transaction[],
+  blocked_by_user?: User,
+  blocked_users?: User[],
+};
+
+type UserStatus = {
+  id: number;
+  user_id: number;
+  status: "approved" | "blocked" | "suspended";
+  reason?: string;
+  set_by?: number;
+  created_at: string;
+  expires_at?: string;
 };
 
 type Product = {

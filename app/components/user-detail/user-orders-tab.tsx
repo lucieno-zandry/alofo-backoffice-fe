@@ -3,6 +3,7 @@ import { Card, CardHeader, CardTitle } from "~/components/ui/card";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import { Package, ExternalLink, Truck } from "lucide-react";
+import { Link } from "react-router";
 
 function OrdersView({ orders }: { orders: Order[] }) {
     return (
@@ -40,11 +41,15 @@ function OrdersView({ orders }: { orders: Order[] }) {
                             </div>
 
                             <div className="flex items-center gap-2 shrink-0">
-                                <Button variant="outline" size="sm" className="hidden lg:flex gap-2">
-                                    <Truck className="h-4 w-4" /> Track
+                                <Button variant="outline" size="sm" className="hidden lg:flex gap-2" asChild>
+                                    <Link to={`../../shipments?search=${order.uuid}`}>
+                                        <Truck className="h-4 w-4" /> Track
+                                    </Link>
                                 </Button>
-                                <Button size="sm" variant="secondary" className="gap-2">
-                                    <ExternalLink className="h-4 w-4" /> View
+                                <Button size="sm" variant="secondary" className="gap-2" asChild>
+                                    <Link to={`../../orders/${order.uuid}`}>
+                                        <ExternalLink className="h-4 w-4" /> View
+                                    </Link>
                                 </Button>
                             </div>
                         </div>

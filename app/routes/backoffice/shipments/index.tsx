@@ -1,16 +1,17 @@
-// ~/components/shipments/ShipmentsManager.tsx
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import UpdateShipmentSheet from '~/components/orders/update-shipment-sheet';
 import { CancelShipmentDialog } from '~/components/shipments/cancel-shipment-dialog';
 import { ShipmentsView } from '~/components/shipments/shipments-view';
 import { useShipmentsStore } from '~/hooks/use-shipments-store';
+import { useShipmentsUrlSync } from '~/hooks/use-shipments-url-sync';
 
 export default function ShipmentsManager() {
-    const { fetchShipments, updatingShipment, setUpdatingShipment } = useShipmentsStore();
+    const { updatingShipment, setUpdatingShipment } = useShipmentsStore();
+    const { syncFromUrl } = useShipmentsUrlSync();
 
-    // Initial load
+    // Initialize from URL on mount
     useEffect(() => {
-        fetchShipments();
+        syncFromUrl();
     }, []);
 
     return (
@@ -21,10 +22,10 @@ export default function ShipmentsManager() {
                 open={!!updatingShipment}
                 onOpenChange={(open) => !open && setUpdatingShipment(null)}
                 shipment={updatingShipment}
-                onSuccess={fetchShipments}
+                onSuccess={() => useShipmentsStore.getState().fetchShipments()}
             />
 
-            <CancelShipmentDialog onSuccess={fetchShipments} />
+            <CancelShipmentDialog onSuccess={() => useShipmentsStore.getState().fetchShipments()} />
         </>
     );
 }

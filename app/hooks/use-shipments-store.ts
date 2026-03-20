@@ -2,7 +2,6 @@ import { create } from 'zustand';
 import { fetchShipments } from '~/api/http-requests';
 import type { FetchShipmentsParams, ShipmentsFilters } from '~/types/shipments';
 
-
 interface ShipmentsStore {
     // Data
     shipments: Shipment[];
@@ -17,18 +16,24 @@ interface ShipmentsStore {
     sortOrder?: 'asc' | 'desc';
 
     // Update
-    updatingShipment: Shipment | null,
-    setUpdatingShipment: (shipment: Shipment | null) => void,
+    updatingShipment: Shipment | null;
+    setUpdatingShipment: (shipment: Shipment | null) => void;
 
     // Cancel
-    cancellingShipment: Shipment | null,
-    setCancellingShipment: (shipment: Shipment | null) => void,
+    cancellingShipment: Shipment | null;
+    setCancellingShipment: (shipment: Shipment | null) => void;
 
     // UI state
     loading: boolean;
     error: string | null;
 
-    // Actions
+    // Internal state setters (without fetch)
+    _setFilters: (filters: Partial<ShipmentsFilters>) => void;
+    _setPage: (page: number) => void;
+    _setPerPage: (perPage: number) => void;
+    _setSorting: (sortBy?: keyof Shipment, sortOrder?: 'asc' | 'desc') => void;
+
+    // Public actions (with fetch)
     setPage: (page: number) => void;
     setPerPage: (perPage: number) => void;
     setFilters: (filters: Partial<ShipmentsFilters>) => void;
@@ -51,26 +56,47 @@ export const useShipmentsStore = create<ShipmentsStore>((set, get) => ({
     loading: false,
     error: null,
 
+    // Internal setters (no fetch)
+    _setFilters: (filters) => {
+        set((state) => ({
+            filters: { ...state.filters, ...filters },
+        }));
+    },
+    _setPage: (page) => {
+        set((state) => ({
+            pagination: { ...state.pagination, currentPage: page },
+        }));
+    },
+    _setPerPage: (perPage) => {
+        set((state) => ({
+            pagination: { ...state.pagination, perPage },
+        }));
+    },
+    _setSorting: (sortBy, sortOrder) => {
+        set({ sortBy, sortOrder });
+    },
+
+    // Public actions (with fetch)
     setPage: (page) => {
-        set((state) => ({ pagination: { ...state.pagination, currentPage: page } }));
+        get()._setPage(page);
         get().fetchShipments();
     },
 
     setPerPage: (perPage) => {
-        set((state) => ({ pagination: { ...state.pagination, perPage, currentPage: 1 } }));
+        get()._setPerPage(perPage);
+        get()._setPage(1); // reset to first page when changing per page
         get().fetchShipments();
     },
 
     setFilters: (filters) => {
-        set((state) => ({
-            filters: { ...state.filters, ...filters },
-            pagination: { ...state.pagination, currentPage: 1 }, // reset to first page
-        }));
+        get()._setFilters(filters);
+        get()._setPage(1); // reset to first page when changing filters
         get().fetchShipments();
     },
 
     setSorting: (sortBy, sortOrder = 'asc') => {
-        set({ sortBy, sortOrder, pagination: { ...get().pagination, currentPage: 1 } });
+        get()._setSorting(sortBy, sortOrder);
+        get()._setPage(1); // reset to first page when changing sort
         get().fetchShipments();
     },
 
@@ -85,7 +111,7 @@ export const useShipmentsStore = create<ShipmentsStore>((set, get) => ({
                 filters,
                 sortBy,
                 sortOrder,
-                with: ['order', 'order.user'], // always include these
+                with: ['order', 'order.user'],
             };
 
             const response = await fetchShipments(params);
@@ -105,12 +131,9 @@ export const useShipmentsStore = create<ShipmentsStore>((set, get) => ({
             set({ error: err?.message ?? 'Failed to load shipments', loading: false });
         }
     },
+
     updatingShipment: null,
-    setUpdatingShipment: (shipment) => {
-        set({ updatingShipment: shipment })
-    },
+    setUpdatingShipment: (shipment) => set({ updatingShipment: shipment }),
     cancellingShipment: null,
-    setCancellingShipment: (shipment) => {
-        set({ cancellingShipment: shipment })
-    }
+    setCancellingShipment: (shipment) => set({ cancellingShipment: shipment }),
 }));

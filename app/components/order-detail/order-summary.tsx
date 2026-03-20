@@ -3,9 +3,12 @@ import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { useOrderDetailStore } from "~/hooks/use-order-detail-store";
 import formatPrice from "~/lib/format-price";
 import { Separator } from "~/components/ui/separator";
+import { Button } from "../ui/button";
+import { Link } from "react-router";
+import { ExternalLink } from "lucide-react";
 
 export type OrderSummaryViewProps = {
-    user: { name: string; email: string; avatarUrl?: string } | null;
+    user: { name: string; email: string; avatarUrl?: string; id: number } | null;
     address: Address;
     coupon: Order['coupon_snapshot'];
     couponDiscount: number;
@@ -49,8 +52,18 @@ export function OrderSummaryView({
 
             {/* Customer Details */}
             <Card>
-                <CardHeader>
+                <CardHeader className="flex justify-between">
                     <CardTitle className="text-lg">Customer</CardTitle>
+                    {user &&
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            aria-describedby="Open user profile"
+                            asChild>
+                            <Link to={`../users/${user.id}`}>
+                                <ExternalLink />
+                            </Link>
+                        </Button>}
                 </CardHeader>
                 <CardContent className="space-y-4">
                     {user ? (
@@ -63,6 +76,7 @@ export function OrderSummaryView({
                                 <span className="font-medium text-sm">{user.name}</span>
                                 <span className="text-sm text-muted-foreground">{user.email}</span>
                             </div>
+
                         </div>
                     ) : (
                         <p className="text-sm text-muted-foreground">No customer data</p>
@@ -99,6 +113,7 @@ export default function OrderSummary() {
             name: order.user.name,
             email: order.user.email,
             avatarUrl: order.user.avatar_image?.url,
+            id: order.user.id,
         }
         : null;
 
