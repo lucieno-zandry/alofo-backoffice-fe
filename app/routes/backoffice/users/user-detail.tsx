@@ -31,9 +31,7 @@ export default function UserDetail() {
         }
     };
 
-    const handleBlock = async () => {
-        const reason = prompt("Reason for blocking:");
-        if (reason === null) return;
+    const handleBlock = async (reason: string) => {
         try {
             await updateUserStatus(Number(userId), { status: "blocked", reason });
             toast.success("User blocked successfully");
@@ -44,10 +42,7 @@ export default function UserDetail() {
         }
     };
 
-    const handleSuspend = async () => {
-        const reason = prompt("Reason for suspension:");
-        if (reason === null) return;
-        const expiresAt = prompt("Expiration date (YYYY-MM-DD) or leave empty for indefinite:");
+    const handleSuspend = async (reason: string, expiresAt?: string) => {
         const payload: any = { status: "suspended", reason };
         if (expiresAt) payload.expires_at = expiresAt;
         try {
@@ -61,7 +56,6 @@ export default function UserDetail() {
     };
 
     const handleEdit = () => {
-        // Optional: navigate to edit page
         navigate(`/${lang}/users/${userId}/edit`);
     };
 

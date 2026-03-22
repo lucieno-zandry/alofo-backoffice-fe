@@ -5,6 +5,7 @@ import useRouterStore from "~/hooks/use-router-store";
 import { getAuthUser } from "~/api/http-requests";
 import { useSuccessRedirect } from "~/hooks/use-redirect-action";
 import { HttpException } from "~/api/app-fetch";
+import { isUserApproved } from "~/lib/user-status";
 
 const successRedirect = useSuccessRedirect();
 
@@ -13,10 +14,11 @@ export async function clientLoader({ params }: LoaderFunctionArgs) {
 
     try {
         const authResponse = await getAuthUser();
+        const user = authResponse.data?.user;
 
-        if (authResponse.data?.user?.status?.status === "approved") {
+        if (user && isUserApproved(user))
             return successRedirect();
-        }
+
     } catch (error) {
         if (error instanceof HttpException) {
             return redirect(`/${lang}/auth`);

@@ -6,7 +6,6 @@ import { UserDetailTabs } from "./user-detail-tabs";
 import { UserProfileHeader } from "./user-profile-header";
 import { UserActions } from "./user-actions";
 
-
 interface UserDetailLayoutProps {
     user: User | null;
     loading: boolean;
@@ -14,8 +13,8 @@ interface UserDetailLayoutProps {
     onBack?: () => void;
     onEdit?: () => void;
     onApprove?: () => void;
-    onBlock?: () => void;
-    onSuspend?: () => void;
+    onBlock?: (reason: string) => void;
+    onSuspend?: (reason: string, expiresAt?: string) => void;
 }
 
 export function UserDetailLayout({

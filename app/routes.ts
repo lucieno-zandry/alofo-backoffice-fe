@@ -38,7 +38,7 @@ export default [
         // error pages
         route("403", "routes/common/forbidden-error-page.tsx"),
         route("500", "routes/common/internal-server-error-page.tsx"),
-        route("approval-pending", "routes/common/approval-pending-page.tsx"),
+        route("pending-approval", "routes/common/pending-approval-page.tsx"),
         route("account-blocked", "routes/common/blocked-page.tsx"),
         route("account-suspended", "routes/common/suspended-page.tsx"),
 
