@@ -436,3 +436,7 @@ export function showUser(userId: number) {
 
     return appFetch.get<{ user: User }>(`/user/get/${userId}?${params.toString()}`)
 }
+
+export function updateUserStatus(userId: number, status: Partial<UserStatus>) {
+    return appFetch.post(`/user/${userId}/status`, status);
+}

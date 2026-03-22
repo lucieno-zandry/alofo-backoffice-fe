@@ -3,6 +3,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Badge } from "~/components/ui/badge";
 import { CheckCircle2, Clock, UserIcon } from "lucide-react";
 import { cn } from "~/lib/utils"; // Ensure you have this utility
+import { isUserApproved } from "~/lib/user-status";
 
 interface UserCardProps {
     user: User;
@@ -19,6 +20,8 @@ export function UserCard({ user, isSelected, onClick }: UserCardProps) {
             default: return "outline";
         }
     };
+
+    const approved = isUserApproved(user);
 
     return (
         <button
@@ -52,13 +55,13 @@ export function UserCard({ user, isSelected, onClick }: UserCardProps) {
                     {user.role}
                 </Badge>
                 <div className="flex items-center gap-1 text-[10px] font-medium">
-                    {user.approved_at ? (
+                    {approved ? (
                         <CheckCircle2 className="h-3 w-3 text-emerald-600" />
                     ) : (
                         <Clock className="h-3 w-3 text-amber-600" />
                     )}
-                    <span className={user.approved_at ? "text-emerald-600" : "text-amber-600"}>
-                        {user.approved_at ? "Approved" : "Pending"}
+                    <span className={approved ? "text-emerald-600" : "text-amber-600"}>
+                        {approved ? "Approved" : "Pending"}
                     </span>
                 </div>
             </div>

@@ -9,25 +9,39 @@ import { useAuthStore } from "~/hooks/use-auth-store";
 import { HttpException } from "~/api/app-fetch";
 import redirectPathnames from "~/lib/redirect-pathnames";
 import BackofficeSkeleton from "~/components/layout/backoffice-skeleton";
+import { getCurrentUserStatus } from "~/lib/user-status";
 
 export function HydrateFallback() {
     return <BackofficeSkeleton />
 }
 
 export async function clientLoader({ params }: LoaderFunctionArgs) {
-    const lang = params.lang || 'en';
+    const lang = params.lang || "en";
 
     try {
-        const [categoriesResponse, authResponse] = await Promise.all([getCategories(), getAuthUser()]);
+        const [categoriesResponse, authResponse] = await Promise.all([
+            getCategories(),
+            getAuthUser(),
+        ]);
         const user = authResponse.data?.user;
 
-        if (user?.role !== 'admin') throw new HttpException(403);
-        if (!user?.approved_at) throw new HttpException(403, { action: 'APPROVE_ACCOUNT' });
-        if (!user?.email_verified_at) throw new HttpException(403, { action: 'VERIFY_EMAIL' });
+        if (user?.role !== "admin") throw new HttpException(403);
+        if (!user?.email_verified_at)
+            throw new HttpException(403, { action: "VERIFY_EMAIL" });
+
+        // Check user status
+        const status = getCurrentUserStatus(user);
+        if (!status || status.status !== "approved") {
+            // Redirect to the appropriate status page
+            let statusPath = "pending-approval";
+            if (status?.status === "blocked") statusPath = "account-blocked";
+            else if (status?.status === "suspended") statusPath = "account-suspended";
+            return redirect(`/${lang}/${statusPath}`);
+        }
 
         return {
             categories: categoriesResponse.data?.categories,
-            user
+            user,
         };
     } catch (error) {
         if (error instanceof HttpException) {
@@ -36,7 +50,10 @@ export async function clientLoader({ params }: LoaderFunctionArgs) {
             } else if (error.status === 403 && !error.data) {
                 return redirect(`/${lang}/403`);
             } else if (error.status === 403 && error.data?.action) {
-                const redirectPathname = redirectPathnames[error.data.action as keyof typeof redirectPathnames];
+                const redirectPathname =
+                    redirectPathnames[
+                    error.data.action as keyof typeof redirectPathnames
+                    ];
                 return redirect(`/${lang}/${redirectPathname}`);
             }
         }

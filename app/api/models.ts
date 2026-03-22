@@ -7,7 +7,6 @@ type User = {
   name: string;
   email: string;
   email_verified_at: string;
-  approved_at: string;
   role: "admin" | "manager" | "client";
   avatar_image_id?: number;
   address_id?: number;
@@ -15,6 +14,9 @@ type User = {
   updated_at: string;
   client_code_id?: number;
   blocked_by_id?: number;
+  deleted_at?: string;
+  status: UserStatus | null, // computed from the api
+
 
   permissions?: {
     can_use_effective_prices: boolean;
@@ -32,8 +34,7 @@ type User = {
   reviewed_refund_requests?: RefundRequest[],
   performed_transaction_audit_logs?: TransactionAuditLog[],
   reviewed_transactions?: Transaction[],
-  blocked_by_user?: User,
-  blocked_users?: User[],
+  statuses?: UserStatus[],
 };
 
 type UserStatus = {
