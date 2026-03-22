@@ -8,6 +8,8 @@ import { RefundRequestsTab } from "./user-refund-requests-tab";
 import { AuditLogsTab } from "./user-audit-logs";
 import { ReviewedTransactionsTab } from "./reviewed-transactions-tab";
 import { ReviewedRefundsTab } from "./reviewed-refunds-tab";
+import { UserStatusesTab } from "./user-statuses-tab";
+import { UserSetStatusesTab } from "./user-set-statuses-tab";
 
 interface UserDetailTabsProps {
     user: User;
@@ -23,6 +25,8 @@ export function UserDetailTabs({ user }: UserDetailTabsProps) {
         { value: "reviewed-transactions", label: "Reviewed Transactions", count: user.reviewed_transactions?.length || 0, component: <ReviewedTransactionsTab /> },
         { value: "reviewed-refunds", label: "Reviewed Refunds", count: user.reviewed_refund_requests?.length || 0, component: <ReviewedRefundsTab /> },
         { value: "audit", label: "Audit Logs", count: user.performed_transaction_audit_logs?.length || 0, component: <AuditLogsTab /> },
+        { value: "statuses", label: "Statuses", count: user.statuses?.length || 0, component: <UserStatusesTab /> },
+        { value: "set-statuses", label: "Set Statuses", count: user.set_statuses?.length || 0, component: <UserSetStatusesTab /> },
     ].filter(tab => tab.count > 0);
 
     if (tabs.length === 0) {

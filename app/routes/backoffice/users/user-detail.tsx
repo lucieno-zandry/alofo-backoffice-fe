@@ -5,10 +5,13 @@ import { toast } from "sonner";
 import { UserDetailLayout } from "~/components/user-detail/user-detail-layout";
 import { useUserDetailStore } from "~/hooks/use-user-detail-store";
 import { updateUserStatus } from "~/api/http-requests";
+import { useUsersStore } from "~/hooks/use-users-store";
 
 export default function UserDetail() {
     const { userId, lang } = useParams<{ userId: string; lang: string }>();
     const { user, loading, error, fetchUser, clearUser } = useUserDetailStore();
+    const { fetchUsers } = useUsersStore();
+
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -20,39 +23,51 @@ export default function UserDetail() {
 
     const handleBack = () => navigate(`/${lang}/users`);
 
+    const onActionSuccess = () => {
+        fetchUser(Number(userId));
+        fetchUsers();
+    }
+
     const handleApprove = async () => {
-        try {
-            await updateUserStatus(Number(userId), { status: "approved" });
-            toast.success("User approved successfully");
-            fetchUser(Number(userId));
-        } catch (err) {
-            toast.error("Failed to approve user");
-            console.error(err);
-        }
+        toast.promise(
+            () => updateUserStatus(
+                Number(userId),
+                {
+                    status: "approved"
+                }).then(onActionSuccess),
+            {
+                loading: 'Approving...',
+                success: 'User approved successfully',
+                error: 'Can not approve user.'
+            });
     };
 
     const handleBlock = async (reason: string) => {
-        try {
-            await updateUserStatus(Number(userId), { status: "blocked", reason });
-            toast.success("User blocked successfully");
-            fetchUser(Number(userId));
-        } catch (err) {
-            toast.error("Failed to block user");
-            console.error(err);
-        }
+        toast.promise(
+            () => updateUserStatus(
+                Number(userId),
+                {
+                    status: "blocked"
+                }).then(onActionSuccess),
+            {
+                loading: 'Blocking...',
+                success: 'User blocked successfully',
+                error: 'Can not block user.'
+            });
     };
 
     const handleSuspend = async (reason: string, expiresAt?: string) => {
-        const payload: any = { status: "suspended", reason };
-        if (expiresAt) payload.expires_at = expiresAt;
-        try {
-            await updateUserStatus(Number(userId), payload);
-            toast.success("User suspended successfully");
-            fetchUser(Number(userId));
-        } catch (err) {
-            toast.error("Failed to suspend user");
-            console.error(err);
-        }
+        toast.promise(
+            () => updateUserStatus(
+                Number(userId),
+                {
+                    status: "suspended"
+                }).then(onActionSuccess),
+            {
+                loading: 'Suspending...',
+                success: 'User suspended successfully',
+                error: 'Can not suspend user.'
+            });
     };
 
     const handleEdit = () => {

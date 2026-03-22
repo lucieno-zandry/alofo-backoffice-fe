@@ -432,7 +432,7 @@ export function fetchUsers(params: FetchUsersParams = {}) {
 export function showUser(userId: number) {
     const params = new URLSearchParams();
 
-    params.append('with', 'avatar_image,client_code,cart_items,addresses,orders,transactions,refund_requests,reviewed_refund_requests,performed_transaction_audit_logs,reviewed_transactions')
+    params.append('with', 'avatar_image,client_code,cart_items,addresses,orders,transactions,refund_requests,reviewed_refund_requests,performed_transaction_audit_logs,reviewed_transactions,statuses.set_by_user,set_statuses.user')
 
     return appFetch.get<{ user: User }>(`/user/get/${userId}?${params.toString()}`)
 }

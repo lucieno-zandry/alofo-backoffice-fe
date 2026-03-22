@@ -35,6 +35,7 @@ type User = {
   performed_transaction_audit_logs?: TransactionAuditLog[],
   reviewed_transactions?: Transaction[],
   statuses?: UserStatus[],
+  set_statuses?: UserStatus[],
 };
 
 type UserStatus = {
@@ -45,6 +46,9 @@ type UserStatus = {
   set_by?: number;
   created_at: string;
   expires_at?: string;
+
+  user?: User;
+  set_by_user?: User;
 };
 
 type Product = {
