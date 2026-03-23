@@ -2,7 +2,6 @@ import { redirect, useLoaderData, useNavigate, type LoaderFunctionArgs } from "r
 import { Ban, LogOut, ShieldAlert } from "lucide-react";
 import Button from "~/components/custom-ui/button";
 import useRouterStore from "~/hooks/use-router-store";
-import { useAuthStore } from "~/hooks/use-auth-store";
 import { getCurrentUserStatus, isUserBlocked } from "~/lib/user-status";
 import { useSuccessRedirect } from "~/hooks/use-redirect-action";
 import { getAuthUser } from "~/api/http-requests";

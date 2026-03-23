@@ -54,15 +54,13 @@ export function UserProfileHeader({ user }: UserProfileHeaderProps) {
                         ) : (
                             <>
                                 <Clock className="h-4 w-4 text-amber-500" />
-                                <span className="text-amber-600 dark:text-amber-500">Pending</span>
+                                <span className="text-amber-600 dark:text-amber-500">{currentStatus?.status}</span>
                             </>
                         )}
                     </span>
 
-                    {currentStatus && !approved && (
+                    {(currentStatus?.reason || currentStatus?.expires_at) && (
                         <div className="flex items-center gap-1 text-xs">
-                            {currentStatus.status === 'blocked' && <Ban className="h-3 w-3" />}
-                            {currentStatus.status === 'suspended' && <Clock className="h-3 w-3" />}
                             <span>
                                 {currentStatus.reason && `Reason: ${currentStatus.reason}`}
                                 {currentStatus.expires_at && ` · Expires: ${new Date(currentStatus.expires_at).toLocaleDateString()}`}

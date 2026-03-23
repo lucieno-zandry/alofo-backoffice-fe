@@ -47,7 +47,8 @@ export default function UserDetail() {
             () => updateUserStatus(
                 Number(userId),
                 {
-                    status: "blocked"
+                    status: "blocked",
+                    reason
                 }).then(onActionSuccess),
             {
                 loading: 'Blocking...',
@@ -61,7 +62,9 @@ export default function UserDetail() {
             () => updateUserStatus(
                 Number(userId),
                 {
-                    status: "suspended"
+                    status: "suspended",
+                    reason,
+                    expires_at: expiresAt,
                 }).then(onActionSuccess),
             {
                 loading: 'Suspending...',

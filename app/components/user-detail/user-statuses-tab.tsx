@@ -3,6 +3,7 @@ import { Card, CardHeader, CardTitle } from "~/components/ui/card";
 import { Badge } from "~/components/ui/badge";
 import { AlertCircle, Clock, Calendar, FileText, UserCog, ExternalLink } from "lucide-react";
 import { Link } from "react-router";
+import { formatDate } from "~/lib/format-date";
 
 // Dumb view
 function StatusesView({ statuses }: { statuses: UserStatus[] }) {
@@ -19,12 +20,6 @@ function StatusesView({ statuses }: { statuses: UserStatus[] }) {
         }
     };
 
-    const formatDate = (dateString: string) => {
-        return new Intl.DateTimeFormat('en-US', {
-            dateStyle: 'medium',
-            timeStyle: 'short'
-        }).format(new Date(dateString));
-    };
 
     return (
         <Card className="shadow-sm overflow-hidden">
