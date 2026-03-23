@@ -70,10 +70,6 @@ export default function UserDetail() {
             });
     };
 
-    const handleEdit = () => {
-        navigate(`/${lang}/users/${userId}/edit`);
-    };
-
     return (
         <UserDetailLayout
             user={user}
@@ -83,7 +79,6 @@ export default function UserDetail() {
             onApprove={handleApprove}
             onBlock={handleBlock}
             onSuspend={handleSuspend}
-            onEdit={handleEdit}
         />
     );
 }

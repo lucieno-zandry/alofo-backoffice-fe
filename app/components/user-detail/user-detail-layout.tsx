@@ -5,6 +5,8 @@ import { ShieldAlert, ChevronLeft } from "lucide-react";
 import { UserDetailTabs } from "./user-detail-tabs";
 import { UserProfileHeader } from "./user-profile-header";
 import { UserActions } from "./user-actions";
+import { useState } from "react";
+import { UserEditDialog } from "./user-edit-dialog";
 
 interface UserDetailLayoutProps {
     user: User | null;
@@ -27,6 +29,10 @@ export function UserDetailLayout({
     onBlock,
     onSuspend,
 }: UserDetailLayoutProps) {
+    const [editDialogOpen, setEditDialogOpen] = useState(false);
+
+    const handleEdit = () => setEditDialogOpen(true);
+
     if (loading) {
         return (
             <div className="space-y-4">
@@ -73,7 +79,7 @@ export function UserDetailLayout({
                     <UserProfileHeader user={user} />
                     <UserActions
                         user={user}
-                        onEdit={onEdit}
+                        onEdit={handleEdit}
                         onApprove={onApprove}
                         onBlock={onBlock}
                         onSuspend={onSuspend}
@@ -82,6 +88,10 @@ export function UserDetailLayout({
             </Card>
 
             <UserDetailTabs user={user} />
+            <UserEditDialog
+                user={user}
+                open={editDialogOpen}
+                onOpenChange={setEditDialogOpen} />
         </div>
     );
 }

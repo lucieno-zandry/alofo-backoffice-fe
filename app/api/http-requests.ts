@@ -440,3 +440,15 @@ export function showUser(userId: number) {
 export function updateUserStatus(userId: number, status: Partial<UserStatus>) {
     return appFetch.post(`/user/${userId}/status`, status);
 }
+
+// Users
+export function updateUser(userId: number, data: {
+    name?: string | null;
+    email?: string | null;
+    role?: string | null;
+    client_code_id?: number | null;
+    password?: string | null;
+    password_confirmation?: string | null;
+}) {
+    return appFetch.post<{ user: User }>(`/user/update/${userId}`, data);
+}

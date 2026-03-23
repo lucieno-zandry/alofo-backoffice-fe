@@ -5,7 +5,7 @@ import z from "zod";
 import type { Route } from "./+types";
 import { Link, redirect, useLoaderData, useNavigate } from "react-router";
 import { getEmailInfo, logInWithEmail } from "~/api/http-requests";
-import { useMemo, useState, type FocusEvent, type FormEventHandler } from "react";
+import { useMemo, useState, type FocusEvent, type SubmitEventHandler } from "react";
 import getUpdatedFormErrors from "~/lib/get-updated-form-errors";
 import { useSuccessRedirect } from "~/hooks/use-redirect-action";
 import { toast } from "sonner";
@@ -51,7 +51,7 @@ export default function () {
     setFormValidationErrors(updatedFormValidationErrors);
   }
 
-  const handleSubmit: FormEventHandler<HTMLFormElement> = (e) => {
+  const handleSubmit: SubmitEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
     if (!canSubmit) return;
     setIsLoading(true);
