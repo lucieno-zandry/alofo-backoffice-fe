@@ -11,6 +11,7 @@ import type {
 } from "~/types/transactions";
 import type { FetchShipmentsParams } from "~/types/shipments";
 import type { FetchUsersParams } from "~/types/users";
+import type { ClientCodeDetailResponse, ClientCodesQueryParams, ClientCodesResponse } from "~/types/client-codes";
 
 // auth
 
@@ -451,4 +452,81 @@ export function updateUser(userId: number, data: {
     password_confirmation?: string | null;
 }) {
     return appFetch.post<{ user: User }>(`/user/update/${userId}`, data);
+}
+
+// Client Codes
+export function fetchClientCodes(params: ClientCodesQueryParams = {}) {
+    const searchParams = new URLSearchParams();
+
+    if (params.with?.length) {
+        searchParams.set("with", params.with.join(","));
+    } else {
+        searchParams.set("with", "users");
+    }
+
+    if (params.page) searchParams.set("page", String(params.page));
+    if (params.per_page) searchParams.set("per_page", String(params.per_page));
+    if (params.search) searchParams.set("search", params.search);
+    if (params.sort_by) searchParams.set("sort_by", params.sort_by);
+    if (params.sort_order) searchParams.set("sort_order", params.sort_order);
+    if (params.is_active !== undefined && params.is_active !== "all") {
+        searchParams.set("is_active", params.is_active ? "1" : "0");
+    }
+
+    return appFetch.get<ClientCodesResponse>(
+        `/client-code/all?${searchParams.toString()}`
+    );
+}
+
+export function showClientCode(id: number) {
+    return appFetch.get<ClientCodeDetailResponse>(
+        `/client-code/get-by-id/${id}?with=users.avatar_image`
+    );
+}
+
+export function createClientCode(data: {
+    code: string;
+    is_active?: boolean;
+    max_uses?: number | null;
+}) {
+    if (!data.max_uses)
+        delete data.max_uses;
+
+    return appFetch.post<{ client_code: ClientCode }>("/client-code/create", data);
+}
+
+export function updateClientCode(
+    id: number,
+    data: {
+        code?: string;
+        is_active?: boolean;
+        max_uses?: number | null;
+    }
+) {
+    if (!data.max_uses)
+        delete data.max_uses;
+
+    return appFetch.put<{ client_code: ClientCode }>(
+        `/client-code/update/${id}`,
+        data
+    );
+}
+
+export function deleteClientCode(id: number) {
+    return appFetch.delete<{ message: string }>(
+        `/client-code/delete?client_code_ids=${id}`
+    );
+}
+
+export function bulkDeleteClientCodes(ids: number[]) {
+    return appFetch.delete<{ message: string; deleted: number }>(
+        `/client-code/delete?client_code_ids=${ids.join(",")}`
+    );
+}
+
+export function detachUserFromClientCode(codeId: number, userId: number) {
+    return appFetch.post<{ message: string }>(
+        `/client-code/${codeId}/detach-user`,
+        { user_id: userId }
+    );
 }

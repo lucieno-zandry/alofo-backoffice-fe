@@ -33,6 +33,10 @@ export default [
                 index("routes/backoffice/users/index.tsx"),          // right column empty
                 route(":userId", "routes/backoffice/users/user-detail.tsx"), // detail on the right
             ]),
+
+            route("client-codes", "routes/backoffice/client-codes/layout.tsx", [
+                index("routes/backoffice/client-codes/index.tsx"),
+            ]),
         ]),
 
         // error pages

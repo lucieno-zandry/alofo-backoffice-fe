@@ -410,6 +410,18 @@ type DisputeNotificationData = {
   message: string;
 };
 
+type ClientCodeNotificationData = {
+  notification_type: "client_code";
+  action: "attach" | "detach";
+  user_id: number;
+  user_name: string;
+  client_code: string;
+  performed_by?: number;
+  performed_by_name?: string;
+  message: string;
+};
+
+
 type OtherNotificationData = {
   notification_type: "system";
   title: string;
@@ -421,7 +433,8 @@ type NotificationData =
   | ShipmentNotificationData
   | RefundNotificationData
   | DisputeNotificationData
-  | OtherNotificationData;
+  | OtherNotificationData
+  | ClientCodeNotificationData;
 
 type AppNotification = {
   id: string;
@@ -441,4 +454,7 @@ type ClientCode = {
   is_active: boolean;
   max_uses?: number;
   created_at: string;
+
+  // Joined relationships
+  users?: User[],
 };
