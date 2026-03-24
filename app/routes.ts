@@ -34,14 +34,15 @@ export default [
                 route(":userId", "routes/backoffice/users/user-detail.tsx"),
             ]),
 
-            // ── Client Codes ──────────────────────────────────────────────────
+            // ── Discounts & Promotions ─────────────────────────────────────────
             route("client-codes", "routes/backoffice/client-codes/layout.tsx", [
                 index("routes/backoffice/client-codes/index.tsx"),
             ]),
-
-            // ── Coupons ───────────────────────────────────────────────────────
             route("coupons", "routes/backoffice/coupons/layout.tsx", [
                 index("routes/backoffice/coupons/index.tsx"),
+            ]),
+            route("promotions", "routes/backoffice/promotions/layout.tsx", [
+                index("routes/backoffice/promotions/index.tsx"),
             ]),
         ]),
 

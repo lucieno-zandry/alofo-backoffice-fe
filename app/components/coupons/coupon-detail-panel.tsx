@@ -115,10 +115,10 @@ function ValidityTimeline({
             isExpired
               ? "bg-red-500"
               : isNotStarted
-              ? "bg-muted-foreground"
-              : percent > 80
-              ? "bg-amber-500"
-              : "bg-emerald-500"
+                ? "bg-muted-foreground"
+                : percent > 80
+                  ? "bg-amber-500"
+                  : "bg-emerald-500"
           )}
           style={{ width: `${percent}%` }}
         />
@@ -127,8 +127,8 @@ function ValidityTimeline({
         {isExpired
           ? "Expired"
           : isNotStarted
-          ? `Starts in ${differenceInDays(start, now)} days`
-          : `${daysLeft} day${daysLeft !== 1 ? "s" : ""} remaining`}
+            ? `Starts in ${differenceInDays(start, now)} days`
+            : `${daysLeft} day${daysLeft !== 1 ? "s" : ""} remaining`}
       </p>
     </div>
   );
@@ -168,19 +168,7 @@ export function CouponDetailPanel({
 
   // Empty state
   if (!selectedCouponId) {
-    return (
-      <div className="flex flex-col items-center justify-center h-full text-muted-foreground gap-3">
-        <div className="p-6 rounded-2xl bg-muted/40 border border-dashed">
-          <Tag className="h-10 w-10 opacity-20" />
-        </div>
-        <div className="text-center">
-          <p className="text-sm font-medium">No coupon selected</p>
-          <p className="text-xs mt-1 opacity-70">
-            Select a coupon from the list to view its details
-          </p>
-        </div>
-      </div>
-    );
+    return null;
   }
 
   // Loading skeleton
@@ -353,8 +341,8 @@ export function CouponDetailPanel({
               usagePercent >= 90
                 ? "red"
                 : usagePercent >= 60
-                ? "amber"
-                : "green"
+                  ? "amber"
+                  : "green"
             }
           />
         </div>
@@ -374,8 +362,8 @@ export function CouponDetailPanel({
                 usagePercent >= 90
                   ? "bg-red-500"
                   : usagePercent >= 60
-                  ? "bg-amber-500"
-                  : "bg-emerald-500"
+                    ? "bg-amber-500"
+                    : "bg-emerald-500"
               )}
               style={{ width: `${usagePercent}%` }}
             />

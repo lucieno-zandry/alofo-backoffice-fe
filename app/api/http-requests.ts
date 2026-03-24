@@ -13,6 +13,7 @@ import type { FetchShipmentsParams } from "~/types/shipments";
 import type { FetchUsersParams } from "~/types/users";
 import type { ClientCodeDetailResponse, ClientCodesQueryParams, ClientCodesResponse } from "~/types/client-codes";
 import type { CouponDetailResponse, CouponsQueryParams, CouponsResponse } from "~/types/coupons";
+import type { CreatePromotionData, PromotionDetailResponse, PromotionsQueryParams, PromotionsResponse, UpdatePromotionData } from "~/types/promotions";
 
 // auth
 
@@ -611,4 +612,91 @@ export function toggleCouponActive(id: number, is_active: boolean) {
     return appFetch.post<{ coupon: Coupon }>(`/coupon/update/${id}`, {
         is_active,
     });
+}
+
+// Promotions
+
+export function fetchPromotions(params: PromotionsQueryParams = {}) {
+    const searchParams = new URLSearchParams();
+
+    if (params.with?.length) {
+        searchParams.set("with", params.with.join(","));
+    }
+
+    if (params.page) searchParams.set("page", String(params.page));
+    if (params.per_page) searchParams.set("per_page", String(params.per_page));
+    if (params.search) searchParams.set("search", params.search);
+    if (params.sort_by) searchParams.set("sort_by", params.sort_by);
+    if (params.sort_order) searchParams.set("sort_order", params.sort_order);
+    if (params.is_active !== undefined && params.is_active !== "all") {
+        searchParams.set("is_active", params.is_active ? "1" : "0");
+    }
+    if (params.type && params.type !== "all") {
+        searchParams.set("type", params.type);
+    }
+    if (params.applies_to && params.applies_to !== "all") {
+        searchParams.set("applies_to", params.applies_to);
+    }
+
+    return appFetch.get<PromotionsResponse>(
+        `/promotion/all?${searchParams.toString()}`
+    );
+}
+
+export function showPromotion(id: number) {
+    // Load with variants and their products so we can display affected SKUs
+    return appFetch.get<PromotionDetailResponse>(
+        `/promotion/get/${id}?with=variants.product,variants.image,variants.variant_options.variant_group`
+    );
+}
+
+export function createPromotion(data: CreatePromotionData) {
+    return appFetch.post<{ promotion: Promotion }>("/promotion/create", data);
+}
+
+export function updatePromotion(id: number, data: UpdatePromotionData) {
+    return appFetch.put<{ promotion: Promotion }>(
+        `/promotion/update/${id}`,
+        data
+    );
+}
+
+export function deletePromotion(id: number) {
+    return appFetch.delete<{ message: string }>(
+        `/promotion/delete?promotion_ids=${id}`
+    );
+}
+
+export function bulkDeletePromotions(ids: number[]) {
+    return appFetch.delete<{ message: string; deleted: number }>(
+        `/promotion/delete?promotion_ids=${ids.join(",")}`
+    );
+}
+
+export function togglePromotionActive(id: number, is_active: boolean) {
+    return appFetch.put<{ promotion: Promotion }>(
+        `/promotion/update/${id}`,
+        { is_active }
+    );
+}
+
+// Attach / detach a promotion from a specific variant
+export function attachPromotionToVariant(
+    promotionId: number,
+    variantId: number
+) {
+    return appFetch.post<{ message: string }>(
+        `/promotion/${promotionId}/attach-variant`,
+        { variant_id: variantId }
+    );
+}
+
+export function detachPromotionFromVariant(
+    promotionId: number,
+    variantId: number
+) {
+    return appFetch.post<{ message: string }>(
+        `/promotion/${promotionId}/detach-variant`,
+        { variant_id: variantId }
+    );
 }

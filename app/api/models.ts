@@ -135,6 +135,7 @@ type Promotion = {
   priority: number;
   apply_order?: "percentage_first" | "fixed_first";
   max_discount?: number;
+  variants?: Variant[];
 };
 
 type AppliedPromotion = {
