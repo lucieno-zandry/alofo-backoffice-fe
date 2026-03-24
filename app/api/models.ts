@@ -225,6 +225,7 @@ type Order = {
   transactions?: Transaction[];
   user?: User;
   refund_requests?: RefundRequest[],
+  coupon?: Coupon;
 };
 
 type Coupon = {
@@ -240,6 +241,8 @@ type Coupon = {
   start_date: string;
   end_date: string;
   is_active: boolean;
+
+  orders?: Order[],
 };
 
 type Shipment = {

@@ -30,12 +30,18 @@ export default [
             route("shipments", "routes/backoffice/shipments/index.tsx"),
 
             route("users", "routes/backoffice/users/layout.tsx", [
-                index("routes/backoffice/users/index.tsx"),          // right column empty
-                route(":userId", "routes/backoffice/users/user-detail.tsx"), // detail on the right
+                index("routes/backoffice/users/index.tsx"),
+                route(":userId", "routes/backoffice/users/user-detail.tsx"),
             ]),
 
+            // ── Client Codes ──────────────────────────────────────────────────
             route("client-codes", "routes/backoffice/client-codes/layout.tsx", [
                 index("routes/backoffice/client-codes/index.tsx"),
+            ]),
+
+            // ── Coupons ───────────────────────────────────────────────────────
+            route("coupons", "routes/backoffice/coupons/layout.tsx", [
+                index("routes/backoffice/coupons/index.tsx"),
             ]),
         ]),
 
