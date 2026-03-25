@@ -19,7 +19,9 @@ import {
   Tag,
   Shield,
   SlidersHorizontal,
+  PackagePlus,
 } from "lucide-react";
+import { PromotionAssignVariantsDialog } from "./promotion-assign-variants-dialog";
 import { Button } from "~/components/ui/button";
 import { Badge } from "~/components/ui/badge";
 import { Separator } from "~/components/ui/separator";
@@ -129,6 +131,7 @@ export type PromotionDetailPanelProps = {
   onDelete: () => void;
   onToggleActive: () => void;
   onDetachVariant: (variantId: number) => void;
+  onVariantsAssigned: () => void; // called after bulk-assign to trigger detail refresh
   mutating: boolean;
 };
 
@@ -142,9 +145,11 @@ export function PromotionDetailPanel({
   onDelete,
   onToggleActive,
   onDetachVariant,
+  onVariantsAssigned,
   mutating,
 }: PromotionDetailPanelProps) {
   const [copied, setCopied] = useState(false);
+  const [assignOpen, setAssignOpen] = useState(false);
 
   const handleCopyName = useCallback(() => {
     if (!promotion) return;
@@ -210,6 +215,7 @@ export function PromotionDetailPanel({
   const variantCount = promotion.variants?.length ?? 0;
 
   return (
+    <>
     <ScrollArea className="h-full bg-background/80 backdrop-blur-md rounded-2xl">
       <div className="p-6 space-y-6">
         {/* ── Header ─────────────────────────────────────────────────── */}
@@ -283,6 +289,21 @@ export function PromotionDetailPanel({
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>Toggle active state</TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="h-8 w-8"
+                    onClick={() => setAssignOpen(true)}
+                  >
+                    <PackagePlus className="h-3.5 w-3.5" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Assign variants</TooltipContent>
               </Tooltip>
             </TooltipProvider>
             <Button
@@ -394,13 +415,24 @@ export function PromotionDetailPanel({
 
         {/* ── Affected variants ───────────────────────────────────────── */}
         <div className="space-y-3">
-          <h3 className="text-sm font-semibold flex items-center gap-2">
-            <Package className="h-4 w-4" />
-            Assigned Variants
-            <Badge variant="secondary" className="text-xs">
-              {variantCount}
-            </Badge>
-          </h3>
+          <div className="flex items-center justify-between">
+            <h3 className="text-sm font-semibold flex items-center gap-2">
+              <Package className="h-4 w-4" />
+              Assigned Variants
+              <Badge variant="secondary" className="text-xs">
+                {variantCount}
+              </Badge>
+            </h3>
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-7 gap-1.5 text-xs"
+              onClick={() => setAssignOpen(true)}
+            >
+              <PackagePlus className="h-3.5 w-3.5" />
+              Assign variants
+            </Button>
+          </div>
           <PromotionAffectedVariants
             variants={promotion.variants}
             loading={false}
@@ -409,6 +441,17 @@ export function PromotionDetailPanel({
           />
         </div>
       </div>
-    </ScrollArea>
+      </ScrollArea>
+
+      {/* Assign variants dialog */}
+      <PromotionAssignVariantsDialog
+        open={assignOpen}
+        onOpenChange={setAssignOpen}
+        promotionId={promotion.id}
+        promotionName={promotion.name}
+        alreadyAssignedVariantIds={promotion.variants?.map((v) => v.id) ?? []}
+        onAssigned={onVariantsAssigned}
+      />
+    </>
   );
 }

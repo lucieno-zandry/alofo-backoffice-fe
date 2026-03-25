@@ -28,6 +28,7 @@ export type ProductQueryParams = {
         | 'images'
         | 'variant_groups'
         | 'variant_groups.variant_options'
+        | 'variants.variant_options.variant_group'
     )[];
 };
 

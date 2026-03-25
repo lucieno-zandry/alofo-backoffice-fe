@@ -211,7 +211,7 @@ export function CouponDetailPanel({
     warningMsg = `This coupon is scheduled and will activate on ${format(parseISO(coupon.start_date), "MMM d, yyyy")}.`;
 
   return (
-    <ScrollArea className="h-full">
+    <ScrollArea className="h-full bg-background/80 backdrop-blur-md rounded-2xl overflow-y-auto">
       <div className="p-6 space-y-6">
         {/* ── Header ─────────────────────────────────────────────────── */}
         <div className="flex items-start justify-between gap-4">

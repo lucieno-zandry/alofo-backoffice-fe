@@ -609,7 +609,7 @@ export function bulkDeleteCoupons(ids: number[]) {
 }
 
 export function toggleCouponActive(id: number, is_active: boolean) {
-    return appFetch.post<{ coupon: Coupon }>(`/coupon/update/${id}`, {
+    return appFetch.put<{ coupon: Coupon }>(`/coupon/update/${id}`, {
         is_active,
     });
 }
@@ -685,7 +685,7 @@ export function attachPromotionToVariant(
     promotionId: number,
     variantId: number
 ) {
-    return appFetch.post<{ message: string }>(
+    return appFetch.put<{ message: string }>(
         `/promotion/${promotionId}/attach-variant`,
         { variant_id: variantId }
     );
@@ -695,8 +695,26 @@ export function detachPromotionFromVariant(
     promotionId: number,
     variantId: number
 ) {
-    return appFetch.post<{ message: string }>(
+    return appFetch.put<{ message: string }>(
         `/promotion/${promotionId}/detach-variant`,
         { variant_id: variantId }
     );
+}
+
+/**
+ * Bulk-attach multiple variant IDs to a single promotion in one request.
+ * Returns per-variant results so the UI can surface partial failures.
+ */
+export function bulkAttachPromotionVariants(
+    promotionId: number,
+    variantIds: number[]
+) {
+    return appFetch.put<{
+        message: string;
+        attached: number[];   // successfully attached variant IDs
+        skipped: number[];    // already attached (no-ops)
+        failed: number[];     // variant IDs that errored server-side
+    }>(`/promotion/${promotionId}/bulk-attach-variants`, {
+        variant_ids: variantIds,
+    });
 }

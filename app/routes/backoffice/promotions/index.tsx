@@ -39,6 +39,7 @@ export default function PromotionsPage() {
         deletePromotion,
         bulkDelete,
         detachVariant,
+        refreshDetail,
     } = usePromotionsStore();
 
     // ── Local UI state ──────────────────────────────────────────────────────
@@ -226,6 +227,11 @@ export default function PromotionsPage() {
                         onDelete={() => setDeleteTarget(selectedPromotion)}
                         onToggleActive={handleToggleActive}
                         onDetachVariant={handleDetachVariant}
+                        onVariantsAssigned={() => {
+                            if (selectedPromotionId) {
+                                refreshDetail();
+                            }
+                        }}
                         mutating={mutating}
                     />
                 </div>

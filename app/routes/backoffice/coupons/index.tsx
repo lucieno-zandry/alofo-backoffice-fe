@@ -194,7 +194,7 @@ export default function CouponsPage() {
         </div>
 
         {/* Right — detail */}
-        <div className="flex-1 overflow-hidden bg-background/80 backdrop-blur-md rounded-2xl">
+        <div className="flex-1 overflow-hidden">
           <CouponDetailPanel
             coupon={selectedCoupon}
             loading={detailLoading}
