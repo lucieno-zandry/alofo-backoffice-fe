@@ -9,7 +9,6 @@ type User = {
   email_verified_at: string;
   role: "admin" | "manager" | "client";
   avatar_image_id?: number;
-  address_id?: number;
   created_at: string;
   updated_at: string;
   client_code_id?: number;
@@ -17,11 +16,9 @@ type User = {
   deleted_at?: string;
   status: UserStatus | null, // computed from the api
 
-
   permissions?: {
     can_use_effective_prices: boolean;
   };
-
 
   // relations
   avatar_image?: AppImage;
@@ -193,19 +190,26 @@ type VariantOptionsSnapshot = {
   [group: string]: string;
 };
 
+// Updated Address type
 type Address = {
   id: number;
-  fullname: string;
-  line1: string;
-  line2: string | null;
-  line3: string | null;
-  phone_number: string;
   user_id: number;
+  label?: string;               // e.g., "Home", "Work"
+  recipient_name: string;       // instead of fullname
+  phone: string;                // primary phone
+  phone_alt?: string;           // secondary phone
+  line1: string;                // street address
+  line2?: string;               // apartment, suite, etc.
+  city: string;
+  state?: string;               // state/province/region
+  postal_code: string;          // postal code
+  country: string;              // ISO 3166-1 alpha-2 code
+  address_type?: "billing" | "shipping" | "both";
+  is_default: boolean;
   created_at: string;
   updated_at: string;
-  is_default: boolean;
 
-  user?: User,
+  user?: User;
 };
 
 type Order = {

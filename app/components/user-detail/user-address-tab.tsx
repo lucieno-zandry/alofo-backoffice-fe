@@ -15,6 +15,17 @@ interface AddressesViewProps {
     addresses: Address[];
 }
 
+// Helper to format full address for display
+function formatAddress(addr: Address): string {
+    const parts = [addr.line1];
+    if (addr.line2) parts.push(addr.line2);
+    parts.push(addr.city);
+    if (addr.state) parts.push(addr.state);
+    parts.push(addr.postal_code);
+    parts.push(addr.country);
+    return parts.filter(Boolean).join(", ");
+}
+
 function AddressesView({ addresses }: AddressesViewProps) {
     return (
         <Card className="shadow-sm">
@@ -40,20 +51,24 @@ function AddressesView({ addresses }: AddressesViewProps) {
 
                         <div className="flex-1 min-w-0 space-y-1">
                             <div className="flex items-center gap-2">
-                                <p className="font-semibold text-sm">{address.fullname}</p>
+                                <p className="font-semibold text-sm">{address.recipient_name}</p>
                                 {address.is_default && (
                                     <Badge variant="secondary" className="text-[10px] px-1.5 py-0">
                                         Default Delivery
                                     </Badge>
                                 )}
+                                {address.label && (
+                                    <Badge variant="outline" className="text-[10px] px-1.5 py-0">
+                                        {address.label}
+                                    </Badge>
+                                )}
                             </div>
                             <div className="text-sm text-muted-foreground space-y-0.5">
-                                <p>{address.line1}</p>
-                                {address.line2 && <p>{address.line2}</p>}
-                                {address.line3 && <p>{address.line3}</p>}
+                                <p>{formatAddress(address)}</p>
                             </div>
                             <p className="text-xs font-medium text-muted-foreground/80 mt-2">
-                                {address.phone_number}
+                                📞 {address.phone}
+                                {address.phone_alt && ` (alt: ${address.phone_alt})`}
                             </p>
                         </div>
 

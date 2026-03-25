@@ -15,6 +15,17 @@ export type OrderSummaryViewProps = {
     total: number;
 };
 
+// Helper to format full address
+function formatFullAddress(addr: Address): string {
+    const parts = [addr.line1];
+    if (addr.line2) parts.push(addr.line2);
+    parts.push(addr.city);
+    if (addr.state) parts.push(addr.state);
+    parts.push(addr.postal_code);
+    parts.push(addr.country);
+    return parts.filter(Boolean).join(", ");
+}
+
 export function OrderSummaryView({
     user,
     address,
@@ -54,16 +65,18 @@ export function OrderSummaryView({
             <Card>
                 <CardHeader className="flex justify-between">
                     <CardTitle className="text-lg">Customer</CardTitle>
-                    {user &&
+                    {user && (
                         <Button
                             variant="outline"
                             size="sm"
                             aria-describedby="Open user profile"
-                            asChild>
+                            asChild
+                        >
                             <Link to={`../users/${user.id}`}>
                                 <ExternalLink />
                             </Link>
-                        </Button>}
+                        </Button>
+                    )}
                 </CardHeader>
                 <CardContent className="space-y-4">
                     {user ? (
@@ -76,7 +89,6 @@ export function OrderSummaryView({
                                 <span className="font-medium text-sm">{user.name}</span>
                                 <span className="text-sm text-muted-foreground">{user.email}</span>
                             </div>
-
                         </div>
                     ) : (
                         <p className="text-sm text-muted-foreground">No customer data</p>
@@ -91,11 +103,15 @@ export function OrderSummaryView({
                 </CardHeader>
                 <CardContent>
                     <address className="not-italic text-sm text-muted-foreground space-y-1">
-                        <p className="font-medium text-foreground">{address.fullname}</p>
-                        <p>{address.line1}</p>
-                        {address.line2 && <p>{address.line2}</p>}
-                        {address.line3 && <p>{address.line3}</p>}
-                        <p className="pt-2">{address.phone_number}</p>
+                        <p className="font-medium text-foreground">{address.recipient_name}</p>
+                        <p>{formatFullAddress(address)}</p>
+                        <p className="pt-2">
+                            📞 {address.phone}
+                            {address.phone_alt && ` (alt: ${address.phone_alt})`}
+                        </p>
+                        {address.label && (
+                            <p className="text-xs text-muted-foreground/70">Label: {address.label}</p>
+                        )}
                     </address>
                 </CardContent>
             </Card>
