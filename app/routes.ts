@@ -44,6 +44,8 @@ export default [
             route("promotions", "routes/backoffice/promotions/layout.tsx", [
                 index("routes/backoffice/promotions/index.tsx"),
             ]),
+
+            route("settings/account", "routes/common/account-settings.tsx"),
         ]),
 
         // error pages

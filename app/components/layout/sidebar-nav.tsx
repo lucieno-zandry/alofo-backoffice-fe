@@ -12,7 +12,7 @@ type NavGroup = ({
     links: ({
         to: string;
         label: string;
-        icon: any;
+        icon: any;  
         end?: boolean;
     })[];
 })

@@ -1,6 +1,9 @@
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 
+import enSettings from "./locales/en/settings.json";
+import frSettings from "./locales/fr/settings.json";
+
 i18n
   .use(initReactI18next)
   .init({
@@ -12,8 +15,12 @@ i18n
     defaultNS: "common",
 
     resources: {
-      en: {},
-      fr: {},
+      en: {
+        settings: enSettings,
+      },
+      fr: {
+        settings: frSettings,
+      },
     },
 
     interpolation: {

@@ -1,5 +1,6 @@
 import { Bell, Menu } from "lucide-react";
 import useBackofficeSidebar from "~/hooks/use-backoffice-sidebar";
+import UserDropdown from "./user-dropdown";
 
 export default function () {
     const { setIsMobileOpen } = useBackofficeSidebar();
@@ -40,12 +41,7 @@ export function HeaderView({ onMenuClick }: { onMenuClick: () => void }) {
                 <div className="h-4 w-[px] bg-border mx-1" />
 
                 {/* User Profile Trigger */}
-                <button className="flex items-center gap-2 p-1 pr-2 hover:bg-accent rounded-lg transition-colors group">
-                    <div className="w-7 h-7 rounded-full bg-gradient-to-tr from-primary to-indigo-500 border border-white/10 group-hover:shadow-sm" />
-                    <span className="text-sm font-medium text-muted-foreground group-hover:text-foreground hidden sm:block">
-                        JD
-                    </span>
-                </button>
+                <UserDropdown />
             </div>
         </header>
     );
