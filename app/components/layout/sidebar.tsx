@@ -71,7 +71,7 @@ export function Sidebar({ lang, setIsCollapsed, isMobileOpen, setMobileOpen, sho
                 <SidebarNav collapsedView={collapsedView} lang={lang} />
 
                 {/* Footer Section */}
-                <SidebarFooter collapsedView={collapsedView} showFull={showFull} />
+                {/* <SidebarFooter collapsedView={collapsedView} showFull={showFull} /> */}
             </aside>
         </>
     );

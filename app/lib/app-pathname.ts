@@ -1,8 +1,7 @@
-import type { LoaderFunctionArgs } from "react-router";
 import useRouterStore from "~/hooks/use-router-store";
 
 
-export default function (pathname: string, loaderFunctionArgs?: LoaderFunctionArgs) {
+export default function (pathname: string) {
     const { lang } = useRouterStore.getState();
-    return `/${lang}`;
+    return `/${lang}${pathname}`;
 }

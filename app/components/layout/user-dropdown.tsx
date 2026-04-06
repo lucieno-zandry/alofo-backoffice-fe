@@ -13,7 +13,7 @@ import UserAvatar from './user-avatar';
 import { LogoutDialog } from './logout-dialog';
 import React from 'react';
 import { Link } from 'react-router';
-import { MapPin, Package, Settings, TicketPercent, LifeBuoy, LogOut } from 'lucide-react';
+import { MapPin, Package, Settings, TicketPercent, LifeBuoy, LogOut, UserCog } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import appPathname from '~/lib/app-pathname';
 import { LanguageSwitcher } from './language-switcher';
@@ -50,8 +50,8 @@ export function UserDropdown({ user, setLogoutOpen, logoutOpen, t }: UserDropdow
                     <DropdownMenuGroup>
                         <DropdownMenuItem asChild>
                             <Link to={appPathname('/settings/account')} className="cursor-pointer">
-                                <Settings className="mr-2 h-4 w-4" />
-                                <span>{t('common:settings')}</span>
+                                <UserCog className="mr-2 h-4 w-4" />
+                                <span>{t('common:account')}</span>
                             </Link>
                         </DropdownMenuItem>
                         <DropdownMenuItem asChild>

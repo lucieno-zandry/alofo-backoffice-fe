@@ -10,6 +10,7 @@ import {
     DialogTitle,
 } from "~/components/ui/dialog"
 import { useAuthStore } from "~/hooks/use-auth-store"
+import appNavigate from "~/lib/app-navigate"
 
 export type LogoutDialogProps = {
     open: boolean,
@@ -22,6 +23,7 @@ export function LogoutDialog({ open, onOpenChange }: LogoutDialogProps) {
     const handleLogout = React.useCallback(() => {
         setUser(null);
         localStorage.removeItem('token');
+        appNavigate('/auth');
     }, [setUser]);
 
     return (
