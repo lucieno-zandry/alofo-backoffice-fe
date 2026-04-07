@@ -24,9 +24,9 @@ import {
     AlertDialogTitle,
 } from '~/components/ui/alert-dialog';
 import { useState } from 'react';
-import { useProducts } from '../hooks/use-products';
-import { useDeleteProduct } from '../hooks/use-delete-product';
-import { useProductFilterStore } from '../stores/use-product-filter-store';
+import { useProducts } from '../../hooks/use-products';
+import { useDeleteProduct } from '../../hooks/use-delete-product';
+import { useProductFilterStore } from '../../stores/use-product-filter-store';
 import { Loader2, Trash2, Package } from 'lucide-react';
 import formatPrice from '~/lib/format-price';
 import { cn } from '~/lib/utils';

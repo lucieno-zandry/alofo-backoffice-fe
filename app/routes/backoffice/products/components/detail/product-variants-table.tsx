@@ -11,7 +11,7 @@ import {
 } from '~/components/ui/table';
 import { Badge } from '~/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card';
-import { getStockStatus, getPromotionBadge } from '../helpers/product-helpers';
+import { getStockStatus, getPromotionBadge } from '../../helpers/product-helpers';
 import formatPrice from '~/lib/format-price';
 
 interface ProductVariantsTableProps {

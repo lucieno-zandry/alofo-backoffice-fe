@@ -5,16 +5,20 @@ import { Outlet } from 'react-router';
 import { Button } from '~/components/ui/button';
 import { ScrollArea } from '~/components/ui/scroll-area';
 import { Plus } from 'lucide-react';
-import { ProductFilters } from './components/product-filters';
-import { ProductList } from './components/product-list';
+import { ProductFilters } from './components/list/product-filters';
+import { ProductList } from './components/list/product-list';
+import { ProductFormDrawer } from './components/form/product-form-drawer';
+import { useProductFormStore } from './stores/use-product-form-store';
 
 export default () => {
+    const { openForCreate } = useProductFormStore();
+
     return (
         <div className="h-full flex flex-col bg-background/80 backdrop-blur-md rounded-2xl">
             {/* Header */}
             <div className="border-b px-6 py-4 flex justify-between items-center">
                 <h1 className="text-2xl font-bold">Product Management</h1>
-                <Button onClick={() => console.log('Navigate to create product')}>
+                <Button onClick={openForCreate}>
                     <Plus className="mr-2 h-4 w-4" />
                     Create Product
                 </Button>
@@ -41,6 +45,8 @@ export default () => {
                     </ScrollArea>
                 </div>
             </div>
+
+            <ProductFormDrawer />
         </div>
     );
 };

@@ -22,8 +22,8 @@ import {
     DialogClose,
 } from '~/components/ui/dialog';
 import { Search, SlidersHorizontal, RotateCcw } from 'lucide-react';
-import { useProductFilterStore } from '../stores/use-product-filter-store';
-import { useCategories } from '../hooks/use-categories';
+import { useProductFilterStore } from '../../stores/use-product-filter-store';
+import { useCategories } from '../../hooks/use-categories';
 import getCurrency from '~/lib/get-currency';
 import { symbol } from 'zod';
 

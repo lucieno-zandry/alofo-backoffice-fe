@@ -3,10 +3,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '~/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card';
 import { Badge } from '~/components/ui/badge';
 import { useProduct } from './hooks/use-product';
-import { ProductVariantsTable } from './components/product-variants-table';
-import { ProductVariantGroups } from './components/product-variants-groups';
-import { ProductImagesGallery } from './components/product-images-gallery';
-import { ProductDetailSkeleton } from './components/product-detail-skeleton';
+import { ProductVariantsTable } from './components/detail/product-variants-table';
+import { ProductVariantGroups } from './components/detail/product-variants-groups';
+import { ProductImagesGallery } from './components/detail/product-images-gallery';
+import { ProductDetailSkeleton } from './components/detail/product-detail-skeleton';
 
 // Dumb Component
 interface ProductDetailViewProps {
