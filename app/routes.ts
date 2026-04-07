@@ -16,10 +16,6 @@ export default [
 
         route("", "routes/backoffice/layout.tsx", [
             index("routes/backoffice/dashboard/index.tsx"),
-            route("products", "routes/backoffice/products/layout.tsx", [
-                route("", "routes/backoffice/products/index.tsx"),
-                route(":slug", "routes/backoffice/products/product-detail.tsx"),
-            ]),
             route("categories", "routes/backoffice/categories/index.tsx"),
             route("orders", "routes/backoffice/orders/index.tsx"),
             route("orders/:uuid", "routes/backoffice/orders/order-detail.tsx"),
@@ -34,6 +30,10 @@ export default [
                 route(":userId", "routes/backoffice/users/user-detail.tsx"),
             ]),
 
+            route("products", "routes/backoffice/products/layout.tsx", [
+                route(":slug?", "routes/backoffice/products/index.tsx"),
+            ]),
+
             // ── Discounts & Promotions ─────────────────────────────────────────
             route("client-codes", "routes/backoffice/client-codes/layout.tsx", [
                 index("routes/backoffice/client-codes/index.tsx"),
@@ -44,6 +44,8 @@ export default [
             route("promotions", "routes/backoffice/promotions/layout.tsx", [
                 index("routes/backoffice/promotions/index.tsx"),
             ]),
+
+            route("shipping-methods", "routes/backoffice/shipping-methods/index.tsx"),
 
             route("settings/account", "routes/common/account-settings.tsx"),
         ]),

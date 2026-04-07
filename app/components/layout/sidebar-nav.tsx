@@ -4,7 +4,8 @@ import {
     LayoutDashboard, Package, FolderTree, ShoppingCart,
     CreditCard, Truck, Users, Landmark, TicketPercent,
     Sparkles, Settings,
-    type LucideProps
+    type LucideProps,
+    Anchor
 } from "lucide-react";
 
 type NavGroup = ({
@@ -12,7 +13,7 @@ type NavGroup = ({
     links: ({
         to: string;
         label: string;
-        icon: any;  
+        icon: any;
         end?: boolean;
     })[];
 })
@@ -29,6 +30,7 @@ export const navGroups: NavGroup[] = [
         links: [
             { to: "products", label: "Products", icon: Package },
             { to: "categories", label: "Categories", icon: FolderTree },
+            { to: "shipping-methods", label: "Shipping Method", icon: Anchor },
         ]
     },
     {

@@ -9,18 +9,19 @@ async function executeRequest<T>(request: () => Promise<Response>) {
     try {
         const response = await request();
         formatedResponse.status = response.status;
+        if (response.status !== 204) {
+            const json = await response.json();
+            if (json.status) delete json.status;
 
-        const json = await response.json();
-        if (json.status) delete json.status;
-
-        if (response.status >= 400) {
-            // if backend wants to redirect the user
-            if (response.status === 403 && json.action) {
-                handleActionRedirection(json);
+            if (response.status >= 400) {
+                // if backend wants to redirect the user
+                if (response.status === 403 && json.action) {
+                    handleActionRedirection(json);
+                }
+                formatedResponse.error = json;
+            } else {
+                formatedResponse.data = json as T;
             }
-            formatedResponse.error = json;
-        } else {
-            formatedResponse.data = json as T;
         }
     } catch (e) {
         formatedResponse.error = e;
@@ -29,9 +30,16 @@ async function executeRequest<T>(request: () => Promise<Response>) {
 
     if (formatedResponse.error) {
         if (formatedResponse.error.errors && formatedResponse.status === 422) {
-            throw new ValidationException(formatedResponse.error.errors, formatedResponse.status);
+            throw new ValidationException(
+                formatedResponse.error.errors,
+                formatedResponse.status,
+                formatedResponse.error?.message || 'Something went wrong.'
+            );
         } else {
-            throw new HttpException(formatedResponse.status, formatedResponse.error);
+            throw new HttpException(
+                formatedResponse.status,
+                formatedResponse.error
+            );
         }
     }
 

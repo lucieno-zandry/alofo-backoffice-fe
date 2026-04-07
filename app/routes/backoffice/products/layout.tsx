@@ -1,31 +1,46 @@
-import { useProductsPage } from "~/components/products/products-page.controller";
-import { ProductList } from "~/components/products/product-list.view";
-import { Outlet } from "react-router";
-import ProductEditor from "~/components/product-editor/product-editor";
+// ============================================
+// PAGE: ProductsPage.tsx (Layout)
+// ============================================
+import { Outlet } from 'react-router';
+import { Button } from '~/components/ui/button';
+import { ScrollArea } from '~/components/ui/scroll-area';
+import { Plus } from 'lucide-react';
+import { ProductFilters } from './components/product-filters';
+import { ProductList } from './components/product-list';
 
-export default function ProductsPage() {
-  const { selectedId, selectedProduct, handleSelect } = useProductsPage();
+export default () => {
+    return (
+        <div className="h-full flex flex-col bg-background/80 backdrop-blur-md rounded-2xl">
+            {/* Header */}
+            <div className="border-b px-6 py-4 flex justify-between items-center">
+                <h1 className="text-2xl font-bold">Product Management</h1>
+                <Button onClick={() => console.log('Navigate to create product')}>
+                    <Plus className="mr-2 h-4 w-4" />
+                    Create Product
+                </Button>
+            </div>
 
-  return (
-    <>
-      <div className="flex h-full gap-2">
-        {/* Left: Product list — always visible, shrinks on md when detail opens */}
-        <div
-          className={`
-          flex-col bg-background/80 backdrop-blur-md rounded-2xl transition-all duration-300 h-full overflow-y-auto
-          ${selectedProduct ? "hidden md:flex md:w-72 lg:w-80 xl:w-96" : "flex w-full md:w-96 lg:w-[420px]"}
-          `}
-        >
-          <ProductList
-            selectedId={selectedId}
-            onSelect={handleSelect}
-          />
+            {/* Main Content */}
+            <div className="flex-1 flex overflow-hidden">
+                {/* Master: Sidebar */}
+                <div className="w-96 border-r flex flex-col overflow-y-auto">
+                    <div className="p-4 border-b">
+                        <ProductFilters />
+                    </div>
+                    <div className="flex-1 p-4">
+                        <ProductList />
+                    </div>
+                </div>
+
+                {/* Detail: Main Content */}
+                <div className="flex-1 overflow-auto">
+                    <ScrollArea className="h-full">
+                        <div className="p-6">
+                            <Outlet />
+                        </div>
+                    </ScrollArea>
+                </div>
+            </div>
         </div>
-
-        <Outlet />
-      </div>
-
-      <ProductEditor />
-    </>
-  );
-}
+    );
+};

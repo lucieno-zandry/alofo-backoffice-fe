@@ -2,7 +2,7 @@ import { Button } from "~/components/ui/button";
 import { Pencil, Trash } from "lucide-react";
 import useProductEditorSheet from "~/hooks/use-product-editor-sheet";
 import { useLoaderData } from "react-router";
-import { clientLoader } from "~/routes/backoffice/products/product-detail";
+import { clientLoader } from "~/routes/backoffice/products";
 import { useCallback } from "react";
 import useProductDeleteDialogStore from "~/hooks/use-product-delete-dialog-store";
 

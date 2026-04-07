@@ -5,12 +5,14 @@ import isCsr from "~/lib/is-csr";
 const API_URL = import.meta.env.VITE_API_URL;
 
 export class ValidationException {
+    message: string;
     errors: Record<string, string[]>;
     status: number;
 
-    constructor(errors: Record<string, string[]>, status: number) {
+    constructor(errors: Record<string, string[]>, status: number, message: string) {
         this.errors = errors;
         this.status = status;
+        this.message = message;
     }
 }
 

@@ -14,6 +14,7 @@ import type { FetchUsersParams } from "~/types/users";
 import type { ClientCodeDetailResponse, ClientCodesQueryParams, ClientCodesResponse } from "~/types/client-codes";
 import type { CouponDetailResponse, CouponsQueryParams, CouponsResponse } from "~/types/coupons";
 import type { CreatePromotionData, PromotionDetailResponse, PromotionsQueryParams, PromotionsResponse, UpdatePromotionData } from "~/types/promotions";
+import type { StoreShippingMethodData, StoreShippingRateData, UpdateShippingMethodData, UpdateShippingRateData } from "~/types/shipping-methods";
 
 // auth
 
@@ -85,7 +86,9 @@ export function getProducts(params?: ProductQueryParams) {
 }
 
 export function getProduct(slug: string) {
-    return appFetch.get<{ product: Product }>(`/product/get/${slug}`);
+    return appFetch.get<{ product: Product }>(
+        `/product/get/${slug}?with=cart_items.order,variant_groups.variant_options,variants.variant_options,variants.image,variants.promotions,images
+        `);
 }
 
 export function createProduct(data: FormData) {
@@ -717,4 +720,49 @@ export function bulkAttachPromotionVariants(
     }>(`/promotion/${promotionId}/bulk-attach-variants`, {
         variant_ids: variantIds,
     });
+}
+
+
+// ── Shipping Methods ─────────────────────────────────────────────────────────
+
+export function fetchShippingMethods() {
+    return appFetch.get<{ data: ShippingMethod[] }>('/shipping-methods');
+}
+
+export function showShippingMethod(id: number) {
+    return appFetch.get<{ data: ShippingMethod }>(`/shipping-methods/${id}`);
+}
+
+export function createShippingMethod(data: StoreShippingMethodData) {
+    return appFetch.post<{ data: ShippingMethod }>('/shipping-methods', data);
+}
+
+export function updateShippingMethod(id: number, data: UpdateShippingMethodData) {
+    return appFetch.put<{ data: ShippingMethod }>(`/shipping-methods/${id}`, data);
+}
+
+export function deleteShippingMethod(id: number) {
+    return appFetch.delete<{ message: string }>(`/shipping-methods/${id}`);
+}
+
+// ── Rates ─────────────────────────────────────────────────────────────────────
+
+export function fetchShippingRates(methodId: number) {
+    return appFetch.get<{ data: ShippingRate[] }>(`/shipping-methods/${methodId}/rates`);
+}
+
+export function showShippingRate(methodId: number, rateId: number) {
+    return appFetch.get<{ data: ShippingRate }>(`/shipping-methods/${methodId}/rates/${rateId}`);
+}
+
+export function createShippingRate(methodId: number, data: StoreShippingRateData) {
+    return appFetch.post<{ data: ShippingRate }>(`/shipping-methods/${methodId}/rates`, data);
+}
+
+export function updateShippingRate(methodId: number, rateId: number, data: UpdateShippingRateData) {
+    return appFetch.put<{ data: ShippingRate }>(`/shipping-methods/${methodId}/rates/${rateId}`, data);
+}
+
+export function deleteShippingRate(methodId: number, rateId: number) {
+    return appFetch.delete<{ message: string }>(`/shipping-methods/${methodId}/rates/${rateId}`);
 }
