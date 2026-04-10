@@ -1,11 +1,11 @@
 import { create } from "zustand"
 import type { PaginatedResponse } from "~/api/app-fetch"
 
-export type ProductStore = {
+export type ProductsStore = {
     data?: PaginatedResponse<Product>,
-    setData: (data: ProductStore['data']) => void,
+    setData: (data: ProductsStore['data']) => void,
 }
 
-export default create<ProductStore>(set => ({
+export default create<ProductsStore>(set => ({
     setData: (data) => set({ data }),
 }))

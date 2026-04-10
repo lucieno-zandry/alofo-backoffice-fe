@@ -1,9 +1,4 @@
-// ============================================
-// COMPONENT: ProductList.tsx (Smart + Dumb)
-// ============================================
 import { useParams } from 'react-router';
-import { Button } from '~/components/ui/button';
-import { Badge } from '~/components/ui/badge';
 import {
     Pagination,
     PaginationContent,
@@ -13,38 +8,13 @@ import {
     PaginationNext,
     PaginationPrevious,
 } from '~/components/ui/pagination';
-import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-} from '~/components/ui/alert-dialog';
-import { useState } from 'react';
 import { useProducts } from '../../hooks/use-products';
-import { useDeleteProduct } from '../../hooks/use-delete-product';
 import { useProductFilterStore } from '../../stores/use-product-filter-store';
-import { Loader2, Trash2, Package } from 'lucide-react';
-import formatPrice from '~/lib/format-price';
-import { cn } from '~/lib/utils';
+import { Package } from 'lucide-react';
 import appNavigate from '~/lib/app-navigate';
 import { ProductListSkeleton } from './product-list-skeleton';
 import { ProductListItem } from './product-list-item';
-
-const stockBadgeVariant = {
-    in_stock: "default",
-    low_stock: "secondary",
-    out_of_stock: "destructive",
-} as const;
-
-const stockLabel = {
-    in_stock: "In Stock",
-    low_stock: "Low Stock",
-    out_of_stock: "Out of Stock",
-} as const;
+import useProductDeleteDialogStore from '../../stores/use-product-delete-dialog-store';
 
 // Dumb Component
 interface ProductListViewProps {
@@ -154,11 +124,9 @@ export const ProductListView = ({
 // Smart Component
 export const ProductList = () => {
     const { slug } = useParams();
-    const { data, isLoading} = useProducts();
+    const { data, isLoading } = useProducts();
     const { setPage } = useProductFilterStore();
-    const deleteProduct = useDeleteProduct();
-    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-    const [productToDelete, setProductToDelete] = useState<Product | null>(null);
+    const { setProductDeleteDialogOpen, setProductToDelete } = useProductDeleteDialogStore();
 
     const products = data?.data || [];
     const currentPage = data?.current_page || 1;
@@ -170,15 +138,7 @@ export const ProductList = () => {
 
     const handleDeleteClick = (product: Product) => {
         setProductToDelete(product);
-        setDeleteDialogOpen(true);
-    };
-
-    const handleConfirmDelete = () => {
-        if (productToDelete) {
-            deleteProduct.mutate([productToDelete.id]);
-            setDeleteDialogOpen(false);
-            setProductToDelete(null);
-        }
+        setProductDeleteDialogOpen(true);
     };
 
     return (
@@ -193,26 +153,6 @@ export const ProductList = () => {
                 onPageChange={setPage}
                 onDeleteClick={handleDeleteClick}
             />
-
-            <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-                <AlertDialogContent>
-                    <AlertDialogHeader>
-                        <AlertDialogTitle>Delete Product</AlertDialogTitle>
-                        <AlertDialogDescription>
-                            Are you sure you want to delete <span className="font-semibold text-foreground">"{productToDelete?.title}"</span>? This action cannot be undone.
-                        </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction
-                            onClick={handleConfirmDelete}
-                            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                        >
-                            Delete
-                        </AlertDialogAction>
-                    </AlertDialogFooter>
-                </AlertDialogContent>
-            </AlertDialog>
         </>
     );
 };

@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { getProduct } from '~/api/http-requests';
+import useProductStore from '../stores/use-product-store';
 
 interface UseProductReturn {
     data: Product | undefined;
@@ -8,25 +9,26 @@ interface UseProductReturn {
     refetch: () => void;
 }
 
-export const useProduct = (slug: string): UseProductReturn => {
-    const [data, setData] = useState<Product | undefined>(undefined);
+export const useProduct = (slug?: string): UseProductReturn => {
+    const { setProduct, product } = useProductStore();
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [error, setError] = useState<Error | null>(null);
 
     const fetchProduct = useCallback(async () => {
-        if (!slug) {
-            setData(undefined);
+        if (slug && slug === '') {
+            setProduct(undefined);
             setIsLoading(false);
             setError(null);
-            return;
         }
+
+        if (!slug) return;
 
         setIsLoading(true);
         setError(null);
         try {
             const response = await getProduct(slug);
             if (response.error) throw response.error;
-            setData(response.data?.product);
+            setProduct(response.data?.product);
         } catch (err) {
             setError(err instanceof Error ? err : new Error('Failed to fetch product'));
         } finally {
@@ -38,5 +40,5 @@ export const useProduct = (slug: string): UseProductReturn => {
         fetchProduct();
     }, [fetchProduct]);
 
-    return { data, isLoading, error, refetch: fetchProduct };
+    return { data: product, isLoading, error, refetch: fetchProduct };
 };

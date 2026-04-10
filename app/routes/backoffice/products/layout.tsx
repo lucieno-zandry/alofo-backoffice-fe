@@ -1,28 +1,24 @@
-// ============================================
-// PAGE: ProductsPage.tsx (Layout)
-// ============================================
 import { Outlet } from 'react-router';
-import { Button } from '~/components/ui/button';
 import { ScrollArea } from '~/components/ui/scroll-area';
-import { Plus } from 'lucide-react';
 import { ProductFilters } from './components/list/product-filters';
 import { ProductList } from './components/list/product-list';
 import { ProductFormDrawer } from './components/form/product-form-drawer';
-import { useProductFormStore } from './stores/use-product-form-store';
+import appNavigate from '~/lib/app-navigate';
+import ProductDetailHeader from './components/detail/product-detail-header';
+import ProductDeleteDialog from './components/form/product-delete-dialog';
 
 export default () => {
-    const { openForCreate } = useProductFormStore();
+    const handleFormSuccess = (product: Product) => {
+        appNavigate(`/products/${product.slug}`);
+    }
+
+    const handleDeleteSuccess = () => {
+        appNavigate("/products");
+    }
 
     return (
         <div className="h-full flex flex-col bg-background/80 backdrop-blur-md rounded-2xl">
-            {/* Header */}
-            <div className="border-b px-6 py-4 flex justify-between items-center">
-                <h1 className="text-2xl font-bold">Product Management</h1>
-                <Button onClick={openForCreate}>
-                    <Plus className="mr-2 h-4 w-4" />
-                    Create Product
-                </Button>
-            </div>
+            <ProductDetailHeader />
 
             {/* Main Content */}
             <div className="flex-1 flex overflow-hidden">
@@ -46,7 +42,8 @@ export default () => {
                 </div>
             </div>
 
-            <ProductFormDrawer />
+            <ProductFormDrawer onSuccess={handleFormSuccess} />
+            <ProductDeleteDialog onSuccess={handleDeleteSuccess}/>
         </div>
     );
 };

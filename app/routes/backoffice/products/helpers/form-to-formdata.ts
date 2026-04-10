@@ -34,13 +34,13 @@ export function buildCreateFormData(data: CreatePayload): FormData {
         });
     });
 
-    // build option _key → "gi.oi" string so variants can reference
-    const keyToRef: Record<string, string> = {};
-    data.variant_groups.forEach((g, gi) => {
-        g.options.forEach((o, oi) => {
-            keyToRef[o._key] = `${gi}.${oi}`;
-        });
-    });
+    // ✅ Build a map from option._key → "GroupName:OptionValue"
+    const optionRefMap: Record<string, string> = {};
+    for (const group of data.variant_groups) {
+        for (const option of group.options) {
+            optionRefMap[option._key] = `${group.name}:${option.value}`;
+        }
+    }
 
     // variants
     data.variants.forEach((v, vi) => {
@@ -52,14 +52,16 @@ export function buildCreateFormData(data: CreatePayload): FormData {
         if (v.length_cm) fd.append(`variants[${vi}][length_cm]`, v.length_cm);
         if (v.width_cm) fd.append(`variants[${vi}][width_cm]`, v.width_cm);
         if (v.height_cm) fd.append(`variants[${vi}][height_cm]`, v.height_cm);
+
         v.option_refs.forEach((optKey, ri) => {
-            fd.append(`variants[${vi}][option_refs][${ri}]`, keyToRef[optKey] ?? optKey);
+            // Use the named reference if found, otherwise fallback (should never happen)
+            const ref = optionRefMap[optKey] ?? optKey;
+            fd.append(`variants[${vi}][option_refs][${ri}]`, ref);
         });
     });
 
     return fd;
 }
-
 // ─── Update payload ───────────────────────────────────────────────────────────
 
 type UpdatePayload = CreatePayload & {

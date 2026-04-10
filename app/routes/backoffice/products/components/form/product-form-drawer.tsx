@@ -78,7 +78,7 @@ export function ProductFormDrawer({ onSuccess }: Props) {
                 if (!g.name.trim()) {
                     errors[`variant_groups.${gi}.name`] = ["Group name is required."] as any;
                 }
-                g.options.forEach((o: VariantOption, oi: number) => {
+                g.options.forEach((o, oi) => {
                     if (!o.value.trim()) {
                         errors[`variant_groups.${gi}.options.${oi}.value`] = ["Option value is required."] as any;
                     }
