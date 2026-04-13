@@ -14,7 +14,7 @@ type User = {
   client_code_id?: number;
   blocked_by_id?: number;
   deleted_at?: string;
-  status: UserStatus | null, // computed from the api
+  status: UserStatus | null; // computed from the api
 
   permissions?: {
     can_use_effective_prices: boolean;
@@ -23,16 +23,17 @@ type User = {
   // relations
   avatar_image?: AppImage;
   client_code?: ClientCode;
-  cart_items?: CartItem[],
-  addresses?: Address[],
-  orders?: Order[],
-  transactions?: Transaction[],
-  refund_requests?: RefundRequest[],
-  reviewed_refund_requests?: RefundRequest[],
-  performed_transaction_audit_logs?: TransactionAuditLog[],
-  reviewed_transactions?: Transaction[],
-  statuses?: UserStatus[],
-  set_statuses?: UserStatus[],
+  cart_items?: CartItem[];
+  addresses?: Address[];
+  orders?: Order[];
+  transactions?: Transaction[];
+  refund_requests?: RefundRequest[];
+  reviewed_refund_requests?: RefundRequest[];
+  performed_transaction_audit_logs?: TransactionAuditLog[];
+  reviewed_transactions?: Transaction[];
+  statuses?: UserStatus[];
+  set_statuses?: UserStatus[];
+  preferences?: UserPreference;
 };
 
 type UserStatus = {
@@ -46,6 +47,19 @@ type UserStatus = {
 
   user?: User;
   set_by_user?: User;
+};
+
+type UserPreference = {
+  id: number;
+  user_id: number;
+  theme: 'light' | 'dark' | 'system';
+  language: string;
+  timezone: string;
+  currency: string;
+  created_at: string;
+  updated_at: string;
+
+  user?: User;
 };
 
 type Product = {
@@ -90,6 +104,7 @@ type Variant = {
   promotions?: Promotion[];
   image?: AppImage;
 
+  // Shipping dimensions
   weight_kg?: number;      // in kilograms
   length_cm?: number;      // in centimeters
   width_cm?: number;
@@ -201,7 +216,6 @@ type VariantOptionsSnapshot = {
   [group: string]: string;
 };
 
-// Updated Address type
 type Address = {
   id: number;
   user_id: number;
@@ -248,7 +262,7 @@ type Order = {
   shipments?: Shipment[];
   transactions?: Transaction[];
   user?: User;
-  refund_requests?: RefundRequest[],
+  refund_requests?: RefundRequest[];
   coupon?: Coupon;
 };
 
@@ -266,7 +280,7 @@ type Coupon = {
   end_date: string;
   is_active: boolean;
 
-  orders?: Order[],
+  orders?: Order[];
 };
 
 type Shipment = {
@@ -289,7 +303,7 @@ type ShipmentData = {
 };
 
 // ----------------------------------------------------------------------------
-// Transaction & related types (updated)
+// Transaction & related types
 // ----------------------------------------------------------------------------
 type TransactionType = "PAYMENT" | "REFUND" | "MANUAL";
 type DisputeStatus = "OPEN" | "RESOLVED" | "LOST";
@@ -326,7 +340,7 @@ type Transaction = {
   audit_logs?: TransactionAuditLog[];
   webhook_logs?: PaymentWebhookLog[];
   refund_requests?: RefundRequest[];
-  reviewer?: User   // 👈 new relation
+  reviewer?: User;   // 👈 new relation
 };
 
 type TransactionAuditLog = {
@@ -360,7 +374,7 @@ type PaymentWebhookLog = {
 };
 
 // ----------------------------------------------------------------------------
-// New RefundRequest model
+// RefundRequest model
 // ----------------------------------------------------------------------------
 type RefundRequest = {
   id: number;
@@ -385,12 +399,12 @@ type RefundRequest = {
 };
 
 // ----------------------------------------------------------------------------
-// Notification types (updated)
+// Notification types
 // ----------------------------------------------------------------------------
 type TransactionNotificationData = {
   notification_type: "transaction";
   type: "payment_success" | "payment_failed";
-  transaction_uuid?: string;            // note: originally transaction_id, but updated to match new UUID
+  transaction_uuid?: string;
   order_uuid: string;
   amount: number;
   payment_method: string;
@@ -448,7 +462,6 @@ type ClientCodeNotificationData = {
   message: string;
 };
 
-
 type OtherNotificationData = {
   notification_type: "system";
   title: string;
@@ -473,7 +486,7 @@ type AppNotification = {
 };
 
 // ----------------------------------------------------------------------------
-// ClientCode (unchanged)
+// ClientCode
 // ----------------------------------------------------------------------------
 type ClientCode = {
   id: number;
@@ -483,9 +496,12 @@ type ClientCode = {
   created_at: string;
 
   // Joined relationships
-  users?: User[],
+  users?: User[];
 };
 
+// ----------------------------------------------------------------------------
+// Shipping
+// ----------------------------------------------------------------------------
 type ShippingMethod = {
   id: number;
   name: string;                    // e.g., "Standard Delivery", "Express FedEx"
@@ -511,7 +527,7 @@ type ShippingMethod = {
   created_at: string;
   updated_at: string;
 
-  shipping_rates?: ShippingRate[],
+  shipping_rates?: ShippingRate[];
 };
 
 type ShippingRate = {
