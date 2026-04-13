@@ -12,6 +12,7 @@ import { Label } from '~/components/ui/label';
 import { Loader2, Globe } from 'lucide-react';
 import { defaultRateValues } from '~/lib/shipping-methods-helpers';
 import { useShippingMethodsStore } from '~/hooks/use-shipping-methods-store';
+import getCurrency from '~/lib/get-currency';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -137,7 +138,7 @@ export function ShippingRateForm({
                     {/* Rates */}
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-1.5">
-                            <Label htmlFor="sr-rate">Base Rate ($) <span className="text-destructive">*</span></Label>
+                            <Label htmlFor="sr-rate">Base Rate ({getCurrency.symbol()}) <span className="text-destructive">*</span></Label>
                             <Input
                                 id="sr-rate"
                                 type="number"
@@ -150,7 +151,7 @@ export function ShippingRateForm({
                             />
                         </div>
                         <div className="space-y-1.5">
-                            <Label htmlFor="sr-rate-kg">Extra per kg ($)</Label>
+                            <Label htmlFor="sr-rate-kg">Extra per kg ({getCurrency.symbol()})</Label>
                             <Input
                                 id="sr-rate-kg"
                                 type="number"

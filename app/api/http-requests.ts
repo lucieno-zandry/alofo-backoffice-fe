@@ -766,3 +766,11 @@ export function updateShippingRate(methodId: number, rateId: number, data: Updat
 export function deleteShippingRate(methodId: number, rateId: number) {
     return appFetch.delete<{ message: string }>(`/shipping-methods/${methodId}/rates/${rateId}`);
 }
+
+export function getSettings() {
+    return appFetch.get<Setting[]>('/settings');
+}
+
+export function updateSetting(setting: Setting) {
+    return appFetch.put<Setting>(`/settings/${setting.key}`, setting);
+}

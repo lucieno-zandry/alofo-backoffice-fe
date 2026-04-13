@@ -23,7 +23,13 @@ export const clientAction = async ({ request }: ActionFunctionArgs) => {
     const password = formData.get('password');
     const passwordConfirmation = formData.get('password_confirmation');
 
-    if (password?.toString() !== passwordConfirmation?.toString()) return new ValidationException({ password_confirmation: ["The password confirmation does not match."] }, 422);
+    if (password?.toString() !== passwordConfirmation?.toString())
+        return new ValidationException({
+            password_confirmation: ["The password confirmation does not match."]
+        },
+            422,
+            "The password confirmation does not match."
+        );
 
     try {
         const response = await resetPassword(formData);
@@ -50,7 +56,7 @@ export default function () {
     const token = useLoaderData<string>();
     const canSubmit = useMemo(() => !formValidationErrors, [formValidationErrors]);
     const isLoading = useMemo(() => navigation.state === "loading", [navigation]);
-    
+
     const error = useActionData();
 
     useEffect(() => {

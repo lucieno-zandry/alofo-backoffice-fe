@@ -47,6 +47,7 @@ export default [
 
             route("shipping-methods", "routes/backoffice/shipping-methods/index.tsx"),
 
+            route("settings", "routes/backoffice/settings/index.tsx"),
             route("settings/account", "routes/common/account-settings.tsx"),
         ]),
 

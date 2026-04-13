@@ -7,7 +7,6 @@ import {
     CALCULATION_TYPE_LABELS,
     formatDeliveryDays,
     formatCountries,
-    formatRate,
     formatWeightRange,
     getMethodCalculationSummary,
 } from '~/lib/shipping-methods-helpers';
@@ -52,6 +51,7 @@ import {
     Loader2,
     Map,
 } from 'lucide-react';
+import formatPrice from '~/lib/format-price';
 
 // ── Carrier badge helper ──────────────────────────────────────────────────────
 
@@ -263,7 +263,7 @@ function MethodDetail({
 
                 {method.free_shipping_threshold != null && (
                     <div className="mt-3 text-xs text-muted-foreground bg-green-50 dark:bg-green-950/30 text-green-700 dark:text-green-400 rounded-md px-3 py-1.5 inline-flex">
-                        Free shipping on orders above {formatRate(method.free_shipping_threshold)}
+                        Free shipping on orders above {formatPrice(method.free_shipping_threshold)}
                     </div>
                 )}
             </div>
@@ -334,10 +334,10 @@ function MethodDetail({
                                             {formatWeightRange(rate.min_weight_kg, rate.max_weight_kg)}
                                         </TableCell>
                                         <TableCell className="text-sm font-medium">
-                                            {formatRate(rate.rate)}
+                                            {formatPrice(rate.rate)}
                                         </TableCell>
                                         <TableCell className="text-sm text-muted-foreground">
-                                            {rate.rate_per_kg != null ? formatRate(rate.rate_per_kg) : '—'}
+                                            {rate.rate_per_kg != null ? formatPrice(rate.rate_per_kg) : '—'}
                                         </TableCell>
                                         <TableCell>
                                             <DropdownMenu>

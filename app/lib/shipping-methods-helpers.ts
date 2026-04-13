@@ -1,5 +1,7 @@
 // ── Constants ─────────────────────────────────────────────────────────────────
 
+import formatPrice from "./format-price";
+
 export const CARRIER_LABELS: Record<ShippingMethod['carrier'], string> = {
     custom: 'Custom',
     fedex: 'FedEx',
@@ -39,14 +41,6 @@ export function formatCountries(countries?: string[] | null): string {
     return `${countries.slice(0, 3).join(', ')} +${countries.length - 3}`;
 }
 
-export function formatRate(rate: number): string {
-    return new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'USD',
-        minimumFractionDigits: 2,
-    }).format(rate);
-}
-
 export function formatWeightRange(min?: number | null, max?: number | null): string {
     if (!min && !max) return 'Any weight';
     if (min && max) return `${min} – ${max} kg`;
@@ -57,9 +51,9 @@ export function formatWeightRange(min?: number | null, max?: number | null): str
 export function getMethodCalculationSummary(method: ShippingMethod): string {
     switch (method.calculation_type) {
         case 'flat_rate':
-            return method.flat_rate != null ? formatRate(method.flat_rate) : '—';
+            return method.flat_rate != null ? formatPrice(method.flat_rate) : '—';
         case 'weight_based':
-            return method.rate_per_kg != null ? `${formatRate(method.rate_per_kg)}/kg` : '—';
+            return method.rate_per_kg != null ? `${formatPrice(method.rate_per_kg)}/kg` : '—';
         case 'api':
             return 'Live pricing';
     }

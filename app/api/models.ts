@@ -542,3 +542,14 @@ type ShippingRate = {
 
   shipping_method?: ShippingMethod;
 };
+
+type Setting = {
+  key: string;
+  value: any;                      // parsed according to `type`
+  type: 'string' | 'integer' | 'float' | 'boolean' | 'json';
+  group?: string | null;
+  label?: string | null;
+  description?: string | null;
+  is_public: boolean;
+  updated_at: string;
+};

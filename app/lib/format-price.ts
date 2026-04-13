@@ -1,4 +1,5 @@
 import getCurrency from "./get-currency";
+import getLanguage from "./get-language";
 
 const formatPrice = (price?: number | null) => {
     const parsedPrice = typeof price === "string" ? parseFloat(price) : price;
@@ -7,7 +8,7 @@ const formatPrice = (price?: number | null) => {
         return '—';
     }
 
-    return parsedPrice.toLocaleString("fr-FR", {
+    return parsedPrice.toLocaleString(getLanguage(), {
         style: "currency",
         currency: getCurrency(),
         maximumFractionDigits: 0,

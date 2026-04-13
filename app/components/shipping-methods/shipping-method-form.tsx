@@ -25,6 +25,7 @@ import {
 } from '~/components/ui/select';
 import { Badge } from '~/components/ui/badge';
 import { X, Plus, Loader2 } from 'lucide-react';
+import getCurrency from '~/lib/get-currency';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -165,7 +166,7 @@ export function ShippingMethodForm({
                     {calcType === 'flat_rate' && (
                         <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-1.5">
-                                <Label htmlFor="sm-flat">Flat Rate ($) <span className="text-destructive">*</span></Label>
+                                <Label htmlFor="sm-flat">Flat Rate ({getCurrency.symbol()}) <span className="text-destructive">*</span></Label>
                                 <Input
                                     id="sm-flat"
                                     type="number"
@@ -177,7 +178,7 @@ export function ShippingMethodForm({
                                 />
                             </div>
                             <div className="space-y-1.5">
-                                <Label htmlFor="sm-threshold">Free Shipping Above ($)</Label>
+                                <Label htmlFor="sm-threshold">Free Shipping Above ({getCurrency.symbol()})</Label>
                                 <Input
                                     id="sm-threshold"
                                     type="number"
@@ -195,7 +196,7 @@ export function ShippingMethodForm({
                     {calcType === 'weight_based' && (
                         <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-1.5">
-                                <Label htmlFor="sm-rate-kg">Rate per kg ($) <span className="text-destructive">*</span></Label>
+                                <Label htmlFor="sm-rate-kg">Rate per kg ({getCurrency.symbol()}) <span className="text-destructive">*</span></Label>
                                 <Input
                                     id="sm-rate-kg"
                                     type="number"
@@ -207,7 +208,7 @@ export function ShippingMethodForm({
                                 />
                             </div>
                             <div className="space-y-1.5">
-                                <Label htmlFor="sm-threshold-w">Free Shipping Above ($)</Label>
+                                <Label htmlFor="sm-threshold-w">Free Shipping Above ({getCurrency.symbol()})</Label>
                                 <Input
                                     id="sm-threshold-w"
                                     type="number"
