@@ -6,33 +6,30 @@ import { Separator } from "~/components/ui/separator";
 import { Button } from "../ui/button";
 import { Link } from "react-router";
 import { ExternalLink } from "lucide-react";
+import { formatFullAddress } from "~/lib/format-full-address";
 
 export type OrderSummaryViewProps = {
     user: { name: string; email: string; avatarUrl?: string; id: number } | null;
     address: Address;
     coupon: Order['coupon_snapshot'];
     couponDiscount: number;
+    shippingCost: number;
+    shippingMethodName?: string;
     total: number;
 };
-
-// Helper to format full address
-function formatFullAddress(addr: Address): string {
-    const parts = [addr.line1];
-    if (addr.line2) parts.push(addr.line2);
-    parts.push(addr.city);
-    if (addr.state) parts.push(addr.state);
-    parts.push(addr.postal_code);
-    parts.push(addr.country);
-    return parts.filter(Boolean).join(", ");
-}
 
 export function OrderSummaryView({
     user,
     address,
     coupon,
     couponDiscount,
+    shippingCost,
+    shippingMethodName,
     total,
 }: OrderSummaryViewProps) {
+    // Calculate subtotal (sum of item prices before any discounts or shipping)
+    const subtotal = total + couponDiscount - shippingCost;
+
     return (
         <div className="space-y-6">
             {/* Financial Summary */}
@@ -44,8 +41,17 @@ export function OrderSummaryView({
                     <div className="space-y-2 text-sm">
                         <div className="flex justify-between text-muted-foreground">
                             <span>Subtotal</span>
-                            <span>{formatPrice(total + couponDiscount)}</span>
+                            <span>{formatPrice(subtotal)}</span>
                         </div>
+                        {shippingCost > 0 && (
+                            <div className="flex justify-between text-muted-foreground">
+                                <span>
+                                    Shipping
+                                    {shippingMethodName && ` (${shippingMethodName})`}
+                                </span>
+                                <span>{formatPrice(shippingCost)}</span>
+                            </div>
+                        )}
                         {coupon && (
                             <div className="flex justify-between text-emerald-600">
                                 <span>Discount ({coupon.code})</span>
@@ -133,12 +139,17 @@ export default function OrderSummary() {
         }
         : null;
 
+    const shippingCost = order.shipping_cost ?? 0;
+    const shippingMethodName = order.shipping_method_snapshot?.name;
+
     return (
         <OrderSummaryView
             user={user}
             address={order.address_snapshot}
             coupon={order.coupon_snapshot}
             couponDiscount={order.coupon_discount_applied}
+            shippingCost={shippingCost}
+            shippingMethodName={shippingMethodName}
             total={order.total}
         />
     );
