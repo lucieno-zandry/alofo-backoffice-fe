@@ -27,7 +27,7 @@ export default function AccountSettings() {
   }
 
   return (
-    <div className="min-h-screen bg-background/80 backdrop-blur-md rounded-2xl p-4 md:p-8">
+    <div className="h-full overflow-y-auto bg-background/80 backdrop-blur-md rounded-2xl p-4 md:p-8">
       <div className="max-w-5xl mx-auto space-y-6">
         <div className="flex items-center justify-between">
           <div>
