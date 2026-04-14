@@ -9,10 +9,6 @@ import { SettingsForm } from "./components/form/settings-form";
 export default function SettingsPage() {
     const { settings, isLoading, error, fetchSettings, updateSetting } = useSettingsStore();
 
-    useEffect(() => {
-        fetchSettings();
-    }, []);
-
     const handleSave = async (setting: Setting) => {
         try {
             await updateSetting(setting);
@@ -23,7 +19,7 @@ export default function SettingsPage() {
     };
 
     // Group settings by 'group' field (e.g., 'general', 'maintenance')
-    const groupedSettings = settings.reduce((acc, setting) => {
+    const groupedSettings = settings?.reduce((acc, setting) => {
         const group = setting.group || 'Other';
         if (!acc[group]) acc[group] = [];
         acc[group].push(setting);
@@ -61,7 +57,8 @@ export default function SettingsPage() {
                 </p>
             </div>
 
-            {Object.entries(groupedSettings).map(([group, groupSettings]) => (
+
+            {groupedSettings && Object.entries(groupedSettings).map(([group, groupSettings]) => (
                 <Card key={group}>
                     <CardHeader>
                         <CardTitle className="capitalize">{group}</CardTitle>

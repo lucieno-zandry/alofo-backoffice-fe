@@ -2,14 +2,14 @@ import { Outlet, redirect, useLoaderData, type LoaderFunctionArgs } from "react-
 import Header from "~/components/layout/header";
 import Sidebar from "~/components/layout/sidebar";
 import backgroundImage from "~/assets/images/backround-image.jpg";
-import { getAuthUser, getCategories } from "~/api/http-requests";
-import { useCategoryStore } from "~/hooks/use-category-store";
-import { useEffect } from "react";
 import { useAuthStore } from "~/hooks/use-auth-store";
 import { HttpException } from "~/api/app-fetch";
 import redirectPathnames from "~/lib/redirect-pathnames";
 import BackofficeSkeleton from "~/components/layout/backoffice-skeleton";
 import { getCurrentUserStatus } from "~/lib/user-status";
+import { useSettingsStore } from "./settings/stores/use-settings-store";
+import { useEffect } from "react";
+import { useCategoryStore } from "~/hooks/use-category-store";
 
 export function HydrateFallback() {
     return <BackofficeSkeleton />
@@ -18,12 +18,14 @@ export function HydrateFallback() {
 export async function clientLoader({ params }: LoaderFunctionArgs) {
     const lang = params.lang || "en";
 
+    const { fetchSettings } = useSettingsStore.getState();
+    const { fetchAuth } = useAuthStore.getState();
+
     try {
-        const [categoriesResponse, authResponse] = await Promise.all([
-            getCategories(),
-            getAuthUser(),
+        const [user] = await Promise.all([
+            fetchAuth(),
+            fetchSettings()
         ]);
-        const user = authResponse.data?.user;
 
         if (user?.role !== "admin") throw new HttpException(403);
         if (!user?.email_verified_at)
@@ -38,11 +40,6 @@ export async function clientLoader({ params }: LoaderFunctionArgs) {
             else if (status?.status === "suspended") statusPath = "account-suspended";
             return redirect(`/${lang}/${statusPath}`);
         }
-
-        return {
-            categories: categoriesResponse.data?.categories,
-            user,
-        };
     } catch (error) {
         if (error instanceof HttpException) {
             if (error.status === 401) {
@@ -63,17 +60,11 @@ export async function clientLoader({ params }: LoaderFunctionArgs) {
 }
 
 export default function AdminLayout() {
-    const { categories: initialCategories = [], user = null } = useLoaderData<typeof clientLoader>();
-    const setCategories = useCategoryStore((state) => state.setCategories);
-    const { setUser } = useAuthStore();
+    const { fetchCategories } = useCategoryStore();
 
     useEffect(() => {
-        setCategories(initialCategories);
-    }, [initialCategories, setCategories]);
-
-    useEffect(() => {
-        setUser(user)
-    }, [user, setUser]);
+        fetchCategories();
+    }, []);
 
     return (
         <div className="h-screen flex overflow-hidden p-2 gap-2" style={{ backgroundImage: `url(${backgroundImage})`, backgroundSize: "cover", backgroundPosition: "center" }}>

@@ -11,6 +11,7 @@ import { HttpException, ValidationException } from "~/api/app-fetch";
 import { toast } from "sonner";
 import { createCategory, updateCategory } from "~/api/http-requests";
 import { useRevalidator } from "react-router";
+import { useCategoryStore } from "~/hooks/use-category-store";
 
 type CategorySheetProps = {
   isOpen: boolean;
@@ -57,7 +58,8 @@ export function CategorySheetView({ isOpen, onClose, mode, initialData, onSubmit
 export function CategorySheet(props: Omit<CategorySheetProps, 'onSubmit' | 'isLoading' | 'actionData'>) {
   const [actionData, setActionData] = useState<ValidationException | HttpException | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const revalidator = useRevalidator();
+
+  const { fetchCategories } = useCategoryStore();
 
   const handleSubmit: SubmitEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
@@ -69,7 +71,7 @@ export function CategorySheet(props: Omit<CategorySheetProps, 'onSubmit' | 'isLo
       .then(() => {
         toast.success(`Category ${props.mode === "create" ? "created" : "updated"} successfully!`);
         props.onClose();
-        revalidator.revalidate();
+        fetchCategories();
         setActionData(null);
       })
       .catch(e => {

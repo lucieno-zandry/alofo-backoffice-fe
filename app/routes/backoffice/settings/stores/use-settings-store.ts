@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { getSettings, updateSetting } from '~/api/http-requests';
 
 interface SettingsStore {
-    settings: Setting[];
+    settings: Setting[] | null;
     isLoading: boolean;
     error: string | null;
     fetchSettings: () => Promise<void>;
@@ -34,7 +34,7 @@ export const useSettingsStore = create<SettingsStore>((set, get) => ({
             const updatedSetting = response.data!;
 
             set((state) => ({
-                settings: state.settings.map((s) =>
+                settings: state.settings?.map((s) =>
                     s.key === setting.key ? { ...s, value: updatedSetting.value } : s
                 ),
                 isLoading: false,
@@ -46,7 +46,7 @@ export const useSettingsStore = create<SettingsStore>((set, get) => ({
     },
 
     getSetting: (key: string, defaultValue: any = null) => {
-        const setting = get().settings.find((s) => s.key === key);
+        const setting = get().settings?.find((s) => s.key === key);
         return setting?.value ?? defaultValue;
     },
 }));

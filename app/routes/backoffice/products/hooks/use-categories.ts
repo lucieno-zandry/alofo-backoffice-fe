@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { getCategories } from '~/api/http-requests';
+import { useCategoryStore } from '~/hooks/use-category-store';
 
 interface UseCategoriesReturn {
     data: Category[];
@@ -9,7 +10,8 @@ interface UseCategoriesReturn {
 }
 
 export const useCategories = (): UseCategoriesReturn => {
-    const [data, setData] = useState<Category[]>([]);
+    const { categories, setCategories } = useCategoryStore();
+
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [error, setError] = useState<Error | null>(null);
 
@@ -19,7 +21,7 @@ export const useCategories = (): UseCategoriesReturn => {
         try {
             const response = await getCategories();
             if (response.error) throw response.error;
-            setData(response.data?.categories ?? []);
+            setCategories(response.data?.categories ?? []);
         } catch (err) {
             setError(err instanceof Error ? err : new Error('Failed to fetch categories'));
         } finally {
@@ -27,9 +29,5 @@ export const useCategories = (): UseCategoriesReturn => {
         }
     }, []);
 
-    useEffect(() => {
-        fetchCategories();
-    }, [fetchCategories]);
-
-    return { data, isLoading, error, refetch: fetchCategories };
+    return { data: categories, isLoading, error, refetch: fetchCategories };
 };

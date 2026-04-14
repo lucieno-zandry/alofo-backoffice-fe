@@ -1,5 +1,7 @@
 // ~/stores/use-category-store.ts
+import { toast } from 'sonner';
 import { create } from 'zustand';
+import { getCategories } from '~/api/http-requests';
 
 export type CategoryWithChildren = Category & {
     children: CategoryWithChildren[];
@@ -8,11 +10,26 @@ export type CategoryWithChildren = Category & {
 interface CategoryState {
     categories: Category[];
     setCategories: (categories: Category[]) => void;
+    fetchCategories: () => Promise<Category[]>;
 }
 
-export const useCategoryStore = create<CategoryState>((set) => ({
+export const useCategoryStore = create<CategoryState>((set, get) => ({
     categories: [],
     setCategories: (categories) => set({ categories }),
+    fetchCategories: async () => {
+        let categories: Category[] = [];
+        const { setCategories } = get();
+
+        try {
+            const response = await getCategories();
+            categories = response.data!.categories;
+        } catch (e) {
+            toast.error('Failed to get categories');
+        }
+
+        setCategories(categories);
+        return categories;
+    }
 }));
 
 /**

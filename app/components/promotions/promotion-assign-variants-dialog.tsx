@@ -10,9 +10,10 @@ import {
 import { toast } from "sonner";
 import { VariantPicker } from "~/components/variant-picker/variant-picker";
 import { useVariantPickerStore } from "~/hooks/use-variant-picker-store";
-import { getCategories, bulkAttachPromotionVariants } from "~/api/http-requests";
+import {  bulkAttachPromotionVariants } from "~/api/http-requests";
 import useDebounce from "~/hooks/use-debounce";
 import type { ProductQueryParams } from "~/lib/serialize-product-params";
+import { useCategoryStore } from "~/hooks/use-category-store";
 
 // ── Props ─────────────────────────────────────────────────────────────────────
 
@@ -61,21 +62,14 @@ export function PromotionAssignVariantsDialog({
     // ── Local UI state ────────────────────────────────────────────────────
     const [search, setSearch] = useState("");
     const [categoryId, setCategoryId] = useState<string>("all");
-    const [categories, setCategories] = useState<Category[]>([]);
     const [sortBy, setSortBy] = useState<ProductQueryParams["order_by"]>("created_at");
     const [sortOrder, setSortOrder] = useState<ProductQueryParams["direction"]>("DESC");
     const [perPage, setPerPage] = useState(10);
     const [confirming, setConfirming] = useState(false);
 
-    const debouncedSearch = useDebounce(search, 350);
+    const { categories } = useCategoryStore();
 
-    // ── Load categories once ──────────────────────────────────────────────
-    useEffect(() => {
-        if (!open) return;
-        getCategories().then((res) => {
-            if (res.data?.categories) setCategories(res.data.categories);
-        });
-    }, [open]);
+    const debouncedSearch = useDebounce(search, 350);
 
     // ── Initial product load + reset when dialog opens ────────────────────
     useEffect(() => {

@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { HttpException, ValidationException } from "~/api/app-fetch";
 import { toast } from "sonner";
 import { deleteCategory } from "~/api/http-requests";
+import { useCategoryStore } from "~/hooks/use-category-store";
 
 type CategoryDeleteDialogProps = {
     category: Category | null,
@@ -49,9 +50,8 @@ export function CategoryDeleteDialogView({
 
 export function CategoryDeleteDialog({ category, onClose, ...props }: Omit<CategoryDeleteDialogProps, "handleDelete" | "isLoading">) {
     const [isLoading, setIsLoading] = useState(false);
+    const { fetchCategories } = useCategoryStore();
 
-    const revalidator = useRevalidator();
-    
     const handleDelete = async () => {
         if (!category) return;
 
@@ -62,7 +62,7 @@ export function CategoryDeleteDialog({ category, onClose, ...props }: Omit<Categ
 
             toast.success("Category deleted successfully!");
             onClose();
-            revalidator.revalidate();
+            fetchCategories();
         } catch (error) {
             if (error instanceof ValidationException) {
                 toast.error("Validation failed");

@@ -8,7 +8,7 @@ import { useSettingsStore } from '../stores/use-settings-store';
  */
 export function useSetting(key: string, defaultValue: any = null) {
     return useSettingsStore((state) => {
-        const setting = state.settings.find((s) => s.key === key);
+        const setting = state.settings?.find((s) => s.key === key);
         return setting?.value ?? defaultValue;
     });
 }

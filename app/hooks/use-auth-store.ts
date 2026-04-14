@@ -1,5 +1,8 @@
+import { toast } from 'sonner'
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
+import { HttpException } from '~/api/app-fetch'
+import { getAuthUser } from '~/api/http-requests'
 
 type AuthStatus = 'unknown' | 'authenticated' | 'unauthenticated'
 
@@ -9,12 +12,13 @@ interface AuthStore {
     user: User | null
     setUser: (user: User | null) => void
     clearUser: () => void
+    fetchAuth: () => Promise<User | null>
 }
 
 // Create the store
 export const useAuthStore = create<AuthStore>()(
     persist(
-        (set) => ({
+        (set, get) => ({
             authStatus: 'unknown',
             user: null,
             setUser: (user) => {
@@ -22,6 +26,22 @@ export const useAuthStore = create<AuthStore>()(
                 set({ user, authStatus });
             },
             clearUser: () => set({ user: null, authStatus: 'unauthenticated' }),
+            fetchAuth: async () => {
+                const { setUser } = get();
+                let user: User | null = null;
+
+                try {
+                    const response = await getAuthUser();
+                    user = response.data!.user;
+                } catch (e) {
+                    if (e instanceof HttpException) {
+                        toast.error('Failed to get user.');
+                    }
+                }
+
+                setUser(user);
+                return user;
+            }
         }),
         {
             name: 'user-storage',

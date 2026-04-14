@@ -42,6 +42,7 @@ export default function () {
     const { setProductDeleteDialogOpen, setProductToDelete } = useProductDeleteDialogStore();
     const { product } = useProductStore();
 
+
     const handleOpenForEdit = useCallback(() => product && openForEdit(product), [product, openForEdit]);
 
     const handleDelete = useCallback(() => {
@@ -52,7 +53,7 @@ export default function () {
 
     return <ProductDetailHeaderView
         openForCreate={openForCreate}
-        openForEdit={handleOpenForEdit}
+        openForEdit={product && handleOpenForEdit}
         onDelete={product && handleDelete}
-        />
+    />
 }

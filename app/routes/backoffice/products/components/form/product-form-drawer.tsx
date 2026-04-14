@@ -1,7 +1,6 @@
-import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useProductFormStore } from "../../stores/use-product-form-store";
-import { createFullProduct, getCategories, updateFullProduct } from "~/api/http-requests";
+import { createFullProduct, updateFullProduct } from "~/api/http-requests";
 import type { ProductFormStep } from "../../types/product-form-types";
 import { HttpException, ValidationException } from "~/api/app-fetch";
 import { buildCreateFormData, buildUpdateFormData } from "../../helpers/form-to-formdata";
@@ -9,6 +8,7 @@ import { ProductMetaStep } from "./product-meta-step";
 import { VariantGroupsStep } from "./variant-groups-step";
 import { VariantsStep } from "./variants-step";
 import { ProductFormDrawerView } from "./product-form-drawer-view";
+import { useCategoryStore } from "~/hooks/use-category-store";
 
 
 /**
@@ -49,14 +49,7 @@ export function ProductFormDrawer({ onSuccess }: Props) {
         setSubmitting,
     } = store;
 
-    const [categories, setCategories] = useState<Category[]>([]);
-
-    // Load categories once on mount
-    useEffect(() => {
-        getCategories().then((res) => {
-            if (res.data?.categories) setCategories(res.data.categories);
-        });
-    }, []);
+    const { categories } = useCategoryStore();
 
     // ── step validation (client-side quick checks) ────────────────────────────
     function validateStep(s: ProductFormStep): boolean {
