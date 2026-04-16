@@ -26,13 +26,14 @@ export async function clientLoader({ params }: LoaderFunctionArgs) {
             fetchAuth(),
             fetchSettings()
         ]);
-
+        
         if (user?.role !== "admin") throw new HttpException(403);
         if (!user?.email_verified_at)
             throw new HttpException(403, { action: "VERIFY_EMAIL" });
 
         // Check user status
         const status = getCurrentUserStatus(user);
+
         if (!status || status.status !== "approved") {
             // Redirect to the appropriate status page
             let statusPath = "pending-approval";
@@ -40,7 +41,10 @@ export async function clientLoader({ params }: LoaderFunctionArgs) {
             else if (status?.status === "suspended") statusPath = "account-suspended";
             return redirect(`/${lang}/${statusPath}`);
         }
+
+        return;
     } catch (error) {
+        console.log(error);
         if (error instanceof HttpException) {
             if (error.status === 401) {
                 return redirect(`/${lang}/auth`);

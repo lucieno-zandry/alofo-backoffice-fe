@@ -34,8 +34,8 @@ type CategoriesPageViewProps = {
 
 export function CategoriesPageView({ openCreate, onEdit, onAddSub, onDelete, setSheetConfig, sheetConfig, deleteConfig, setDeleteConfig }: CategoriesPageViewProps) {
     return (
-        <div>
-            <div className="bg-card/40 backdrop-blur-xl border border-border rounded-[2rem] p-8 shadow-2xl transition-colors duration-300">
+        <>
+            <div className="bg-card/40 backdrop-blur-xl border border-border rounded-[2rem] p-8 shadow-2xl transition-colors duration-300 h-full overflow-y-auto">
                 <CategoryPageHeader />
                 <CategoryTree onEdit={onEdit} onAddSub={onAddSub} onDelete={onDelete} />
             </div>
@@ -54,7 +54,7 @@ export function CategoriesPageView({ openCreate, onEdit, onAddSub, onDelete, set
                 isOpen={deleteConfig.isOpen}
                 onClose={() => setDeleteConfig({ ...deleteConfig, isOpen: false })}
             />
-        </div>
+        </>
     );
 }
 
