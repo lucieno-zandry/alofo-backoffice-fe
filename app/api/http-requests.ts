@@ -15,6 +15,7 @@ import type { ClientCodeDetailResponse, ClientCodesQueryParams, ClientCodesRespo
 import type { CouponDetailResponse, CouponsQueryParams, CouponsResponse } from "~/types/coupons";
 import type { CreatePromotionData, PromotionDetailResponse, PromotionsQueryParams, PromotionsResponse, UpdatePromotionData } from "~/types/promotions";
 import type { StoreShippingMethodData, StoreShippingRateData, UpdateShippingMethodData, UpdateShippingRateData } from "~/types/shipping-methods";
+import type { VariantQueryParams } from "~/types/products";
 
 // auth
 
@@ -430,6 +431,11 @@ export function fetchUsers(params: FetchUsersParams = {}) {
     if (params.sort_by) searchParams.set("sort_by", params.sort_by);
     if (params.sort_order) searchParams.set("sort_order", params.sort_order);
 
+    if (params.statusIn)
+        params.statusIn.forEach(status => {
+            searchParams.append("status_in[]", status);
+        });
+
     return appFetch.get<PaginatedResponse<User>>(
         `/user/all?${searchParams.toString()}`
     );
@@ -734,11 +740,11 @@ export function showShippingMethod(id: number) {
 }
 
 export function createShippingMethod(data: StoreShippingMethodData) {
-    return appFetch.post<{ data: ShippingMethod }>('/shipping-methods', data);
+    return appFetch.post<ShippingMethod>('/shipping-methods', data);
 }
 
 export function updateShippingMethod(id: number, data: UpdateShippingMethodData) {
-    return appFetch.put<{ data: ShippingMethod }>(`/shipping-methods/${id}`, data);
+    return appFetch.put<ShippingMethod>(`/shipping-methods/${id}`, data);
 }
 
 export function deleteShippingMethod(id: number) {
@@ -773,4 +779,48 @@ export function getSettings() {
 
 export function updateSetting(setting: Setting) {
     return appFetch.put<Setting>(`/settings/${setting.key}`, setting);
+}
+
+export function fetchKpi() {
+    return appFetch.get<{
+        total_revenue: number,
+        total_orders: number,
+        average_order_value: number,
+        pending_refunds_count: number
+    }>('/dashboard/kpi');
+}
+
+export function fetchSalesTrend() {
+    return appFetch.get<{ labels: string[], data: number[] }>('/dashboard/sales-trend');
+}
+
+export function fetchVariants(params: VariantQueryParams = {}) {
+    const searchParams = new URLSearchParams();
+
+    // Default relations
+    if (params.with?.length) {
+        searchParams.set('with', params.with.join(','));
+    } else {
+        searchParams.set('with', 'product,image,variant_options.variant_group');
+    }
+
+    // Pagination
+    if (params.page) searchParams.set('page', String(params.page));
+    if (params.per_page) searchParams.set('per_page', String(params.per_page));
+
+    // Sorting
+    if (params.sort_by) searchParams.set('sort_by', params.sort_by);
+    if (params.sort_order) searchParams.set('sort_order', params.sort_order);
+
+    // Filters
+    if (params.product_id) searchParams.set('product_id', String(params.product_id));
+    if (params.sku) searchParams.set('sku', params.sku);
+    if (params.min_price !== undefined) searchParams.set('min_price', String(params.min_price));
+    if (params.max_price !== undefined) searchParams.set('max_price', String(params.max_price));
+    if (params.min_stock !== undefined) searchParams.set('min_stock', String(params.min_stock));
+    if (params.max_stock !== undefined) searchParams.set('max_stock', String(params.max_stock));
+    if (params.low_stock !== undefined) searchParams.set('low_stock', params.low_stock ? '1' : '0');
+    if (params.search) searchParams.set('search', params.search);
+
+    return appFetch.get<PaginatedResponse<Variant>>(`/variant/all?${searchParams.toString()}`);
 }

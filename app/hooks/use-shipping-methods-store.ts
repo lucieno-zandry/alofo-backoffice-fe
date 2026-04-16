@@ -93,7 +93,7 @@ export const useShippingMethodsStore = create<ShippingMethodsState>((set, get) =
 
     submitMethod: async (data) => {
         set({ submitting: true });
-        const { methodDialog, selectedMethod, loadMethods, closeMethodDialog } = get();
+        const { methodDialog, selectedMethod, loadMethods, closeMethodDialog, selectMethod } = get();
 
         try {
             let res;
@@ -103,9 +103,11 @@ export const useShippingMethodsStore = create<ShippingMethodsState>((set, get) =
                 res = await createShippingMethod(data as StoreShippingMethodData);
             }
 
+            selectMethod(res.data!);
             toast.success("Shipping method set successfuly!");
-            loadMethods();
             closeMethodDialog();
+
+            loadMethods();
         } catch (e) {
             if (e instanceof ValidationException)
                 toast.error("Some fields are not valid!", { description: e.message });
@@ -148,7 +150,7 @@ export const useShippingMethodsStore = create<ShippingMethodsState>((set, get) =
     toggleMethodActive: async (method) => {
         const res = await updateShippingMethod(method.id, { is_active: !method.is_active });
         if (res.data) {
-            const updated = res.data.data;
+            const updated = res.data;
             set((state) => ({
                 methods: state.methods.map((m) => (m.id === updated.id ? updated : m)),
                 selectedMethod: state.selectedMethod?.id === updated.id ? updated : state.selectedMethod,

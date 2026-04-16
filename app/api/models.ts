@@ -39,7 +39,7 @@ type User = {
 type UserStatus = {
   id: number;
   user_id: number;
-  status: "approved" | "blocked" | "suspended";
+  status: "approved" | "blocked" | "suspended" | "pending";
   reason?: string;
   set_by?: number;
   created_at: string;
@@ -287,7 +287,7 @@ type Shipment = {
   id: number;
   created_at: string;
   updated_at: string;
-  status: "PROCESSING" | "SHIPPED" | "DELIVERED";
+  status: "PROCESSING" | "SHIPPED" | "DELIVERED" | "PENDING";
   data?: ShipmentData;
   order_uuid: string;
   is_active: boolean;

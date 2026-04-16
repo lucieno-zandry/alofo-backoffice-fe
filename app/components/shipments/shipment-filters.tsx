@@ -58,6 +58,7 @@ export function ShipmentsFiltersView({
                         </SelectTrigger>
                         <SelectContent>
                             <SelectItem value="all">All Statuses</SelectItem>
+                            <SelectItem value="PENDING">Pending</SelectItem>
                             <SelectItem value="PROCESSING">Processing</SelectItem>
                             <SelectItem value="SHIPPED">Shipped</SelectItem>
                             <SelectItem value="DELIVERED">Delivered</SelectItem>

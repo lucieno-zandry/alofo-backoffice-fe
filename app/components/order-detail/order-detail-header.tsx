@@ -15,7 +15,7 @@ export default function OrderDetailHeader() {
         : "pending";
     const shipmentStatus = order.shipments?.length
         ? order.shipments.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())[0].status.toLowerCase()
-        : "processing";
+        : "pending";
 
     return (
         <OrderDetailHeaderView

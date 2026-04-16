@@ -109,6 +109,7 @@ export function UpdateShipmentSheetView({
                                 <SelectValue placeholder="Select status" />
                             </SelectTrigger>
                             <SelectContent>
+                                <SelectItem value="PENDING">Pending</SelectItem>
                                 <SelectItem value="PROCESSING">Processing</SelectItem>
                                 <SelectItem value="SHIPPED">Shipped</SelectItem>
                                 <SelectItem value="DELIVERED">Delivered</SelectItem>
@@ -270,7 +271,7 @@ export default function UpdateShipmentSheet({
     shipment,
     onSuccess,
 }: UpdateShipmentSheetProps) {
-    const [status, setStatus] = useState("PROCESSING");
+    const [status, setStatus] = useState("PENDING");
     const [carrier, setCarrier] = useState("");
     const [trackingNumber, setTrackingNumber] = useState("");
     const [estimatedDelivery, setEstimatedDelivery] = useState("");
@@ -313,7 +314,7 @@ export default function UpdateShipmentSheet({
                 setEstimatedDelivery(latest.data?.estimated_delivery || "");
                 setShippedDate(latest.data?.shipped_date || "");
             } else {
-                setStatus("PROCESSING");
+                setStatus("PENDING");
                 setCarrier("");
                 setTrackingNumber("");
                 setEstimatedDelivery("");

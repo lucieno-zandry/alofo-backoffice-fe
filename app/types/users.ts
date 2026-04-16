@@ -7,5 +7,6 @@ export type FetchUsersParams = {
     role?: User["role"] | "all";
     sort_by?: string;
     sort_order?: "asc" | "desc";
-    with?: string[]; // e.g. ['avatar_image', 'client_code']
+    with?: string[]; // e.g. ['avatar_image', 'client_code'],
+    statusIn?: UserStatus['status'][];
 };

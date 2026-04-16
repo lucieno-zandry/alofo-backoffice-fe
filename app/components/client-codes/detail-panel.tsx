@@ -1,6 +1,5 @@
 import { AlertTriangle, Calendar, Pencil, Shield, Tag, ToggleLeft, ToggleRight, Trash2, TrendingUp, Users } from "lucide-react";
 import { useCallback, useState } from "react";
-import { Skeleton } from "../ui/skeleton";
 import { ScrollArea } from "../ui/scroll-area";
 import { CodeBadge } from "./code-badge";
 import { Badge } from "../ui/badge";
@@ -11,6 +10,7 @@ import { formatDate } from "~/lib/format-date";
 import { cn } from "~/lib/utils";
 import { StatCard } from "./start-card";
 import { UserRow } from "./user-row";
+import ClientCodeDetailSekeleton from "./client-code-detail-sekeleton";
 
 export type DetailPanelProps = {
     code: ClientCode | null;
@@ -46,20 +46,7 @@ export function DetailPanel({
     }
 
     if (loading || !code) {
-        return (
-            <div className="p-6 space-y-6">
-                <div className="flex items-center justify-between">
-                    <Skeleton className="h-8 w-40" />
-                    <Skeleton className="h-8 w-24" />
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                    {Array.from({ length: 4 }).map((_, i) => (
-                        <Skeleton key={i} className="h-20 rounded-xl" />
-                    ))}
-                </div>
-                <Skeleton className="h-40 rounded-xl" />
-            </div>
-        );
+        return <ClientCodeDetailSekeleton />
     }
 
     const usesCount = code.users?.length ?? 0;

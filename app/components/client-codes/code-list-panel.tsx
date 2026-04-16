@@ -54,7 +54,7 @@ export function CodeListPanel({
     const hasSelection = selectedIds.size > 0;
 
     return (
-        <div className="flex flex-col h-full border-r bg-background/80 backdrop-blur-md rounded-2xl">
+        <div className="flex flex-col h-full border-r bg-background/80 backdrop-blur-md rounded-2xl overflow-y-auto">
             {/* Header */}
             <div className="px-4 pt-5 pb-3 space-y-3">
                 <div className="flex items-center justify-between">
