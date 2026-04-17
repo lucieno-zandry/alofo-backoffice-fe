@@ -1,6 +1,7 @@
 import { Bell, Menu } from "lucide-react";
 import useBackofficeSidebar from "~/hooks/use-backoffice-sidebar";
 import UserDropdown from "./user-dropdown";
+import BreadcrumbNav from "./breadcrumb-nav";
 
 export default function () {
     const { setIsMobileOpen } = useBackofficeSidebar();
@@ -20,14 +21,8 @@ export function HeaderView({ onMenuClick }: { onMenuClick: () => void }) {
                     <Menu size={20} />
                 </button>
 
-                {/* Breadcrumbs */}
-                <div className="flex items-center gap-2 text-sm font-medium">
-                    <span className="text-muted-foreground hover:text-foreground cursor-pointer transition-colors">
-                        Admin
-                    </span>
-                    <span className="text-border">/</span>
-                    <span className="text-foreground font-semibold">Dashboard</span>
-                </div>
+                {/* Breadcrumb */}
+                <BreadcrumbNav />
             </div>
 
             <div className="flex items-center gap-3">
