@@ -796,13 +796,16 @@ export function fetchSalesTrend() {
 
 export function fetchVariants(params: VariantQueryParams = {}) {
     const searchParams = new URLSearchParams();
+    let relations: string[] = ["product", "image", "variant_options.variant_group"];
 
     // Default relations
     if (params.with?.length) {
-        searchParams.set('with', params.with.join(','));
-    } else {
-        searchParams.set('with', 'product,image,variant_options.variant_group');
+        relations = params.with;
     }
+
+    relations.forEach((relation) => {
+        searchParams.append('with[]', relation);
+    });
 
     // Pagination
     if (params.page) searchParams.set('page', String(params.page));

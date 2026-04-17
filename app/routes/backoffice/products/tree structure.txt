@@ -1,0 +1,55 @@
+
+D:.
+|   index.tsx
+|   layout.tsx
+|   output.txt
+|   
++---components
+|   +---detail
+|   |       product-detail-header.tsx
+|   |       product-detail-meta.tsx
+|   |       product-detail-skeleton.tsx
+|   |       product-images-gallery.tsx
+|   |       product-variants-groups.tsx
+|   |       product-variants-table.tsx
+|   |       
+|   +---form
+|   |       form-error-banner.tsx
+|   |       product-delete-dialog.tsx
+|   |       product-form-drawer-view.tsx
+|   |       product-form-drawer.tsx
+|   |       product-meta-fields.tsx
+|   |       product-meta-step.tsx
+|   |       step-indicator.tsx
+|   |       variant-group-card.tsx
+|   |       variant-groups-step.tsx
+|   |       variant-row.tsx
+|   |       variants-step.tsx
+|   |       
+|   \---list
+|           product-filters.tsx
+|           product-list-item.tsx
+|           product-list-skeleton.tsx
+|           product-list.tsx
+|           
++---helpers
+|       form-to-formdata.ts
+|       product-helpers.ts
+|       slugify.ts
+|       
++---hooks
+|       use-categories.ts
+|       use-delete-product.ts
+|       use-product.ts
+|       use-products.ts
+|       
++---stores
+|       use-product-delete-dialog-store.ts
+|       use-product-filter-store.ts
+|       use-product-form-store.ts
+|       use-product-store.ts
+|       use-products-store.ts
+|       
+\---types
+        product-form-types.ts
+        
