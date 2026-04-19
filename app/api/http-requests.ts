@@ -16,6 +16,7 @@ import type { CouponDetailResponse, CouponsQueryParams, CouponsResponse } from "
 import type { CreatePromotionData, PromotionDetailResponse, PromotionsQueryParams, PromotionsResponse, UpdatePromotionData } from "~/types/promotions";
 import type { StoreShippingMethodData, StoreShippingRateData, UpdateShippingMethodData, UpdateShippingRateData } from "~/types/shipping-methods";
 import type { VariantQueryParams } from "~/types/products";
+import type { NotificationsQueryParams } from "~/components/notifications/types/notifications-query-params";
 
 // auth
 
@@ -126,41 +127,6 @@ export function getOrder(uuid: string) {
     return appFetch.get<{ order: Order }>(`/order/get/${uuid}?with=transactions,shipments,user.avatar_image,cart_items,refund_requests`);
 }
 
-export function getNotifications() {
-    return appFetch.get<{
-        notifications: AppNotification[],
-        unread: AppNotification[],
-        unread_count: number,
-    }>('/notifications');
-}
-
-export function getUnreadNotifications() {
-    return appFetch.get<{
-        notifications: AppNotification[],
-        count: number,
-    }>('/notifications/unread');
-}
-
-export function clearReadNotifications() {
-    return appFetch.delete<{ message: string }>('/notifications/clear-read');
-}
-
-export function markAllNotificationsAsRead() {
-    return appFetch.post<{
-        message: string,
-    }>('/notifications/mark-all-read', {});
-}
-
-export function removeNotification(id: string) {
-    return appFetch.delete<{ message: string }>(`/notifications/${id}`);
-}
-
-export function markNotificationAsRead(id: string) {
-    return appFetch.patch<{
-        message: string,
-        notification: AppNotification
-    }>(`/notifications/${id}/read`, {});
-}
 
 export function searchProducts(keywords: string) {
     return appFetch.get<{ products: Product[] }>(`/product/search/${keywords}?with=category,variants,images`);
@@ -826,4 +792,51 @@ export function fetchVariants(params: VariantQueryParams = {}) {
     if (params.search) searchParams.set('search', params.search);
 
     return appFetch.get<PaginatedResponse<Variant>>(`/variant/all?${searchParams.toString()}`);
+}
+
+export function getNotifications(params: NotificationsQueryParams) {
+    const searchParams = new URLSearchParams();
+
+    if (params.page) searchParams.set('page', String(params.page));
+
+    if (params.per_page) searchParams.set('per_page', String(params.per_page));
+
+    return appFetch.get<{
+        notifications: PaginatedResponse<AppNotification>,
+        unread_count: number,
+    }>('/notifications');
+}
+
+export function getUnreadNotifications(params: NotificationsQueryParams) {
+    const searchParams = new URLSearchParams();
+
+    if (params.page) searchParams.set('page', String(params.page));
+
+    if (params.per_page) searchParams.set('per_page', String(params.per_page));
+
+    return appFetch.get<{
+        notifications: PaginatedResponse<AppNotification>,
+        count: number,
+    }>('/notifications/unread');
+}
+
+export function clearReadNotifications() {
+    return appFetch.delete<{ message: string }>('/notifications/clear-read');
+}
+
+export function markAllNotificationsAsRead() {
+    return appFetch.post<{
+        message: string,
+    }>('/notifications/mark-all-read', {});
+}
+
+export function removeNotification(id: string) {
+    return appFetch.delete<{ message: string }>(`/notifications/${id}`);
+}
+
+export function markNotificationAsRead(id: string) {
+    return appFetch.patch<{
+        message: string,
+        notification: AppNotification
+    }>(`/notifications/${id}/read`, {});
 }

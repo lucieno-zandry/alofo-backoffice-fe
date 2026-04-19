@@ -2,6 +2,7 @@ import { Bell, Menu } from "lucide-react";
 import useBackofficeSidebar from "~/hooks/use-backoffice-sidebar";
 import UserDropdown from "./user-dropdown";
 import BreadcrumbNav from "./breadcrumb-nav";
+import { NotificationsPopover } from "../notifications/notifications-popover";
 
 export default function () {
     const { setIsMobileOpen } = useBackofficeSidebar();
@@ -27,10 +28,7 @@ export function HeaderView({ onMenuClick }: { onMenuClick: () => void }) {
 
             <div className="flex items-center gap-3">
                 {/* Notifications */}
-                <button className="p-2 text-muted-foreground hover:text-foreground hover:bg-accent rounded-lg transition-all relative group">
-                    <Bell size={20} />
-                    <span className="absolute top-2 right-2 w-2 h-2 bg-primary rounded-full border-2 border-card group-hover:scale-110 transition-transform" />
-                </button>
+                <NotificationsPopover />
 
                 {/* Divider */}
                 <div className="h-4 w-[px] bg-border mx-1" />
