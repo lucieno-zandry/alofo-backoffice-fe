@@ -70,7 +70,7 @@ type SidebarNavProps = {
 
 export default function SidebarNav({ collapsedView, lang }: SidebarNavProps) {
     return (
-        <nav className="flex-1 px-3 space-y-6 overflow-y-auto py-4 custom-scrollbar">
+        <nav className="flex-1 px-3 space-y-6 overflow-y-auto py-4 ">
             {navGroups.map((group) => (
                 <div key={group.group} className="space-y-1">
                     <div className="px-4 h-6 flex items-center">

@@ -12,6 +12,7 @@ import {
 
 import { Button } from "~/components/ui/button";
 import { Bell } from "lucide-react";
+import { NotificationBell } from "./components/notification-bell";
 
 /**
  * Notifications Popover
@@ -24,10 +25,8 @@ export function NotificationsPopover() {
     return (
         <Popover>
             {/* ── Trigger ───────────────────────────────────────────── */}
-            <PopoverTrigger asChild>
-                <Button variant="ghost" size="icon">
-                    <Bell className="h-5 w-5" />
-                </Button>
+            <PopoverTrigger>
+                <NotificationBell />
             </PopoverTrigger>
 
             {/* ── Content ───────────────────────────────────────────── */}

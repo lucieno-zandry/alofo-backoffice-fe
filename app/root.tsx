@@ -14,6 +14,7 @@ import { Toaster } from "./components/ui/sonner";
 import { RouteProgress } from "./components/route-progress";
 import RouterContextInjector from "./components/route-context-injector";
 import { TooltipProvider } from "./components/ui/tooltip";
+import { ThemeProvider } from "./routes/theme/theme-provider";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -37,7 +38,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Meta />
         <Links />
       </head>
-      <body className="dark h-screen overflow-hidden">
+      <body className="h-screen overflow-hidden custom-scrollbar">
         {children}
         <ScrollRestoration />
         <Scripts />
@@ -48,6 +49,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
 export default function App() {
   return <TooltipProvider>
+    <ThemeProvider />
     <RouteProgress />
     <Outlet />
     <RouterContextInjector />

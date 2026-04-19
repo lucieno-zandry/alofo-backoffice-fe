@@ -41,7 +41,7 @@ export function CategorySheetView({ isOpen, onClose, mode, initialData, onSubmit
           </SheetTitle>
         </SheetHeader>
 
-        <div className="p-6 h-[calc(100vh-85px)] overflow-y-auto custom-scrollbar">
+        <div className="p-6 h-[calc(100vh-85px)] overflow-y-auto ">
           <CategoryForm
             initialData={initialData}
             onCancel={onClose}
