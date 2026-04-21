@@ -1,3 +1,4 @@
+import i18next from "i18next";
 import buildQuery from "~/lib/build-query";
 import executeRequest from "~/lib/execute-request";
 import isCsr from "~/lib/is-csr";
@@ -63,6 +64,7 @@ export type PaginatedResponse<T> = {
 const defaultHeaders = (): HeadersInit => {
     const headers: HeadersInit = {
         'Accept': 'application/json',
+        'Accept-Language': i18next.language || 'en',
     }
 
     if (isCsr()) {
@@ -88,13 +90,13 @@ async function get<T>(
     if (!options.headers) {
         init.headers = defaultHeaders();
     }
-
     const url = buildQuery(path, params);
 
     return executeRequest<T>(() =>
         fetch(getEndpointUrl(url), {
             ...init,
             method: "GET",
+            credentials: 'include',
         })
     );
 }
@@ -116,6 +118,7 @@ async function post<T>(path: string, payload: FormData | Object, init: RequestIn
         ...init,
         body,
         method: "POST",
+        credentials: 'include'
     }));
 
     return response;
@@ -138,6 +141,7 @@ async function put<T>(path: string, payload: FormData | Object, init: RequestIni
         ...init,
         body,
         method: "PUT",
+        credentials: 'include',
     }));
 
     return response;
@@ -160,6 +164,7 @@ async function patch<T>(path: string, payload: FormData | Object, init: RequestI
         ...init,
         body,
         method: "PATCH",
+        credentials: 'include',
     }));
 
     return response;
@@ -169,6 +174,7 @@ async function destroy<T>(path: string, init: RequestInit = { headers: defaultHe
     const response = await executeRequest<T>(() => fetch(getEndpointUrl(path), {
         ...init,
         method: "DELETE",
+        credentials: 'include',
     }));
 
     return response;

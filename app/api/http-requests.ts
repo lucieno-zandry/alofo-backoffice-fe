@@ -840,3 +840,7 @@ export function markNotificationAsRead(id: string) {
         notification: AppNotification
     }>(`/notifications/${id}/read`, {});
 }
+
+export function logout(options?: RequestInit) {
+    return appFetch.get<{ message: string }>('/auth/logout', options)
+}
