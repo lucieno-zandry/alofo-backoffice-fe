@@ -49,6 +49,8 @@ export default [
 
             route("settings", "routes/backoffice/settings/index.tsx"),
             route("settings/account", "routes/common/account-settings.tsx"),
+
+            route("landing-blocks", "routes/backoffice/landing-blocks/index.tsx"),
         ]),
 
         // error pages

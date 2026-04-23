@@ -5,7 +5,8 @@ import {
     CreditCard, Truck, Users, Landmark, TicketPercent,
     Sparkles, Settings,
     type LucideProps,
-    Anchor
+    Anchor,
+    LayoutPanelTop
 } from "lucide-react";
 
 type NavGroup = ({
@@ -51,6 +52,7 @@ export const navGroups: NavGroup[] = [
     {
         group: "Marketing",
         links: [
+            { to: "landing-blocks", label: "Landing Blocks", icon: LayoutPanelTop },
             { to: "coupons", label: "Coupons", icon: TicketPercent },
             { to: "promotions", label: "Promotions", icon: Sparkles },
         ]

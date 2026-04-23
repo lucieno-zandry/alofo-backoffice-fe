@@ -17,6 +17,7 @@ import type { CreatePromotionData, PromotionDetailResponse, PromotionsQueryParam
 import type { StoreShippingMethodData, StoreShippingRateData, UpdateShippingMethodData, UpdateShippingRateData } from "~/types/shipping-methods";
 import type { VariantQueryParams } from "~/types/products";
 import type { NotificationsQueryParams } from "~/components/notifications/types/notifications-query-params";
+import type { ReorderLandingBlocksPayload, UpdateLandingBlockPayload, } from "~/routes/backoffice/landing-blocks/types/http-request-types";
 
 // auth
 
@@ -843,4 +844,48 @@ export function markNotificationAsRead(id: string) {
 
 export function logout(options?: RequestInit) {
     return appFetch.get<{ message: string }>('/auth/logout', options)
+}
+
+// ============================================================================
+// Landing Blocks
+// ============================================================================
+
+
+/**
+ * Admin: get all landing blocks (optional ?active_only=true).
+ * Requires admin authentication.
+ */
+export function getLandingBlocks(activeOnly?: boolean) {
+    const params = activeOnly ? '?active_only=true' : '';
+    return appFetch.get<LandingBlock[]>(`/landing-blocks${params}`);
+}
+
+/**
+ * Admin: get a single landing block by ID, with its relations loaded.
+ */
+export function getLandingBlock(id: number) {
+    return appFetch.get<LandingBlock>(`/landing-blocks/${id}`);
+}
+
+export function createLandingBlock(payload: FormData) {
+    return appFetch.post<LandingBlock>('/landing-blocks', payload);
+}
+
+export function updateLandingBlock(id: number, payload: FormData | UpdateLandingBlockPayload) {
+    return appFetch.post<LandingBlock>(`/landing-blocks/${id}`, payload);
+}
+
+/**
+ * Admin: delete a landing block.
+ */
+export function deleteLandingBlock(id: number) {
+    return appFetch.delete<null>(`/landing-blocks/${id}`);
+}
+
+/**
+ * Admin: reorder landing blocks (drag & drop).
+ * Expected payload: { blocks: [{ id: 1, display_order: 0 }, ...] }
+ */
+export function reorderLandingBlocks(payload: ReorderLandingBlocksPayload) {
+    return appFetch.put<{ message: string }>('/landing-blocks/reorder', payload);
 }
