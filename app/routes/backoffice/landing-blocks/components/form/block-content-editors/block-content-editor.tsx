@@ -1,6 +1,7 @@
 import { CollectionGridContentEditor } from "./collection-grid-content-editor";
 import { ComparisonContentEditor } from "./comparison-content-editor";
 import { FaqContentEditor } from "./faq-content-editor";
+import { FeaturedProductsContentEditor } from "./featured-products-content-editor";
 import { HeroContentEditor } from "./hero-content-editor";
 import { TrustBarContentEditor } from "./trust-bar-content-editor";
 
@@ -32,6 +33,9 @@ export function BlockContentEditor({ blockType, value, onChange }: BlockContentE
 
         case 'comparison':
             return <ComparisonContentEditor value={value} onChange={onChange} />;
+
+        case 'featured_products':
+            return <FeaturedProductsContentEditor value={value} onChange={onChange} />;
 
         default:
             // fallback: raw JSON editor
