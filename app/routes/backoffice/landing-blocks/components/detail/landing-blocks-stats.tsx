@@ -1,7 +1,7 @@
 import { Eye, EyeOff, LayoutList, Layers } from 'lucide-react';
 import { Card, CardContent } from '~/components/ui/card';
 import { useLandingBlocksStore } from '../../stores/use-landing-blocks-store';
-import { BLOCK_TYPE_LABELS } from '../../types/landing-block-form-types';
+import { BLOCK_TYPE_LABELS } from '../../helpers/data';
 
 // ── Dumb View ─────────────────────────────────────────────────────────────────
 

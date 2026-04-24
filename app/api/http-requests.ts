@@ -889,3 +889,16 @@ export function deleteLandingBlock(id: number) {
 export function reorderLandingBlocks(payload: ReorderLandingBlocksPayload) {
     return appFetch.put<{ message: string }>('/landing-blocks/reorder', payload);
 }
+
+export function storeImage(payload: { image: File, path: string }) {
+    const formData = new FormData();
+
+    for (const key in payload)
+        formData.set(key, payload[key as keyof typeof payload]);
+
+    return appFetch.post<{ image: AppImage }>('/images', formData);
+}
+
+export function deleteImage(id: number) {
+    return appFetch.delete<{ deleted: boolean | null }>(`/images/${id}`);
+}

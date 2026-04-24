@@ -9,7 +9,7 @@ import {
 } from '~/components/ui/sheet';
 import { Button } from '~/components/ui/button';
 import { Loader2, ArrowLeft, ArrowRight, Save } from 'lucide-react';
-import { BLOCK_TYPE_LABELS, BLOCK_TYPE_ICONS } from '../../types/landing-block-form-types';
+import { BLOCK_TYPE_LABELS, BLOCK_TYPE_ICONS } from '../../helpers/data';
 import { StepIndicator, type Step } from './step-indicator';
 import { BlockTypeStep } from './block-type-step';
 import { BlockMetaFields } from './block-meta-fields';

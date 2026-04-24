@@ -7,7 +7,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from '~/components/ui/select';
-import { LANDING_ABLE_TYPE_OPTIONS } from '../../types/landing-block-form-types';
+import { LANDING_ABLE_TYPE_OPTIONS } from '../../helpers/data';
 import { useLandingBlockFormStore } from '../../stores/use-landing-block-form-store';
 import type { LandingBlockFormData } from '../../types/landing-block-form-types';
 import { Layers } from 'lucide-react';

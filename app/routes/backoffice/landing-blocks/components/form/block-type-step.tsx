@@ -3,7 +3,7 @@ import {
     BLOCK_TYPE_LABELS,
     BLOCK_TYPE_DESCRIPTIONS,
     BLOCK_TYPE_ICONS,
-} from '../../types/landing-block-form-types';
+} from '../../helpers/data';
 import { useLandingBlockFormStore } from '../../stores/use-landing-block-form-store';
 
 const BLOCK_TYPES = Object.keys(BLOCK_TYPE_LABELS) as LandingBlock['block_type'][];

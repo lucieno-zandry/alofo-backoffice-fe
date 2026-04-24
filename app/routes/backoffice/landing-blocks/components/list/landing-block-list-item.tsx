@@ -5,7 +5,7 @@ import { Badge } from '~/components/ui/badge';
 import { Button } from '~/components/ui/button';
 import { Switch } from '~/components/ui/switch';
 import { cn } from '~/lib/utils';
-import { BLOCK_TYPE_LABELS, BLOCK_TYPE_ICONS } from '../../types/landing-block-form-types';
+import { BLOCK_TYPE_LABELS, BLOCK_TYPE_ICONS } from '../../helpers/data';
 import { getLandingAbleLabel, getLandingAbleThumbnail, getLandingAbleType, getLandingAbleMeta } from '../../helpers/landing-able-guards';
 import { useLandingBlockFormStore } from '../../stores/use-landing-block-form-store';
 import { useLandingBlockDeleteDialogStore } from '../../stores/use-landing-block-delete-dialog-store';

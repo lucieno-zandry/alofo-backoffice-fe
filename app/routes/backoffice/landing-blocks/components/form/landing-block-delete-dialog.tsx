@@ -9,7 +9,7 @@ import {
 } from '~/components/ui/alert-dialog';
 import { Button } from '~/components/ui/button';
 import { Loader2, Trash2 } from 'lucide-react';
-import { BLOCK_TYPE_LABELS, BLOCK_TYPE_ICONS } from '../../types/landing-block-form-types';
+import { BLOCK_TYPE_LABELS, BLOCK_TYPE_ICONS } from '../../helpers/data';
 import { useLandingBlockDeleteDialogStore } from '../../stores/use-landing-block-delete-dialog-store';
 import { useDeleteLandingBlock } from '../../hooks/use-delete-landing-block';
 

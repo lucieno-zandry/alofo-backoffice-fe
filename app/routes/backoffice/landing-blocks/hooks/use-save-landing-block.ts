@@ -21,7 +21,7 @@ export function useSaveLandingBlock() {
         if (formData.content && Object.keys(formData.content).length) {
             fd.append('content', JSON.stringify(formData.content));
         }
-        if (formData.landing_able_type && formData.landing_able_id) {
+        if (formData.landing_able_type && formData.landing_able_type !== '-' && formData.landing_able_id) {
             fd.append('landing_able_type', formData.landing_able_type);
             fd.append('landing_able_id', String(formData.landing_able_id));
         }

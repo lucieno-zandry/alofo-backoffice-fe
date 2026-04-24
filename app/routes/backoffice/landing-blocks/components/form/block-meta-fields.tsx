@@ -6,6 +6,7 @@ import { ImageIcon, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import type { LandingBlockFormData } from '../../types/landing-block-form-types';
 import { useLandingBlockFormStore } from '../../stores/use-landing-block-form-store';
+import { BlockContentEditor } from './block-content-editors/block-content-editor';
 
 // ── Dumb View ─────────────────────────────────────────────────────────────────
 
@@ -18,7 +19,7 @@ type BlockMetaFieldsViewProps = {
 
     onChange: (field: keyof LandingBlockFormData, value: any) => void;
     onFileChange: (file: File | null) => void;
-    onRemoveImage: () => void;
+    onRemoveImage: () => void; 
 };
 
 export function BlockMetaFieldsView({
@@ -128,6 +129,17 @@ export function BlockMetaFieldsView({
                     <p className="text-xs text-destructive">{errors.image}</p>
                 )}
             </div>
+
+            {formData.block_type && (
+                <div className="space-y-1.5 pt-2 border-t">
+                    <Label className="text-xs font-medium">Block‑specific content</Label>
+                    <BlockContentEditor
+                        blockType={formData.block_type}
+                        value={formData.content}
+                        onChange={(newContent) => onChange('content', newContent)}
+                    />
+                </div>
+            )}
 
             {/* Display Order */}
             <div className="space-y-1.5">
