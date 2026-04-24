@@ -1,5 +1,6 @@
 import { CollectionGridContentEditor } from "./collection-grid-content-editor";
 import { ComparisonContentEditor } from "./comparison-content-editor";
+import { FaqContentEditor } from "./faq-content-editor";
 import { HeroContentEditor } from "./hero-content-editor";
 import { TrustBarContentEditor } from "./trust-bar-content-editor";
 
@@ -27,7 +28,7 @@ export function BlockContentEditor({ blockType, value, onChange }: BlockContentE
         // return <TestimonialsContentEditor value={value} onChange={onChange} />;
 
         case 'faq':
-        // return <FaqContentEditor value={value} onChange={onChange} />;
+            return <FaqContentEditor value={value} onChange={onChange} />;
 
         case 'comparison':
             return <ComparisonContentEditor value={value} onChange={onChange} />;
