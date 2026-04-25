@@ -11,6 +11,7 @@ import { LANDING_ABLE_TYPE_OPTIONS } from '../../helpers/data';
 import { useLandingBlockFormStore } from '../../stores/use-landing-block-form-store';
 import type { LandingBlockFormData } from '../../types/landing-block-form-types';
 import { Layers } from 'lucide-react';
+import { ProductPicker } from '~/components/product-picker';
 
 // ── Dumb View ─────────────────────────────────────────────────────────────────
 
@@ -21,7 +22,8 @@ type RelationFieldsViewProps = {
 };
 
 export function RelationFieldsView({ formData, errors, onChange }: RelationFieldsViewProps) {
-    const showIdField = formData.landing_able_type !== '';
+    const showIdField = formData.landing_able_type !== '' && formData.landing_able_type !== '-';
+    const entityIsProduct = formData.landing_able_type === "App\\Models\\Product";
 
     return (
         <div className="space-y-4">
@@ -59,7 +61,12 @@ export function RelationFieldsView({ formData, errors, onChange }: RelationField
             </div>
 
             {/* Entity ID – only shown when a type is selected */}
-            {showIdField && (
+            {showIdField &&
+                entityIsProduct ?
+                <ProductPicker
+                    onChange={ids => { onChange('landing_able_id', ids[0]) }}
+                    value={formData.landing_able_id ? [Number(formData.landing_able_id)] : []}
+                    multiple={false} /> :
                 <div className="space-y-1.5">
                     <Label htmlFor="block-able-id" className="text-xs font-medium">
                         Entity ID
@@ -79,7 +86,8 @@ export function RelationFieldsView({ formData, errors, onChange }: RelationField
                         <p className="text-xs text-destructive">{errors.landing_able_id}</p>
                     )}
                 </div>
-            )}
+
+            }
 
             {/* Hint */}
             {!formData.landing_able_type && (

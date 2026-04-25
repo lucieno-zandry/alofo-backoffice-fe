@@ -1,9 +1,11 @@
 import { CollectionGridContentEditor } from "./collection-grid-content-editor";
 import { ComparisonContentEditor } from "./comparison-content-editor";
+import { CtaBannerContentEditor } from "./cta-banner-content-editor";
 import { FaqContentEditor } from "./faq-content-editor";
 import { FeaturedProductsContentEditor } from "./featured-products-content-editor";
 import { HeroContentEditor } from "./hero-content-editor";
 import { StoryContentEditor } from "./story-content-editor";
+import { TestimonialsContentEditor } from "./testimonials-content-editor";
 import { TrustBarContentEditor } from "./trust-bar-content-editor";
 
 interface BlockContentEditorProps {
@@ -18,16 +20,13 @@ export function BlockContentEditor({ blockType, value, onChange }: BlockContentE
             return <HeroContentEditor value={value} onChange={onChange} />;
 
         case 'cta_banner':
-        // return <CtaBannerContentEditor value={value} onChange={onChange} />;
+            return <CtaBannerContentEditor value={value} onChange={onChange} />;
 
         case 'trust_bar':
             return <TrustBarContentEditor value={value} onChange={onChange} />;
 
         case 'collection_grid':
             return <CollectionGridContentEditor value={value} onChange={onChange} />;
-
-        case 'testimonials':
-        // return <TestimonialsContentEditor value={value} onChange={onChange} />;
 
         case 'faq':
             return <FaqContentEditor value={value} onChange={onChange} />;
@@ -40,6 +39,9 @@ export function BlockContentEditor({ blockType, value, onChange }: BlockContentE
 
         case 'story':
             return <StoryContentEditor value={value} onChange={onChange} />;
+
+        case 'testimonials':
+            return <TestimonialsContentEditor value={value} onChange={onChange} />
 
         default:
             // fallback: raw JSON editor
