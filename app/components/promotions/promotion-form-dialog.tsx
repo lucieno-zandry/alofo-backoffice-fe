@@ -28,7 +28,6 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "~/components/ui/tooltip";
-import { ScrollArea } from "~/components/ui/scroll-area";
 import { cn } from "~/lib/utils";
 import type { CreatePromotionData } from "~/types/promotions";
 
@@ -96,8 +95,8 @@ export function PromotionFormDialog({
     const [stackable, setStackable] = useState(false);
     const [priority, setPriority] = useState("10");
     const [applyOrder, setApplyOrder] = useState<
-        "percentage_first" | "fixed_first" | ""
-    >("");
+        "percentage_first" | "fixed_first" | "-"
+    >("-");
     const [maxDiscount, setMaxDiscount] = useState("");
     const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -115,7 +114,7 @@ export function PromotionFormDialog({
             setAppliesTo(initialPromotion.applies_to);
             setStackable(initialPromotion.stackable);
             setPriority(String(initialPromotion.priority));
-            setApplyOrder(initialPromotion.apply_order ?? "");
+            setApplyOrder(initialPromotion.apply_order ?? "-");
             setMaxDiscount(
                 initialPromotion.max_discount != null
                     ? String(initialPromotion.max_discount)
@@ -136,7 +135,7 @@ export function PromotionFormDialog({
             setAppliesTo("all");
             setStackable(false);
             setPriority("10");
-            setApplyOrder("");
+            setApplyOrder("-");
             setMaxDiscount("");
         }
         setErrors({});
@@ -178,7 +177,7 @@ export function PromotionFormDialog({
             applies_to: appliesTo,
             stackable,
             priority: parseInt(priority, 10),
-            apply_order: stackable && applyOrder ? applyOrder : null,
+            apply_order: stackable && applyOrder && applyOrder !== '-' ? applyOrder : null,
             max_discount: maxDiscount ? parseFloat(maxDiscount) : null,
         });
     };
@@ -202,7 +201,7 @@ export function PromotionFormDialog({
                     </DialogDescription>
                 </DialogHeader>
 
-                <ScrollArea className="flex-1 px-6">
+                <div className="flex-1 px-6 h-[50vh] overflow-y-auto">
                     <div className="space-y-5 pb-2">
                         {/* ── Name + Badge ─────────────────────────────────────── */}
                         <div className="grid grid-cols-3 gap-3">
@@ -417,7 +416,7 @@ export function PromotionFormDialog({
                                         value={applyOrder}
                                         onValueChange={(v) =>
                                             setApplyOrder(
-                                                v as "percentage_first" | "fixed_first" | ""
+                                                v as "percentage_first" | "fixed_first" | "-"
                                             )
                                         }
                                     >
@@ -425,7 +424,7 @@ export function PromotionFormDialog({
                                             <SelectValue placeholder="No preference" />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            <SelectItem value="">No preference</SelectItem>
+                                            <SelectItem value="-">No preference</SelectItem>
                                             <SelectItem value="percentage_first">
                                                 Percentage first, then fixed
                                             </SelectItem>
@@ -474,7 +473,7 @@ export function PromotionFormDialog({
                             <Switch checked={isActive} onCheckedChange={setIsActive} />
                         </div>
                     </div>
-                </ScrollArea>
+                </div>
 
                 <DialogFooter className="px-6 py-4 border-t shrink-0">
                     <Button
