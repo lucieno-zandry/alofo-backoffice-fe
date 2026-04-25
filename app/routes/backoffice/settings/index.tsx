@@ -49,7 +49,7 @@ export default function SettingsPage() {
     }
 
     return (
-        <div className="container mx-auto p-4 md:p-6 space-y-8 bg-background/80 backdrop-blur-md rounded-2xl">
+        <div className="container mx-auto p-4 md:p-6 space-y-8 bg-background/80 backdrop-blur-md rounded-2xl h-full overflow-y-auto">
             <div>
                 <h1 className="text-3xl font-bold tracking-tight">Settings</h1>
                 <p className="text-muted-foreground mt-2">
