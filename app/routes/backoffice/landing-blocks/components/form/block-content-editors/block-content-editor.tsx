@@ -3,6 +3,7 @@ import { ComparisonContentEditor } from "./comparison-content-editor";
 import { FaqContentEditor } from "./faq-content-editor";
 import { FeaturedProductsContentEditor } from "./featured-products-content-editor";
 import { HeroContentEditor } from "./hero-content-editor";
+import { StoryContentEditor } from "./story-content-editor";
 import { TrustBarContentEditor } from "./trust-bar-content-editor";
 
 interface BlockContentEditorProps {
@@ -36,6 +37,9 @@ export function BlockContentEditor({ blockType, value, onChange }: BlockContentE
 
         case 'featured_products':
             return <FeaturedProductsContentEditor value={value} onChange={onChange} />;
+
+        case 'story':
+            return <StoryContentEditor value={value} onChange={onChange} />;
 
         default:
             // fallback: raw JSON editor
