@@ -129,7 +129,7 @@ export default function TransactionDetailPage() {
             <OpenDisputeDialog />
             <ResolveDisputeDialog />
 
-            <div className="p-6 space-y-6 bg-background/80 backdrop-blur-md rounded-2xl">
+            <div className="p-6 space-y-6 bg-background/80 backdrop-blur-md rounded-2xl h-full overflow-y-auto">
                 {/* Back nav */}
                 <BackButton />
                 <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_280px]">

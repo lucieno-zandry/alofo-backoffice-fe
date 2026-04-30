@@ -7,7 +7,7 @@ type User = {
   name: string;
   email: string;
   email_verified_at: string;
-  role: "admin" | "manager" | "client";
+  role: "admin" | "manager" | "client" | "guest";
   avatar_image_id?: number;
   created_at: string;
   updated_at: string;
@@ -17,7 +17,12 @@ type User = {
   status: UserStatus | null; // computed from the api
 
   permissions?: {
-    can_use_effective_prices: boolean;
+    can_use_special_prices: boolean;
+    can_use_notifications: boolean;
+    can_use_preferences: boolean;
+    can_use_settings: boolean;
+    can_log_in: boolean;
+    can_use_order: boolean;
   };
 
   // relations
@@ -39,7 +44,7 @@ type User = {
 type UserStatus = {
   id: number;
   user_id: number;
-  status: "approved" | "blocked" | "suspended" | "pending";
+  status: "approved" | "blocked" | "suspended";
   reason?: string;
   set_by?: number;
   created_at: string;
@@ -97,7 +102,7 @@ type Variant = {
   image_id: string | null;
 
   effective_price?: number;
-  applied_promotions?: AppliedPromotion[];
+  applied_promotions?: Promotion[];
 
   product?: Product;
   variant_options?: VariantOption[];
@@ -245,6 +250,7 @@ type Order = {
   updated_at: string;
   total: number;
   user_id: number;
+  notes: string;
   address_id: number;
   coupon_id: number | null;
   coupon_discount_applied: number;
@@ -287,7 +293,7 @@ type Shipment = {
   id: number;
   created_at: string;
   updated_at: string;
-  status: "PROCESSING" | "SHIPPED" | "DELIVERED" | "PENDING";
+  status: "PROCESSING" | "SHIPPED" | "DELIVERED";
   data?: ShipmentData;
   order_uuid: string;
   is_active: boolean;
@@ -309,30 +315,36 @@ type TransactionType = "PAYMENT" | "REFUND" | "MANUAL";
 type DisputeStatus = "OPEN" | "RESOLVED" | "LOST";
 
 type Transaction = {
-  uuid: string;                       // primary key (UUID)
+  uuid: string;                          // primary key (UUID)
   created_at: string;
   updated_at: string;
   status: "FAILED" | "PENDING" | "SUCCESS";
-  informations: Record<string, any>;
+  informations: Record<string, any>;     // raw gateway payload / metadata
   user_id: number;
   order_uuid: string;
   deleted_at?: string;
-  method: "VISA" | "MASTERCARD" | "ORANGEMONEY" | "AIRTELMONEY" | "MVOLA" | "PAYPAL";
-  payment_url?: string;
+
+  // ── Payment instrument details (replaces the old `method` field) ──
+  payment_method: "card" | "paypal" | "apple_pay" | "google_pay" | "bank_transfer" | string;
+  card_brand?: "visa" | "mastercard" | "amex" | "discover" | "diners" | "jcb" | string;       // only meaningful for "card"
+  payment_method_label?: string;         // e.g., "Visa •••• 4242" for display purposes
+
   amount: number;
 
-  type: TransactionType;
+  type: TransactionType;                 // "PAYMENT" | "REFUND" | "MANUAL"
   parent_transaction_uuid?: string;
-  payment_reference?: string;
+  payment_reference?: string;            // gateway-side transaction ID
   reviewed_at?: string;
   reviewed_by?: number;
   notes?: string;
-  dispute_status?: DisputeStatus;
+
+  // ── Dispute fields ──
+  dispute_status?: DisputeStatus;        // "OPEN" | "RESOLVED" | "LOST"
   dispute_opened_at?: string;
   dispute_resolved_at?: string;
-  dispute_reason?: string;      // 👈 new field
+  dispute_reason?: string;               // could become a union of known reasons later
 
-  // Relations
+  // ── Relations ──
   user?: User;
   order?: Order;
   parent_transaction?: Transaction | null;
@@ -340,7 +352,7 @@ type Transaction = {
   audit_logs?: TransactionAuditLog[];
   webhook_logs?: PaymentWebhookLog[];
   refund_requests?: RefundRequest[];
-  reviewer?: User;   // 👈 new relation
+  reviewer?: User;
 };
 
 type TransactionAuditLog = {
@@ -668,5 +680,5 @@ type TestimonialsContent = {
 };
 
 type CtaBannerContent = {
-    eyebrow?: string;
+  eyebrow?: string;
 };

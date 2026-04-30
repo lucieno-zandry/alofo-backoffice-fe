@@ -52,4 +52,8 @@ D:.
 |       
 \---types
         product-form-types.ts
-        
+|
+|       
++---translations
+|       en.json
+|       fr.json

@@ -47,7 +47,7 @@ export default function TransactionsIndexPage() {
     ]);
 
     return (
-        <div className="space-y-4 p-6 bg-background/80 backdrop-blur-md rounded-2xl">
+        <div className="space-y-4 p-6 bg-background/80 backdrop-blur-md rounded-2xl h-full overflow-y-auto">
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div>
