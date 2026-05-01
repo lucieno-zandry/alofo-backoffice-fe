@@ -11,7 +11,6 @@ import getUpdatedFormErrors from "~/lib/get-updated-form-errors";
 import { toast } from "sonner";
 import { ValidationException } from "~/api/app-fetch";
 import BackButton from "~/components/back-button";
-import randomString from "~/lib/random-string";
 
 const dataFormat = {
   password: z.string().min(4),
@@ -71,7 +70,6 @@ export default function () {
       email: formData.get("email")!,
       password: formData.get("password")!,
       password_confirmation: formData.get("password_confirmation")!,
-      name: randomString(8),
       role: "admin"
     })
       .then(response => {

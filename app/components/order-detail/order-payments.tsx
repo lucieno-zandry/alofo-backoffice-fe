@@ -59,7 +59,7 @@ export function OrderPaymentsView({ transactions, onViewPayment }: OrderPayments
                                 onKeyDown={handleRowKeyDown}
                             >
                                 <TableCell>{format(new Date(tx.created_at), "dd/MM/yyyy HH:mm")}</TableCell>
-                                <TableCell>{tx.method}</TableCell>
+                                <TableCell>{tx.payment_method}</TableCell>
                                 <TableCell>{formatPrice(tx.amount)}</TableCell>
                                 <TableCell>
                                     <StatusBadge status={tx.status}>{tx.status}</StatusBadge>

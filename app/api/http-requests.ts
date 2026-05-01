@@ -36,7 +36,7 @@ export function registerUser(data: {
     email: FormDataEntryValue,
     password: FormDataEntryValue,
     password_confirmation: FormDataEntryValue,
-    name: string,
+    name?: string,
     role: string,
 }) {
     return appFetch.post<{

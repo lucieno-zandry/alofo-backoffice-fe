@@ -50,7 +50,7 @@ function FailedRow({
           <span className="font-mono text-xs font-semibold text-foreground">
             #{truncateUuid(tx.uuid)}
           </span>
-          <StatusBadge label={tx.method} variant="neutral" />
+          <StatusBadge label={tx.payment_method} variant="neutral" />
           <span className="font-mono text-sm font-bold text-rose-500">
             {formatCurrency(tx.amount)}
           </span>
@@ -189,8 +189,8 @@ export function TransactionIssuesView({
           {loading
             ? [...Array(3)].map((_, i) => <RowSkeleton key={i} />)
             : failed.length === 0
-            ? <EmptyState icon={AlertTriangle} title="No failures in last 7 days" />
-            : failed.map((tx) => (
+              ? <EmptyState icon={AlertTriangle} title="No failures in last 7 days" />
+              : failed.map((tx) => (
                 <FailedRow
                   key={tx.uuid}
                   tx={tx}
@@ -205,8 +205,8 @@ export function TransactionIssuesView({
           {loading
             ? [...Array(3)].map((_, i) => <RowSkeleton key={i} />)
             : disputes.length === 0
-            ? <EmptyState icon={AlertTriangle} title="No open disputes" />
-            : disputes.map((tx) => (
+              ? <EmptyState icon={AlertTriangle} title="No open disputes" />
+              : disputes.map((tx) => (
                 <DisputeRow
                   key={tx.uuid}
                   tx={tx}

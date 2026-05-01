@@ -64,7 +64,7 @@ export function TransactionsTableRowView({
 
       {/* Method */}
       <TableCell>
-        <TransactionMethodBadge method={t.method} />
+        <TransactionMethodBadge method={t.payment_method} />
       </TableCell>
 
       {/* Order UUID */}

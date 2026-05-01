@@ -49,7 +49,7 @@ export type UserIssue = {
 export type FailedTransaction = {
   uuid: string;
   amount: number;
-  method: string;
+  payment_method: string;
   created_at: string;
   order_uuid: string;
   user?: { name: string };

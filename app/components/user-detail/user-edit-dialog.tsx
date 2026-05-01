@@ -31,7 +31,7 @@ type Props = {
     defaultValues: {
         name: string;
         email: string;
-        role: "admin" | "manager" | "client";
+        role: User['role'];
         client_code_id?: number;
         password?: string;
         password_confirmation?: string;

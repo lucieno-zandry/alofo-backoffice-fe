@@ -54,7 +54,7 @@ export function TransactionInfoCardView({
                     <div>
                         <dt className="text-xs text-zinc-500 mb-0.5">Method</dt>
                         <dd>
-                            <TransactionMethodBadge method={t.method} />
+                            <TransactionMethodBadge method={t.payment_method} />
                         </dd>
                     </div>
                     <div>
@@ -89,12 +89,12 @@ export function TransactionInfoCardView({
                             <dd className="text-zinc-300 text-sm">{t.notes}</dd>
                         </div>
                     )}
-                    {t.payment_url && (
+                    {t.informations?.payment_url && (
                         <div className="col-span-2">
                             <dt className="text-xs text-zinc-500 mb-1">Payment URL</dt>
                             <dd>
                                 <a
-                                    href={decodeURIComponent(t.payment_url)}
+                                    href={decodeURIComponent(t.informations.payment_url)}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="inline-flex items-center gap-1.5 text-xs text-violet-400 hover:text-violet-300 transition-colors font-mono break-all"
