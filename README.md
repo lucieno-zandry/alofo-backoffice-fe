@@ -5,5 +5,5 @@ docker run -d \
         -p 4500:3000 \
         -e API_BASE_URL=http://102.16.254.6:9000 \
         --name alofo_backoffice_fe \
-        lucienozandry/alofo-backoffice-fe:latest"
+        lucienozandry/alofo-backoffice-fe:latest
 ```
