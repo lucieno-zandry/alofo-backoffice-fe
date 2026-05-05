@@ -100,6 +100,37 @@ export function getNotificationMeta(
       };
     }
 
+    case "user": {
+      const isWaitingApproval = data.type === "user_waiting_approval";
+      const isRegistration = data.type === "user_registration";
+
+      if (isRegistration) {
+        return {
+          icon: "UserPlus",
+          color: "text-blue-500 bg-blue-500/10",
+          label: "New User Registered",
+          linkTo: appPathname(`/users/${data.user_id}`),
+        };
+      }
+
+      if (isWaitingApproval) {
+        return {
+          icon: "UserCheck",
+          color: "text-amber-500 bg-amber-500/10",
+          label: "User Waiting Approval",
+          linkTo: appPathname(`/users/${data.user_id}`),
+        };
+      }
+
+      // fallback for any other user type
+      return {
+        icon: "User",
+        color: "text-slate-500 bg-slate-500/10",
+        label: "User Notification",
+        linkTo: appPathname(`/users/${data.user_id}`),
+      };
+    }
+
     case "system":
     default: {
       return {
@@ -128,6 +159,7 @@ export const FILTER_TABS: { value: NotificationFilter; label: string }[] = [
   { value: "dispute", label: "Disputes" },
   { value: "client_code", label: "Client Codes" },
   { value: "system", label: "System" },
+  { value: "user", label: "User" }
 ];
 
 // ─── Client-side filter (for non-API filters like type tabs) ──────────────────

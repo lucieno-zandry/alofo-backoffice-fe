@@ -1,6 +1,6 @@
 // ─── Filter Tab ──────────────────────────────────────────────────────────────
 
-export type NotificationFilter = "all" | "unread" | "transaction" | "shipment" | "refund" | "dispute" | "client_code" | "system";
+export type NotificationFilter = "all" | "unread" | "transaction" | "shipment" | "refund" | "dispute" | "client_code" | "user" | "system";
 
 // ─── UI-enriched notification (wraps AppNotification) ────────────────────────
 
