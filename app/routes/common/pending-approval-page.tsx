@@ -6,6 +6,7 @@ import { getAuthUser } from "~/api/http-requests";
 import { useSuccessRedirect } from "~/hooks/use-redirect-action";
 import { HttpException } from "~/api/app-fetch";
 import { isUserApproved } from "~/lib/user-status";
+import { env } from "~/lib/env";
 
 const successRedirect = useSuccessRedirect();
 
@@ -89,7 +90,7 @@ export default function ApprovalPendingPage() {
                     <p className="text-xs text-muted-foreground/60 max-w-[300px]">
                         Need urgent access? Contact support at
                         <span className="text-foreground ml-1 font-medium underline underline-offset-4 decoration-indigo-500/30">
-                            {import.meta.env.VITE_SUPPORT_EMAIL}
+                            {env.SUPPORT_EMAIL}
                         </span>
                     </p>
                 </div>

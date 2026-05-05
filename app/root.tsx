@@ -5,6 +5,8 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useLoaderData,
+  type LoaderFunctionArgs,
 } from "react-router";
 
 import type { Route } from "./+types/root";
@@ -29,7 +31,19 @@ export const links: Route.LinksFunction = () => [
   },
 ];
 
+export const loader = async ({ request }: LoaderFunctionArgs) => {
+  return {
+    ENV: {
+      API_BASE_URL: process.env.API_BASE_URL,
+      API_URL: process.env.API_BASE_URL + "/api", // compose if needed
+    },
+  };
+};
+
 export function Layout({ children }: { children: React.ReactNode }) {
+  const data = useLoaderData<typeof loader>();
+  const { ENV } = data;
+
   return (
     <html lang="en">
       <head>
@@ -37,6 +51,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <Meta />
         <Links />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `window.__env = ${JSON.stringify(ENV)};`,
+          }}
+        />
       </head>
       <body className="h-screen overflow-hidden custom-scrollbar">
         {children}

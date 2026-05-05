@@ -1,9 +1,10 @@
 import i18next from "i18next";
 import buildQuery from "~/lib/build-query";
+import { env } from "~/lib/env";
 import executeRequest from "~/lib/execute-request";
 import isCsr from "~/lib/is-csr";
 
-const API_URL = import.meta.env.VITE_API_URL;
+const API_URL = env.API_URL;
 
 export class ValidationException {
     message: string;

@@ -7,6 +7,7 @@ import { getCurrentUserStatus, isUserSuspended } from "~/lib/user-status";
 import { useSuccessRedirect } from "~/hooks/use-redirect-action";
 import { getAuthUser } from "~/api/http-requests";
 import { HttpException } from "~/api/app-fetch";
+import { env } from "~/lib/env";
 
 const successRedirect = useSuccessRedirect();
 
@@ -97,7 +98,7 @@ export default function SuspendedPage() {
                     <p className="text-xs text-muted-foreground/60 max-w-[300px]">
                         Need assistance? Contact support at
                         <span className="text-foreground ml-1 font-medium underline underline-offset-4 decoration-amber-500/30">
-                            {import.meta.env.VITE_SUPPORT_EMAIL}
+                            {env.SUPPORT_EMAIL}
                         </span>
                     </p>
                 </div>

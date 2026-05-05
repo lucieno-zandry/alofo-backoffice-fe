@@ -12,7 +12,7 @@ export default function() {
                             <Outlet />
                             <div className="bg-muted relative hidden md:block">
                                 <img
-                                    src="/placeholder.svg"
+                                    src="https://plus.unsplash.com/premium_vector-1721386087498-6ad0c368b85e"
                                     alt="Image"
                                     className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
                                 />

@@ -6,6 +6,7 @@ import { getCurrentUserStatus, isUserBlocked } from "~/lib/user-status";
 import { useSuccessRedirect } from "~/hooks/use-redirect-action";
 import { getAuthUser } from "~/api/http-requests";
 import { HttpException } from "~/api/app-fetch";
+import { env } from "~/lib/env";
 
 const successRedirect = useSuccessRedirect();
 
@@ -87,7 +88,7 @@ export default function BlockedPage() {
                     <p className="text-xs text-muted-foreground/60 max-w-[300px]">
                         Contact support:
                         <span className="text-foreground ml-1 font-medium underline underline-offset-4 decoration-red-500/30">
-                            {import.meta.env.VITE_SUPPORT_EMAIL}
+                            {env.SUPPORT_EMAIL}
                         </span>
                     </p>
                 </div>
