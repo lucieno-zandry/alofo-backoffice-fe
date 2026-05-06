@@ -30,7 +30,7 @@ export function ProductDetailHeaderView({ openForCreate, openForEdit, onDelete }
                 onDelete &&
                 <Button onClick={onDelete} variant={'destructive'}>
                     <Trash className="mr-2 h-4 w-4" />
-                    Edit Product
+                    Delete Product
                 </Button>
             }
         </div>
